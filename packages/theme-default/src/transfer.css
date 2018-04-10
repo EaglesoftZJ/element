@@ -40,6 +40,34 @@
     box-sizing: border-box;
     position: relative;
 
+    /* 穿梭框修改样式 */
+    @e outer {
+      position: relative;
+    }
+
+    .btn-list {
+      position: absolute;
+      top: 8px;
+      right: 15px;
+      z-index: 1;
+      display: flex;
+      flex-direction: row;
+    }
+    .btn-item {
+      width: 16px;
+      height: 16px;
+      padding: 0 1px;
+      text-align: center;
+      line-height: 16px;
+      cursor: pointer;
+      &:hover {
+        color: #409EFF;
+      }
+      &__select {
+        color: #409EFF;
+      }
+    }
+
     @e body {
       padding-bottom: var(--transfer-panel-footer-height);
       height: var(--transfer-panel-body-height);
@@ -50,7 +78,8 @@
       padding: 6px 0;
       list-style: none;
       height: var(--transfer-panel-body-height);
-      overflow: auto;
+      overflow-x: hidden;
+      overflow-y: auto;
       box-sizing: border-box;
 
       @when filterable {
@@ -122,6 +151,7 @@
       border-bottom: 1px solid var(--transfer-border-color);
       box-sizing: border-box;
       color: var(--color-base-black);
+      user-select: none;
     }
 
     .el-transfer-panel__footer {

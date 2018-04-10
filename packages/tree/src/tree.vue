@@ -18,7 +18,6 @@
   import TreeStore from './model/tree-store';
   import {t} from 'element-ui/src/locale';
   import emitter from 'element-ui/src/mixins/emitter';
-
   export default {
     name: 'ElTree',
 
@@ -113,6 +112,7 @@
         this.store.currentNodeKey = newVal;
       },
       data(newVal) {
+        // 当数据源被修改后重置tree
         this.store.setData(newVal);
       }
     },

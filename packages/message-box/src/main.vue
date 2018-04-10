@@ -1,7 +1,7 @@
 <template>
   <transition name="msgbox-fade">
-    <div class="el-message-box__wrapper" v-show="visible" @click.self="handleWrapperClick">
-      <div class="el-message-box" :class="customClass">
+    <div class="el-message-box__wrapper" v-show="visible" @click.stop.self="handleWrapperClick">
+      <div class="el-message-box" :class="customClass" @click.stop>
         <div class="el-message-box__header" v-if="title !== undefined">
           <div class="el-message-box__title">{{ title || t('el.messagebox.title') }}</div>
           <i class="el-message-box__close el-icon-close" @click="handleAction('cancel')" v-if="showClose"></i>
@@ -45,17 +45,14 @@
   import ElButton from 'element-ui/packages/button';
   import { addClass, removeClass } from 'element-ui/src/utils/dom';
   import { t } from 'element-ui/src/locale';
-
   let typeMap = {
     success: 'circle-check',
     info: 'information',
     warning: 'warning',
     error: 'circle-cross'
   };
-
   export default {
     mixins: [Popup, Locale],
-
     props: {
       modal: {
         default: true
@@ -74,17 +71,14 @@
         default: true
       }
     },
-
     components: {
       ElInput,
       ElButton
     },
-
     computed: {
       typeClass() {
         return this.type && typeMap[this.type] ? `el-icon-${ typeMap[this.type] }` : '';
       },
-
       confirmButtonClasses() {
         return `el-button--primary ${ this.confirmButtonClass }`;
       },
@@ -92,7 +86,6 @@
         return `${ this.cancelButtonClass }`;
       }
     },
-
     methods: {
       getSafeClose() {
         const currentId = this.uid;
@@ -106,9 +99,7 @@
         if (!this.visible) return;
         this.visible = false;
         this._closing = true;
-
         this.onClose && this.onClose();
-
         if (this.lockScroll) {
           setTimeout(() => {
             if (this.modal && this.bodyOverflow !== 'hidden') {
@@ -120,19 +111,16 @@
           }, 200);
         }
         this.opened = false;
-
         if (!this.transition) {
           this.doAfterClose();
         }
         if (this.action) this.callback(this.action, this);
       },
-
       handleWrapperClick() {
         if (this.closeOnClickModal) {
           this.handleAction('cancel');
         }
       },
-
       handleAction(action) {
         if (this.$type === 'prompt' && action === 'confirm' && !this.validate()) {
           return;
@@ -145,7 +133,6 @@
           this.doClose();
         }
       },
-
       validate() {
         if (this.$type === 'prompt') {
           var inputPattern = this.inputPattern;
@@ -173,7 +160,6 @@
         return true;
       }
     },
-
     watch: {
       inputValue: {
         immediate: true,
@@ -185,7 +171,6 @@
           });
         }
       },
-
       visible(val) {
         if (val) this.uid++;
         if (this.$type === 'alert' || this.$type === 'confirm') {
@@ -206,7 +191,6 @@
         }
       }
     },
-
     data() {
       return {
         uid: 1,
@@ -231,7 +215,8 @@
         confirmButtonDisabled: false,
         cancelButtonClass: '',
         editorErrorMessage: null,
-        callback: null
+        callback: null,
+        exist: true
       };
     }
   };

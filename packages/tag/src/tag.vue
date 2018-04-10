@@ -3,6 +3,7 @@
     <span
       class="el-tag"
       :class="[type ? 'el-tag--' + type : '', {'is-hit': hit}]"
+      :title="title"
       :style="{backgroundColor: color}">
       <slot></slot>
       <i class="el-tag__close el-icon-close"
@@ -20,7 +21,8 @@
       type: String,
       hit: Boolean,
       closeTransition: Boolean,
-      color: String
+      color: String,
+      title: String
     },
     methods: {
       handleClose(event) {

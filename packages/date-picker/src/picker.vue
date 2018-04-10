@@ -223,7 +223,8 @@ export default {
     rangeSeparator: {
       default: ' - '
     },
-    pickerOptions: {}
+    pickerOptions: {},
+    getAllInput: Boolean
   },
 
   components: { ElInput },
@@ -292,7 +293,7 @@ export default {
     },
 
     triggerClass() {
-      return this.type.indexOf('time') !== -1 ? 'el-icon-time' : 'el-icon-date';
+      return this.type.indexOf('time') !== -1 ? 'el-icon-clock-o' : 'el-icon-calendar';
     },
 
     selectionMode() {
@@ -328,6 +329,9 @@ export default {
       },
 
       set(value) {
+        if (this.getAllInput) {
+          this.$emit('change', value);
+        }
         if (value) {
           const type = this.type;
           const parser = (

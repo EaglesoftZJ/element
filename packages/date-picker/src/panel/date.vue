@@ -50,13 +50,13 @@
             <button
               type="button"
               @click="prevYear"
-              class="el-picker-panel__icon-btn el-date-picker__prev-btn el-icon-d-arrow-left">
+              class="el-picker-panel__icon-btn el-date-picker__prev-btn el-icon-angle-double-left">
             </button>
             <button
               type="button"
               @click="prevMonth"
               v-show="currentView === 'date'"
-              class="el-picker-panel__icon-btn el-date-picker__prev-btn el-icon-arrow-left">
+              class="el-picker-panel__icon-btn el-date-picker__prev-btn el-icon-angle-left">
             </button>
             <span
               @click="showYearPicker"
@@ -69,13 +69,13 @@
             <button
               type="button"
               @click="nextYear"
-              class="el-picker-panel__icon-btn el-date-picker__next-btn el-icon-d-arrow-right">
+              class="el-picker-panel__icon-btn el-date-picker__next-btn el-icon-angle-double-right">
             </button>
             <button
               type="button"
               @click="nextMonth"
               v-show="currentView === 'date'"
-              class="el-picker-panel__icon-btn el-date-picker__next-btn el-icon-arrow-right">
+              class="el-picker-panel__icon-btn el-date-picker__next-btn el-icon-angle-right">
             </button>
           </div>
 

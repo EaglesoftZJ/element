@@ -7,7 +7,7 @@
 
   @b table {
     position: relative;
-    overflow: hidden;
+    /* overflow: hidden; */
     box-sizing: border-box;
     width: 100%;
     max-width: 100%;
@@ -106,6 +106,10 @@
       }
     }
 
+    @modifier fit-height {
+      height:100%!important;
+    }
+
     & th {
       white-space: nowrap;
       overflow: hidden;
@@ -196,7 +200,7 @@
     @e fixed-right {
       top: 0;
       left: auto;
-      right: 0;
+      right: 1px;
 
       box-shadow: -1px 0 8px #d3d4d6;
 
@@ -250,6 +254,15 @@
       td {
         border-top: 1px solid var(--table-border-color);
       }
+    }
+
+    @e footer-wrapper-egfooter {
+      height: 37px;
+      border: 1px solid var(--table-border-color);
+      margin-left:-1px;
+      line-height:15px;
+      padding:10px;
+      border-right:0;
     }
 
     @e header, body, footer {

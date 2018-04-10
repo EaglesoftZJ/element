@@ -217,6 +217,20 @@
   --msgbox-warning-color: var(--color-warning);
   --msgbox-danger-color: var(--color-danger);
 
+    /* Eg Dialog
+  -------------------------- */
+  --egdlg-width: 420px;
+  --egdlg-border-radius: 3px;
+  --egdlg-font-size: 16px;
+  --egdlg-content-font-size: 14px;
+  --egdlg-content-color: var(--link-color);
+  --egdlg-error-font-size: 12px;
+
+  --egdlg-success-color: var(--color-success);
+  --egdlg-info-color: var(--color-info);
+  --egdlg-warning-color: var(--color-warning);
+  --egdlg-danger-color: var(--color-danger);
+
   /* Message
   -------------------------- */
   --message-shadow: var(--box-shadow-base);
@@ -594,7 +608,7 @@
   --------------------------*/
   --transfer-border-color: var(--color-base-gray);
   --transfer-box-shadow: var(--box-shadow-base);
-  --transfer-panel-width: 200px;
+  --transfer-panel-width: 220px;
   --transfer-panel-header-height: 36px;
   --transfer-panel-header-background: var(--color-dark-white);
   --transfer-panel-footer-height: 36px;

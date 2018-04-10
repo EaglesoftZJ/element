@@ -14,7 +14,9 @@
       closable: Boolean,
       addable: Boolean,
       value: {},
-      editable: Boolean
+      editable: Boolean,
+      contentStyle: String,
+      headerStyle: String
     },
 
     data() {
@@ -42,6 +44,7 @@
 
     methods: {
       handleTabClick(tab, tabName, event) {
+        this.$emit('click', tab, event);
         if (tab.disabled) return;
         this.setCurrentName(tabName);
         this.$emit('tab-click', tab, event);
@@ -81,7 +84,9 @@
         currentName,
         panes,
         editable,
-        addable
+        addable,
+        contentStyle,
+        headerStyle
       } = this;
 
       const newButton = editable || addable
@@ -113,11 +118,11 @@
           'el-tabs--card': type === 'card',
           'el-tabs--border-card': type === 'border-card'
         }}>
-          <div class="el-tabs__header">
+          <div class="el-tabs__header" style={headerStyle}>
             {newButton}
             <tab-nav { ...navData }></tab-nav>
           </div>
-          <div class="el-tabs__content">
+          <div class="el-tabs__content" style={contentStyle}>
             {this.$slots.default}
           </div>
         </div>

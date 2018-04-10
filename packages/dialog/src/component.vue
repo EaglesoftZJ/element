@@ -1,7 +1,8 @@
 <template>
   <transition name="dialog-fade">
-    <div class="el-dialog__wrapper" v-show="visible" @click.self="handleWrapperClick">
+    <div class="el-dialog__wrapper" v-show="visible" @click.stop.self="handleWrapperClick">
       <div
+        @click.stop
         class="el-dialog"
         :class="[sizeClass, customClass]"
         ref="dialog"
@@ -81,8 +82,7 @@
       top: {
         type: String,
         default: '15%'
-      },
-      beforeClose: Function
+      }
     },
 
     watch: {

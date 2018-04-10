@@ -47,7 +47,7 @@
                 </time-picker>
               </span>
             </span>
-            <span class="el-icon-arrow-right"></span>
+            <span class="el-icon-angle-right"></span>
             <span class="el-date-range-picker__editors-wrap is-right">
               <span class="el-date-range-picker__time-picker-wrap">
                 <el-input
@@ -83,11 +83,11 @@
               <button
                 type="button"
                 @click="prevYear"
-                class="el-picker-panel__icon-btn el-icon-d-arrow-left"></button>
+                class="el-picker-panel__icon-btn el-icon-angle-double-left"></button>
               <button
                 type="button"
                 @click="prevMonth"
-                class="el-picker-panel__icon-btn el-icon-arrow-left"></button>
+                class="el-picker-panel__icon-btn el-icon-angle-left"></button>
               <div>{{ leftLabel }}</div>
             </div>
             <date-table
@@ -109,11 +109,11 @@
               <button
                 type="button"
                 @click="nextYear"
-                class="el-picker-panel__icon-btn el-icon-d-arrow-right"></button>
+                class="el-picker-panel__icon-btn el-icon-angle-double-right"></button>
               <button
                 type="button"
                 @click="nextMonth"
-                class="el-picker-panel__icon-btn el-icon-arrow-right"></button>
+                class="el-picker-panel__icon-btn el-icon-angle-right"></button>
               <div>{{ rightLabel }}</div>
             </div>
             <date-table

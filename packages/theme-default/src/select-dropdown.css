@@ -25,8 +25,8 @@
         &::after {
           position: absolute;
           right: 10px;
-          font-family: 'element-icons';
-          content: "\E608";
+          font-family: 'iconfont';
+          content: "\E68c";
           font-size: 11px;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;

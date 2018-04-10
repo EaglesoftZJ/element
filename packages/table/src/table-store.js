@@ -50,6 +50,9 @@ const TableStore = function(table, initialState = {}) {
   this.table = table;
 
   this.states = {
+    id: '',
+    orderBy: '',
+    sortType: '',
     rowKey: null,
     _columns: [],
     originColumns: [],

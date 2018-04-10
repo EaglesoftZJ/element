@@ -16,6 +16,7 @@
     font-size: var(--msgbox-font-size);
     overflow: hidden;
     backface-visibility: hidden;
+    @utils-vertical-center;
     @e wrapper {
       position: fixed;
       top: 0;
@@ -83,11 +84,12 @@
       font-weight: bold;
       height: 18px;
       color: #333;
+      text-align: left;
+
     }
 
     @e message {
-      margin: 0;
-
+      margin: 0 ;
       & p {
         margin: 0;
         line-height: 1.4;
@@ -158,6 +160,127 @@
   }
   100% {
     transform: translate3d(0, -20px, 0);
+    opacity: 0;
+  }
+}
+
+
+.msgbox-floatRight-enter-active {
+  animation: msgbox-floatRight-in .5s;
+}
+
+.msgbox-floatRight-leave-active {
+  animation: msgbox-floatRight-out .5s;
+}
+
+@keyframes msgbox-floatRight-in {
+  0% {
+    transform: translate3d(100%, 0, 0);
+    opacity: 0;
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes msgbox-floatRight-out {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(100%, 0, 0);
+    opacity: 0;
+  }
+}
+
+.msgbox-floatLeft-enter-active {
+  animation: msgbox-floatLeft-in .5s;
+}
+
+.msgbox-floatLeft-leave-active {
+  animation: msgbox-floatLeft-out .5s;
+}
+
+@keyframes msgbox-floatLeft-in {
+  0% {
+    transform: translate3d(-100%, 0, 0);
+    opacity: 0;
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes msgbox-floatLeft-out {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(-100%, 0, 0);
+    opacity: 0;
+  }
+}
+
+.msgbox-floatUp-enter-active {
+  animation: msgbox-floatUp-in .5s;
+}
+
+.msgbox-floatUp-leave-active {
+  animation: msgbox-floatUp-out .5s;
+}
+
+@keyframes msgbox-floatUp-in {
+  0% {
+    transform: translate3d(0, -100%, 0);
+    opacity: 0;
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes msgbox-floatUp-out {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, -100%, 0);
+    opacity: 0;
+  }
+}
+
+.msgbox-floatDown-enter-active {
+  animation: msgbox-floatDown-in .5s;
+}
+
+.msgbox-floatDown-leave-active {
+  animation: msgbox-floatDown-out .5s;
+}
+
+@keyframes msgbox-floatDown-in {
+  0% {
+    transform: translate3d(0, 100%, 0);
+    opacity: 0;
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes msgbox-floatDown-out {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 100%, 0);
     opacity: 0;
   }
 }

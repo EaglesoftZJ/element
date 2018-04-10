@@ -5,7 +5,6 @@
   @b tree {
     cursor: default;
     background: var(--color-white);
-    border: 1px solid var(--color-base-gray);
 
     @e empty-block {
       position: relative;
@@ -41,6 +40,9 @@
       }
       &:hover {
         background: var(--color-light-gray);
+      }
+      &:hover .tree_hover_plugin{
+        display:block;
       }
     }
 
@@ -96,8 +98,14 @@
       display: block;
     }
   }
+
+
+  .tree_hover_plugin {
+    display: none;
+  }
 }
 
 .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
   background-color: color(var(--color-primary) tint(92%));
 }
+

@@ -1,13 +1,14 @@
 <template>
-  <div class="el-form-item" :class="{
+  <div class="el-form-item" :class="[{
     'is-error': validateState === 'error',
     'is-validating': validateState === 'validating',
-    'is-required': isRequired || required
-  }">
+    'is-required': isRequired || required,
+  }, labelPosition ? 'el-item-' + labelPosition : '']">
     <label :for="prop" class="el-form-item__label" v-bind:style="labelStyle" v-if="label">
       <slot name="label">{{label + form.labelSuffix}}</slot>
     </label>
     <div class="el-form-item__content" v-bind:style="contentStyle">
+      <div v-if="locateCenter" style="width:100%;height:24px"></div>
       <slot></slot>
       <transition name="el-zoom-in-top">
         <div class="el-form-item__error" v-if="validateState === 'error' && showMessage && form.showMessage">{{validateMessage}}</div>
@@ -54,15 +55,19 @@
     props: {
       label: String,
       labelWidth: String,
+      labelBorderColor: String,
       prop: String,
       required: Boolean,
       rules: [Object, Array],
       error: String,
       validateStatus: String,
+      labelPosition: String,
       showMessage: {
         type: Boolean,
         default: true
-      }
+      },
+      locateCenter: Boolean,
+      hasLine: Boolean
     },
     watch: {
       error(value) {
@@ -76,7 +81,9 @@
     computed: {
       labelStyle() {
         var ret = {};
-        if (this.form.labelPosition === 'top') return ret;
+        let labelPosition = this.labelPosition || this.form.labelPosition;
+        ret.borderColor = this.labelBorderColor;
+        if (labelPosition === 'top') return ret;
         var labelWidth = this.labelWidth || this.form.labelWidth;
         if (labelWidth) {
           ret.width = labelWidth;
@@ -85,10 +92,11 @@
       },
       contentStyle() {
         var ret = {};
-        if (this.form.labelPosition === 'top' || this.form.inline) return ret;
+        let labelPosition = this.labelPosition || this.form.labelPosition;
+        if (labelPosition === 'top' || this.form.inline) return ret;
         var labelWidth = this.labelWidth || this.form.labelWidth;
         if (labelWidth) {
-          ret.marginLeft = labelWidth;
+          ret.marginLeft = parseFloat(labelWidth) + (this.hasLine ? 10 : 0) + 'px';
         }
         return ret;
       },
@@ -109,6 +117,8 @@
           if (path.indexOf(':') !== -1) {
             path = path.replace(/:/, '.');
           }
+
+//          console.log('fieldValue', model, path);
 
           return getPropByPath(model, path).v;
         }
@@ -142,6 +152,7 @@
         model[this.prop] = this.fieldValue;
 
         validator.validate(model, { firstFields: true }, (errors, fields) => {
+
           this.validateState = !errors ? 'success' : 'error';
           this.validateMessage = errors ? errors[0].message : '';
 

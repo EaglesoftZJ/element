@@ -6,7 +6,15 @@
       :title="titles[0] || t('el.transfer.titles.0')"
       :default-checked="leftDefaultChecked"
       :placeholder="filterPlaceholder || t('el.transfer.filterPlaceholder')"
-      @checked-change="onSourceCheckedChange">
+      @checked-change="onSourceCheckedChange"
+      :drag="drag"
+      :draggable-name="draggableName"
+      draggable-sort
+      @val-change="handleChange('left', arguments[0])"
+      ref="transfer1"
+      :buttons="buttons && []"
+      :functions="functions && []"
+      >
       <slot name="left-footer"></slot>
     </transfer-panel>
     <div class="el-transfer__buttons">
@@ -33,7 +41,15 @@
       :title="titles[1] || t('el.transfer.titles.1')"
       :default-checked="rightDefaultChecked"
       :placeholder="filterPlaceholder || t('el.transfer.filterPlaceholder')"
-      @checked-change="onTargetCheckedChange">
+      @checked-change="onTargetCheckedChange"
+      @val-change="handleChange('right', arguments[0])"
+      :drag="drag"
+      :draggable-name="draggableName"
+      draggable-sort
+      ref="transfer2"
+      :buttons="buttons"
+      :functions="functions"
+      >
       <slot name="right-footer"></slot>
     </transfer-panel>
   </div>
@@ -47,6 +63,7 @@
 
   export default {
     name: 'ElTransfer',
+    componentName: 'ElTransfer',
 
     mixins: [Emitter, Locale],
 
@@ -105,6 +122,8 @@
         }
       },
       filterable: Boolean,
+      sort: Boolean,
+      drag: Boolean,
       props: {
         type: Object,
         default() {
@@ -114,33 +133,64 @@
             disabled: 'disabled'
           };
         }
-      }
+      },
+      buttons: Array,
+      functions: Array
     },
 
     data() {
       return {
         leftChecked: [],
-        rightChecked: []
+        rightChecked: [],
+        leftData: [],
+        leftValue: [],
+        allQuery: 0
       };
     },
 
     computed: {
       sourceData() {
-        return this.data.filter(item => this.value.indexOf(item[this.props.key]) === -1);
+        if (this.sort) {
+          return this.getArr(this.leftValue);
+        } else {
+          return this.data.filter(item => this.value.indexOf(item[this.props.key]) === -1);
+        }
       },
-
       targetData() {
-        return this.data.filter(item => this.value.indexOf(item[this.props.key]) > -1);
+        if (this.sort) {
+          return this.getArr(this.value);
+        } else {
+          return this.data.filter(item => this.value.indexOf(item[this.props.key]) > -1);
+        }       
       }
     },
 
     watch: {
       value(val) {
         this.dispatch('ElFormItem', 'el.form.change', val);
+      },
+      leftData(val) {
+        this.leftValue = val.map(item => item[this.props.key]);
+      },
+      data(val) {
+        if (this.sort) {
+          this.leftData = val.filter(item => this.value.indexOf(item[this.props.key]) === -1);
+        }
       }
     },
 
     methods: {
+      getArr(val) {
+        let arr = [];
+        let index;
+        this.data.filter((item) => {
+          index = val.indexOf(item[this.props.key]);
+          if (index > -1) {
+            arr[index] = item;
+          }
+        });
+        return arr;
+      },
       onSourceCheckedChange(val) {
         this.leftChecked = val;
       },
@@ -154,7 +204,8 @@
         this.rightChecked.forEach(item => {
           const index = currentValue.indexOf(item);
           if (index > -1) {
-            currentValue.splice(index, 1);
+            let arr = currentValue.splice(index, 1);
+            this.leftValue = this.leftValue.concat(arr);
           }
         });
         this.$emit('input', currentValue);
@@ -166,10 +217,29 @@
         this.leftChecked.forEach(item => {
           if (this.value.indexOf(item) === -1) {
             currentValue = currentValue.concat(item);
+            let index = this.leftValue.indexOf(item);
+            this.leftValue.splice(index, 1);
           }
         });
         this.$emit('input', currentValue);
         this.$emit('change', currentValue, 'right', this.leftChecked);
+      },
+      handleChange(type, val) {
+        let arr = [];
+        if (type === 'right') {
+          arr = val.map((item) => {return item[this.props.key];});
+          this.$emit('input', arr);
+        } else if (type === 'left') {
+          this.leftData = val;
+        }
+      }
+    },
+    created() {
+      if (this.drag) {
+        this.draggableName = 'transfer_' + new Date().getTime();
+      }
+      if (this.sort) {
+        this.leftData = this.data.filter(item => this.value.indexOf(item[this.props.key]) === -1);
       }
     }
   };

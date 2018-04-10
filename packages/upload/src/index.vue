@@ -57,6 +57,7 @@ export default {
       type: Function,
       default: noop
     },
+    beforeRemove: Function,
     onChange: {
       type: Function,
       default: noop
@@ -91,7 +92,8 @@ export default {
       default: 'text'   // text,picture,picture-card
     },
     httpRequest: Function,
-    disabled: Boolean
+    disabled: Boolean,
+    checkRemove: Boolean
   },
 
   data() {
@@ -170,10 +172,59 @@ export default {
       if (raw) {
         file = this.getFile(raw);
       }
-      this.abort(file);
-      var fileList = this.uploadFiles;
-      fileList.splice(fileList.indexOf(file), 1);
-      this.onRemove(file, fileList);
+      // this.abort(file);
+      // if (this.checkRemove) {
+      //   this.onRemove(file);
+      // } else {
+      //   var fileList = this.uploadFiles;
+      //   fileList.splice(fileList.indexOf(file), 1);
+      //   this.onRemove(file, fileList);
+      // }
+      let doRemove = () => {
+        let fileList = this.uploadFiles;
+        let removeData = () => {
+          this.abort(file);
+          fileList.splice(fileList.indexOf(file), 1);
+        };
+        if (this.onRemove) {
+          var before = this.onRemove(file, fileList);
+          if (before && before.then) {
+            before.then(() => {
+              removeData();
+            }, () => { 
+              // do nothing
+            });
+          } else if (before) {
+            removeData();
+          } else {
+             // do nothing
+          }
+        } else {
+          removeData();
+        }
+      };
+
+      if (!this.beforeRemove) {
+        doRemove();
+        return;
+      }
+
+      const before = this.beforeRemove(file, this.uploadFiles);
+      if (before && before.then) {
+        before.then((success) => {
+          if (success) {
+            doRemove();
+          }
+
+        }, () => {
+          // do nothing
+        });
+      } else if (before !== false) {
+        doRemove();
+      } else {
+        // do nothing
+      }
+      
     },
     getFile(rawFile) {
       var fileList = this.uploadFiles;

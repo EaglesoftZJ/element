@@ -126,7 +126,7 @@ export default {
     renderHeader: Function,
     sortable: {
       type: [String, Boolean],
-      default: false
+      default: true
     },
     sortMethod: Function,
     resizable: {

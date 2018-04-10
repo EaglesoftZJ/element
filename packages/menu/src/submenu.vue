@@ -10,8 +10,8 @@
       <slot name="title"></slot>
       <i :class="{
         'el-submenu__icon-arrow': true,
-        'el-icon-arrow-down': rootMenu.mode === 'vertical',
-        'el-icon-caret-bottom': rootMenu.mode === 'horizontal'
+        'el-icon-chevron-down': rootMenu.mode === 'vertical',
+        'el-icon-caret-down': rootMenu.mode === 'horizontal'
       }">
       </i>
     </div>

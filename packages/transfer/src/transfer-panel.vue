@@ -15,17 +15,39 @@
         v-if="filterable"></el-input>
       <el-checkbox-group
         v-model="checked"
-        v-show="!hasNoMatch && data.length > 0"
+        v-show="drag || !hasNoMatch && data.length > 0"
         :class="{ 'is-filterable': filterable }"
         class="el-transfer-panel__list">
+        <div style="width: 100%; height: 100%; overflow: hidden; position: relative;" ref="scroll-transfer">
         <el-checkbox
+          v-if="!drag"
           class="el-transfer-panel__item"
           :label="item[keyProp]"
           :disabled="item[disabledProp]"
           :key="item[keyProp]"
+          showTitle
           v-for="item in filteredData">
           <option-content :option="item"></option-content>
         </el-checkbox>
+        <draggable v-if="drag" element="div" style="height: 100%;" :value="filteredData" :options="dragOption" @input="handleInput">
+          <span class="el-transfer-panel__outer" style="display: block;" v-for="item in filteredData" :key="item[keyProp]">
+           <el-checkbox
+              class="el-transfer-panel__item"
+              :style="{'padding-right': buttons && buttons.length > 0 && '60px'}"
+              :label="item[keyProp]"
+              :disabled="item[disabledProp]"
+              :showTitle="item[labelProp]"
+              @mousedown.native="check"
+              @pointerdown.native="check"
+           >
+            <option-content :option="item"></option-content>
+        </el-checkbox>
+            <div class="btn-list" v-if="buttons && buttons.length > 0">
+              <div :class="['btn-item', 'el-icon-' + btn.type, {'btn-item__select': btn.key && item[btn.key] === i}]" @click="functions[i](item[keyProp], btn, $event)" :title="btn.text" v-for="(btn, i) in buttons" :key="i"></div>
+            </div>
+          </span>
+        </draggable>
+      </div>
       </el-checkbox-group>
       <p
         class="el-transfer-panel__empty"
@@ -50,6 +72,7 @@
   import ElCheckbox from 'element-ui/packages/checkbox';
   import ElInput from 'element-ui/packages/input';
   import Locale from 'element-ui/src/mixins/locale';
+  import draggable from 'vuedraggable';
 
   export default {
     mixins: [Locale],
@@ -62,6 +85,7 @@
       ElCheckboxGroup,
       ElCheckbox,
       ElInput,
+      draggable,
       OptionContent: {
         props: {
           option: Object
@@ -91,6 +115,9 @@
           return [];
         }
       },
+      drag: Boolean,
+      draggableName: '',
+      draggableSort: Boolean,
       renderContent: Function,
       placeholder: String,
       title: String,
@@ -98,7 +125,9 @@
       footerFormat: Object,
       filterMethod: Function,
       defaultChecked: Array,
-      props: Object
+      props: Object,
+      buttons: Array,
+      functions: Array
     },
 
     data() {
@@ -106,7 +135,23 @@
         checked: [],
         allChecked: false,
         query: '',
-        inputHover: false
+        inputHover: false,
+        canDrag: true,
+        msg: false,
+        x1: 0,
+        x2: 0,
+        y1: 0,
+        y2: 0,
+        parent: null,
+        dragOption: {
+          group: {
+            name: this.draggableName, 
+            pull: true, 
+            put: true
+          },
+          animation: 150,
+          sort: this.draggableSort
+        }
       };
     },
 
@@ -130,7 +175,13 @@
       checkableData() {
         this.updateAllChecked();
       },
-
+      query(val) {
+        if (val && this.drag) {
+          this.parent.allQuery++;
+        } else {
+          this.parent.allQuery--;
+        }
+      },
       defaultChecked: {
         immediate: true,
         handler(val, oldVal) {
@@ -208,6 +259,16 @@
     },
 
     methods: {
+      getParent() {
+        let parent = this.$parent;
+        while (parent) {
+          if (parent.$options.componentName === 'ElTransfer') {
+            this.parent = parent;
+            break;
+          }
+          parent = parent.$parent;
+        }
+      },
       updateAllChecked() {
         const checkableDataKeys = this.checkableData.map(item => item[this.keyProp]);
         this.allChecked = checkableDataKeys.length > 0 &&
@@ -224,6 +285,56 @@
         if (this.inputIcon === 'circle-close') {
           this.query = '';
         }
+      },
+      handleInput(val) {
+        this.$emit('val-change', val);
+      },
+      check: function(evt) {
+        evt = evt || window.event;
+        if (this.parent.allQuery !== 0) {
+          this.x1 = evt.clientX;
+          this.y1 = evt.clientY;
+          this.canDrag = false;
+          evt.stopPropagation();
+        }
+      },
+      handleUp: function() {
+        this.canDrag = true;
+        this.msg = false;
+      },
+      handleMove: function(evt) {
+        evt = evt || window.event;
+        if (!this.canDrag && !this.msg) {
+          this.x2 = evt.clientX;
+          this.y2 = evt.clientY;
+          let x = Math.abs(this.x1 - this.x2);
+          let y = Math.abs(this.y1 - this.y2);
+          if (x < 10 && y < 10) {
+            return;
+          }
+          this.$message({
+            message: '筛选状态下不支持拖拽，请用按钮进行操作',
+            type: 'warning'
+          });
+          this.msg = true;
+        }
+      }
+    },
+    created() {
+      if (this.drag) {
+        this.getParent();
+        document.addEventListener('mouseup', this.handleUp);
+        document.addEventListener('mousemove', this.handleMove);
+      }
+    },
+    mounted() {
+      console.log('buttons', this.buttons);
+      this.$sbar.use(this.$refs, this);
+    },
+    destoryed() {
+      if (this.drag) {
+        document.removeEventListener('mouseup', this.handleUp);
+        document.removeEventListener('mousemove', this.handleMove);
       }
     }
   };

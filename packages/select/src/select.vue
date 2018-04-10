@@ -72,6 +72,7 @@
         ref="popper"
         v-show="visible && emptyText !== false">
         <el-scrollbar
+          v-if="action == ''"
           tag="ul"
           wrap-class="el-select-dropdown__wrap"
           view-class="el-select-dropdown__list"
@@ -83,6 +84,25 @@
             v-if="showNewOption">
           </el-option>
           <slot></slot>
+        </el-scrollbar>
+        <el-scrollbar
+          v-if="action"
+          tag="ul"
+          wrap-class="el-select-dropdown__wrap"
+          view-class="el-select-dropdown__list"
+          :class="{ 'is-empty': !allowCreate && filteredOptionsCount === 0 }"
+          v-show="options.length > 0 && !loading">
+          <el-option
+            :value="query"
+            created
+            v-if="showNewOption">
+          </el-option>
+          <el-option
+            v-for="item in bindData"
+            :key="item[valueField]"
+            :label="item[textField]"
+            :value="item[valueField]">
+          </el-option>
         </el-scrollbar>
         <p class="el-select-dropdown__empty" v-if="emptyText && (allowCreate && options.length === 0 || !allowCreate)">{{ emptyText }}</p>
       </el-select-menu>
@@ -124,7 +144,7 @@
           !this.multiple &&
           this.value !== undefined &&
           this.value !== '';
-        return criteria ? 'circle-close is-show-close' : (this.remote && this.filterable ? '' : 'caret-top');
+        return criteria ? 'times-circle is-show-close' : (this.remote && this.filterable ? '' : 'chevron-up');
       },
 
       debounce() {
@@ -192,11 +212,24 @@
           return t('el.select.placeholder');
         }
       },
-      defaultFirstOption: Boolean
+      defaultFirstOption: Boolean,
+      action: {
+                type: String,
+                default: ''
+      },
+      valueField: {
+          type: String,
+          default: 'bh'
+      },
+      textField: {
+          type: String,
+          default: 'mc'
+      }
     },
 
     data() {
       return {
+        bindData: [],
         options: [],
         cachedOptions: [],
         createdLabel: null,
@@ -350,6 +383,26 @@
     },
 
     methods: {
+      dataBind() {
+        if (this.action !== '') {
+            var options =
+            {
+                url: this.action,
+                async: true,
+                data: {
+                    name: this.selectedLabel
+                },
+                success: function(res) {
+                    // this.reset();
+                    // console.log(111);
+                    this.$nextTick(() => {
+                        this.bindData = res;
+                    });
+                }
+            };
+            this.$eg.ajax(null, options);
+        }
+      },
       handleIconHide() {
         let icon = this.$el.querySelector('.el-input__icon');
         if (icon) {
@@ -359,7 +412,7 @@
 
       handleIconShow() {
         let icon = this.$el.querySelector('.el-input__icon');
-        if (icon && !hasClass(icon, 'el-icon-circle-close')) {
+        if (icon && !hasClass(icon, 'el-icon-times-circl')) {
           addClass(icon, 'is-reverse');
         }
       },
@@ -444,7 +497,7 @@
       },
 
       handleIconClick(event) {
-        if (this.iconClass.indexOf('circle-close') > -1) {
+        if (this.iconClass.indexOf('times-circl') > -1) {
           this.deleteSelected(event);
         } else {
           this.toggleMenu();
@@ -671,6 +724,9 @@
       this.$on('handleOptionClick', this.handleOptionSelect);
       this.$on('onOptionDestroy', this.onOptionDestroy);
       this.$on('setSelected', this.setSelected);
+
+      // this.bindData=[{bh:'1',mc:"张三"},{bh:'2',mc:"李四"},{bh:'3',mc:"王五"}];
+      this.dataBind();
     },
 
     mounted() {

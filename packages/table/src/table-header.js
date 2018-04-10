@@ -240,6 +240,7 @@ export default {
     },
 
     handleFilterClick(event, column) {
+      // console.log('target', event.target);
       event.stopPropagation();
       const target = event.target;
       const cell = target.parentNode;
@@ -427,7 +428,12 @@ export default {
       states.sortProp = sortProp;
       states.sortOrder = sortOrder;
 
-      this.store.commit('changeSortCondition');
+      // console.log(column.order);
+      // console.log(column.property);
+      this.$emitter.emit(this.store.states.id + '_grid_orderby', column);
+
+      // 以下代码于2017-6-2注释掉，为elementui原来的代码，在客户端层面实现排序      
+      // this.store.commit('changeSortCondition');
     }
   },
 

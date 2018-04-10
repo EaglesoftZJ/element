@@ -38,10 +38,13 @@ class TableLayout {
 
   updateScrollY() {
     const height = this.height;
+    // console.log('scrollY0', height);
     if (typeof height !== 'string' && typeof height !== 'number') return;
     const bodyWrapper = this.table.bodyWrapper;
+    // console.log('scrollY1', this.table.$el, bodyWrapper);
     if (this.table.$el && bodyWrapper) {
       const body = bodyWrapper.querySelector('.el-table__body');
+      console.log('scrollY', body.offsetHeight, bodyWrapper.offsetHeight);
       this.scrollY = body.offsetHeight > bodyWrapper.offsetHeight;
     }
   }
@@ -53,6 +56,7 @@ class TableLayout {
     }
 
     this.height = value;
+    // console.log('setHeight', this.height);
 
     if (!el) return;
     if (typeof value === 'number') {
@@ -75,6 +79,7 @@ class TableLayout {
     const height = this.tableHeight = this.table.$el.clientHeight;
     const noData = !this.table.data || this.table.data.length === 0;
     const { headerWrapper, footerWrapper } = this.table.$refs;
+
     const footerHeight = this.footerHeight = footerWrapper ? footerWrapper.offsetHeight : 0;
     if (this.showHeader && !headerWrapper) return;
     if (!this.showHeader) {

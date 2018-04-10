@@ -24,7 +24,7 @@
           'el-icon-check': ['picture-card', 'picture'].indexOf(listType) > -1
         }"></i>
       </label>
-      <i class="el-icon-close" @click="$emit('remove', file)"></i>
+      <i class="el-icon-close" @click.stop="$emit('remove', file)"></i>
       <el-progress
         v-if="file.status === 'uploading'"
         :type="listType === 'picture-card' ? 'circle' : 'line'"
@@ -37,13 +37,13 @@
           v-if="handlePreview && listType === 'picture-card'"
           @click="handlePreview(file)"
         >
-          <i class="el-icon-view"></i>
+          <i class="el-icon-search-plus"></i>
         </span>
         <span
           class="el-upload-list__item-delete"
           @click="$emit('remove', file)"
         >
-          <i class="el-icon-delete2"></i>
+          <i class="el-icon-trash-o"></i>
         </span>
       </span>
     </li>
