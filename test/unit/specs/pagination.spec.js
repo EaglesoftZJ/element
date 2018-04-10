@@ -82,6 +82,16 @@ describe('Pagination', () => {
     expect(vm.$el.querySelectorAll('li.number')).to.length(4);
   });
 
+  it('pageSize: NaN', () => {
+    vm = createTest(Pagination, {
+      pageSize: NaN,
+      total: 100
+    });
+
+    const pagers = vm.$el.querySelectorAll('li.number');
+    expect(pagers).to.length(7);
+  });
+
   it('pageCount', () => {
     const vm = createTest(Pagination, {
       pageSize: 25,
@@ -117,6 +127,17 @@ describe('Pagination', () => {
     });
 
     expect(vm.$el.querySelector('li.number.active')).to.have.property('textContent').to.equal('3');
+  });
+
+  it('currentPage: NaN', () => {
+    vm = createTest(Pagination, {
+      pageSize: 20,
+      total: 200,
+      currentPage: NaN
+    });
+
+    expect(vm.$el.querySelector('li.number.active')).to.have.property('textContent').to.equal('1');
+    expect(vm.$el.querySelectorAll('li.number')).to.length(7);
   });
 
   it('set currentPage & total', (done) => {
@@ -194,6 +215,7 @@ describe('Pagination', () => {
         <el-pagination
           @current-change="handleChange"
           :page-size="10"
+          layout="pager, jumper"
           :total="100" />
       `,
 
@@ -204,27 +226,42 @@ describe('Pagination', () => {
       },
 
       data() {
-        return { page: 1 };
+        return {
+          page: 1,
+          inputer: null
+        };
+      },
+
+      mounted() {
+        this.inputer = this.$children[0].$children[1].$children[0];
       }
     }, true);
-    const input = vm.$el.querySelector('.el-pagination__jump input');
+    const input = vm.inputer;
+    const changeValue = (value) => {
+      input.$emit('input', value);
+      input.setCurrentValue(value);
+      input.$emit('change', value);
+    };
 
-    input.focus();
-    input.value = -1;
-    triggerEvent(input, 'change');
+    changeValue(1);
     setTimeout(() => {
-      expect(vm.page).to.equal(1);
-
-      input.value = 10000;
-      triggerEvent(input, 'change');
+      expect(input.value).to.equal(1);
+      // 多次输入不在min-max区间内的数字
+      changeValue(0);
       setTimeout(() => {
-        expect(vm.page).to.equal(10);
-
-        input.value = '我好帅';
-        triggerEvent(input, 'change');
+        expect(input.value).to.equal(1);
+        changeValue(0);
         setTimeout(() => {
-          expect(vm.page).to.equal(1);
-          done();
+          expect(input.value).to.equal(1);
+          changeValue(1000);
+          setTimeout(() => {
+            expect(input.value).to.equal(10);
+            changeValue(1000);
+            setTimeout(() => {
+              expect(input.value).to.equal(10);
+              done();
+            }, 50);
+          }, 50);
         }, 50);
       }, 50);
     }, 50);

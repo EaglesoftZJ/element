@@ -220,11 +220,12 @@ export default {
     },
     value: {},
     defaultValue: {},
+    defaultTime: {},
     rangeSeparator: {
-      default: ' - '
+      default: '-'
     },
     pickerOptions: {},
-    getAllInput: Boolean
+    unlinkPanels: Boolean
   },
 
   components: { ElInput },
@@ -235,49 +236,67 @@ export default {
     return {
       pickerVisible: false,
       showClose: false,
-      currentValue: '',
+      userInput: null,
+      valueOnOpen: null, // value when picker opens, used to determine whether to emit change
       unwatchPickerOptions: null
     };
   },
 
   watch: {
     pickerVisible(val) {
-      if (!val) this.dispatch('ElFormItem', 'el.form.blur');
-      if (this.readonly || this.disabled) return;
-      val ? this.showPicker() : this.hidePicker();
-    },
-    currentValue(val) {
-      if (val) return;
-      if (this.picker && typeof this.picker.handleClear === 'function') {
-        this.picker.handleClear();
+      if (this.readonly || this.pickerDisabled) return;
+      if (val) {
+        this.showPicker();
+        this.valueOnOpen = this.value;
       } else {
-        this.$emit('input');
+        this.hidePicker();
+        this.emitChange(this.value);
+        // flush user input if it is parsable
+        // this.displayValue here is not a typo, it merges text for both panels in range mode
+        const parsedValue = this.parseString(this.displayValue);
+        if (this.userInput && parsedValue && this.isValidValue(parsedValue)) {
+          this.userInput = null;
+        }
+        this.dispatch('ElFormItem', 'el.form.blur');
+        this.$emit('blur', this);
+        this.blur();
       }
     },
-    value: {
+    parsedValue: {
       immediate: true,
       handler(val) {
-        this.currentValue = isDate(val) ? new Date(val) : val;
+        if (this.picker) {
+          this.picker.value = val;
+        }
       }
     },
-    displayValue(val) {
-      this.$emit('change', val);
-      this.dispatch('ElFormItem', 'el.form.change');
+    defaultValue(val) {
+      // NOTE: should eventually move to jsx style picker + panel ?
+      if (this.picker) {
+        this.picker.defaultValue = val;
+      }
     }
   },
 
   computed: {
+    ranged() {
+      return this.type.indexOf('range') > -1;
+    },
+
     reference() {
-      return this.$refs.reference.$el;
+      const reference = this.$refs.reference;
+      return reference.$el || reference;
     },
 
     refInput() {
-      if (this.reference) return this.reference.querySelector('input');
-      return {};
+      if (this.reference) {
+        return [].slice.call(this.reference.querySelectorAll('input'));
+      }
+      return [];
     },
 
     valueIsEmpty() {
-      const val = this.currentValue;
+      const val = this.value;
       if (Array.isArray(val)) {
         for (let i = 0, len = val.length; i < len; i++) {
           if (val[i]) {
@@ -315,40 +334,59 @@ export default {
       return HAVE_TRIGGER_TYPES.indexOf(this.type) !== -1;
     },
 
-    displayValue: {
-      get() {
-        const value = this.currentValue;
-        if (!value) return;
-        const formatter = (
-          TYPE_VALUE_RESOLVER_MAP[this.type] ||
-          TYPE_VALUE_RESOLVER_MAP['default']
-        ).formatter;
-        const format = DEFAULT_FORMATS[this.type];
-
-        return formatter(value, this.format || format, this.rangeSeparator);
-      },
-
-      set(value) {
-        if (this.getAllInput) {
-          this.$emit('change', value);
-        }
-        if (value) {
-          const type = this.type;
-          const parser = (
-            TYPE_VALUE_RESOLVER_MAP[type] ||
-            TYPE_VALUE_RESOLVER_MAP['default']
-          ).parser;
-          const parsedValue = parser(value, this.format || DEFAULT_FORMATS[type], this.rangeSeparator);
-
-          if (parsedValue && this.picker) {
-            this.picker.value = parsedValue;
-          }
-        } else {
-          this.$emit('input', value);
-          this.picker.value = value;
-        }
-        this.$forceUpdate();
+    displayValue() {
+      const formattedValue = formatAsFormatAndType(this.parsedValue, this.format, this.type, this.rangeSeparator);
+      if (Array.isArray(this.userInput)) {
+        return [
+          this.userInput[0] || (formattedValue && formattedValue[0]) || '',
+          this.userInput[1] || (formattedValue && formattedValue[1]) || ''
+        ];
+      } else {
+        return this.userInput !== null ? this.userInput : formattedValue || '';
       }
+    },
+
+    parsedValue() {
+      const isParsed = isDateObject(this.value) || (Array.isArray(this.value) && this.value.every(isDateObject));
+      if (this.valueFormat && !isParsed) {
+        return parseAsFormatAndType(this.value, this.valueFormat, this.type, this.rangeSeparator) || this.value;
+      } else {
+        return this.value;
+      }
+    },
+
+    _elFormItemSize() {
+      return (this.elFormItem || {}).elFormItemSize;
+    },
+
+    pickerSize() {
+      return this.size || this._elFormItemSize || (this.$ELEMENT || {}).size;
+    },
+
+    pickerDisabled() {
+      return this.disabled || (this.elForm || {}).disabled;
+    },
+
+    firstInputId() {
+      const obj = {};
+      let id;
+      if (this.ranged) {
+        id = this.id && this.id[0];
+      } else {
+        id = this.id;
+      }
+      if (id) obj.id = id;
+      return obj;
+    },
+
+    secondInputId() {
+      const obj = {};
+      let id;
+      if (this.ranged) {
+        id = this.id && this.id[1];
+      }
+      if (id) obj.id = id;
+      return obj;
     }
   },
 
@@ -359,42 +397,142 @@ export default {
       gpuAcceleration: false
     };
     this.placement = PLACEMENT_MAP[this.align] || PLACEMENT_MAP.left;
+
+    this.$on('fieldReset', this.handleFieldReset);
   },
 
   methods: {
-    handleMouseEnterIcon() {
-      if (this.readonly || this.disabled) return;
+    focus() {
+      if (!this.ranged) {
+        this.$refs.reference.focus();
+      } else {
+        this.handleFocus();
+      }
+    },
+
+    blur() {
+      this.refInput.forEach(input => input.blur());
+    },
+
+    // {parse, formatTo} Value deals maps component value with internal Date
+    parseValue(value) {
+      const isParsed = isDateObject(value) || (Array.isArray(value) && value.every(isDateObject));
+      if (this.valueFormat && !isParsed) {
+        return parseAsFormatAndType(value, this.valueFormat, this.type, this.rangeSeparator) || value;
+      } else {
+        return value;
+      }
+    },
+
+    formatToValue(date) {
+      const isFormattable = isDateObject(date) || (Array.isArray(date) && date.every(isDateObject));
+      if (this.valueFormat && isFormattable) {
+        return formatAsFormatAndType(date, this.valueFormat, this.type, this.rangeSeparator);
+      } else {
+        return date;
+      }
+    },
+
+    // {parse, formatTo} String deals with user input
+    parseString(value) {
+      const type = Array.isArray(value) ? this.type : this.type.replace('range', '');
+      return parseAsFormatAndType(value, this.format, type);
+    },
+
+    formatToString(value) {
+      const type = Array.isArray(value) ? this.type : this.type.replace('range', '');
+      return formatAsFormatAndType(value, this.format, type);
+    },
+
+    handleMouseEnter() {
+      if (this.readonly || this.pickerDisabled) return;
       if (!this.valueIsEmpty && this.clearable) {
         this.showClose = true;
       }
     },
 
-    handleClickIcon() {
-      if (this.readonly || this.disabled) return;
+    handleChange() {
+      if (this.userInput) {
+        const value = this.parseString(this.displayValue);
+        if (value) {
+          this.picker.value = value;
+          if (this.isValidValue(value)) {
+            this.emitInput(value);
+            this.userInput = null;
+          }
+        }
+      }
+      if (this.userInput === '') {
+        this.emitInput(null);
+        this.emitChange(null);
+        this.userInput = null;
+      }
+    },
+
+    handleStartInput(event) {
+      if (this.userInput) {
+        this.userInput = [event.target.value, this.userInput[1]];
+      } else {
+        this.userInput = [event.target.value, null];
+      }
+    },
+
+    handleEndInput(event) {
+      if (this.userInput) {
+        this.userInput = [this.userInput[0], event.target.value];
+      } else {
+        this.userInput = [null, event.target.value];
+      }
+    },
+
+    handleStartChange(event) {
+      const value = this.parseString(this.userInput && this.userInput[0]);
+      if (value) {
+        this.userInput = [this.formatToString(value), this.displayValue[1]];
+        const newValue = [value, this.picker.value && this.picker.value[1]];
+        this.picker.value = newValue;
+        if (this.isValidValue(newValue)) {
+          this.emitInput(newValue);
+          this.userInput = null;
+        }
+      }
+    },
+
+    handleEndChange(event) {
+      const value = this.parseString(this.userInput && this.userInput[1]);
+      if (value) {
+        this.userInput = [this.displayValue[0], this.formatToString(value)];
+        const newValue = [this.picker.value && this.picker.value[0], value];
+        this.picker.value = newValue;
+        if (this.isValidValue(newValue)) {
+          this.emitInput(newValue);
+          this.userInput = null;
+        }
+      }
+    },
+
+    handleClickIcon(event) {
+      if (this.readonly || this.pickerDisabled) return;
       if (this.showClose) {
-        this.currentValue = this.$options.defaultValue || '';
+        this.valueOnOpen = this.value;
+        event.stopPropagation();
+        this.emitInput(null);
+        this.emitChange(null);
         this.showClose = false;
+        if (this.picker && typeof this.picker.handleClear === 'function') {
+          this.picker.handleClear();
+        }
       } else {
         this.pickerVisible = !this.pickerVisible;
       }
     },
 
-    dateChanged(dateA, dateB) {
-      if (Array.isArray(dateA)) {
-        let len = dateA.length;
-        if (!dateB) return true;
-        while (len--) {
-          if (!equalDate(dateA[len], dateB[len])) return true;
-        }
-      } else {
-        if (!equalDate(dateA, dateB)) return true;
-      }
-
-      return false;
-    },
-
     handleClose() {
       this.pickerVisible = false;
+    },
+
+    handleFieldReset(initialValue) {
+      this.userInput = initialValue;
     },
 
     handleFocus() {
@@ -406,17 +544,66 @@ export default {
       this.$emit('focus', this);
     },
 
-    handleBlur() {
-      this.$emit('blur', this);
-    },
-
     handleKeydown(event) {
       const keyCode = event.keyCode;
 
-      // tab
-      if (keyCode === 9) {
+      // ESC
+      if (keyCode === 27) {
         this.pickerVisible = false;
+        event.stopPropagation();
+        return;
       }
+
+      // Tab
+      if (keyCode === 9) {
+        if (!this.ranged) {
+          this.handleChange();
+          this.pickerVisible = this.picker.visible = false;
+          this.blur();
+          event.stopPropagation();
+        } else {
+          // user may change focus between two input
+          setTimeout(() => {
+            if (this.refInput.indexOf(document.activeElement) === -1) {
+              this.pickerVisible = false;
+              this.blur();
+              event.stopPropagation();
+            }
+          }, 0);
+        }
+        return;
+      }
+
+      // Enter
+      if (keyCode === 13) {
+        if (this.userInput === '' || this.isValidValue(this.parseString(this.displayValue))) {
+          this.handleChange();
+          this.pickerVisible = this.picker.visible = false;
+          this.blur();
+        }
+        event.stopPropagation();
+        return;
+      }
+
+      // if user is typing, do not let picker handle key input
+      if (this.userInput) {
+        event.stopPropagation();
+        return;
+      }
+
+      // delegate other keys to panel
+      if (this.picker && this.picker.handleKeydown) {
+        this.picker.handleKeydown(event);
+      }
+    },
+
+    handleRangeClick() {
+      const type = this.type;
+
+      if (HAVE_TRIGGER_TYPES.indexOf(type) !== -1 && !this.pickerVisible) {
+        this.pickerVisible = true;
+      }
+      this.$emit('focus', this);
     },
 
     hidePicker() {
@@ -436,29 +623,28 @@ export default {
 
       this.updatePopper();
 
-      if (this.currentValue instanceof Date) {
-        this.picker.date = new Date(this.currentValue.getTime());
-      } else {
-        this.picker.value = this.currentValue;
-      }
+      this.picker.value = this.parsedValue;
       this.picker.resetView && this.picker.resetView();
 
       this.$nextTick(() => {
-        this.picker.ajustScrollTop && this.picker.ajustScrollTop();
+        this.picker.adjustSpinners && this.picker.adjustSpinners();
       });
     },
 
     mountPicker() {
-      this.panel.defaultValue = this.defaultValue || this.currentValue;
       this.picker = new Vue(this.panel).$mount();
+      this.picker.defaultValue = this.defaultValue;
+      this.picker.defaultTime = this.defaultTime;
       this.picker.popperClass = this.popperClass;
       this.popperElm = this.picker.$el;
       this.picker.width = this.reference.getBoundingClientRect().width;
       this.picker.showTime = this.type === 'datetime' || this.type === 'datetimerange';
       this.picker.selectionMode = this.selectionMode;
-      if (this.format) {
-        this.picker.format = this.format;
-      }
+      this.picker.unlinkPanels = this.unlinkPanels;
+      this.picker.arrowControl = this.arrowControl || this.timeArrowControl || false;
+      this.$watch('format', (format) => {
+        this.picker.format = format;
+      });
 
       const updateOptions = () => {
         const options = this.pickerOptions;
@@ -479,6 +665,11 @@ export default {
             this.picker[option] = options[option];
           }
         }
+
+        // main format must prevail over undocumented pickerOptions.format
+        if (this.format) {
+          this.picker.format = this.format;
+        }
       };
       updateOptions();
       this.unwatchPickerOptions = this.$watch('pickerOptions', () => updateOptions(), { deep: true });
@@ -488,17 +679,21 @@ export default {
 
       this.picker.$on('dodestroy', this.doDestroy);
       this.picker.$on('pick', (date = '', visible = false) => {
-        // do not emit if values are same
-        if (!valueEquals(this.value, date)) {
-          this.$emit('input', date);
-        }
+        this.userInput = null;
         this.pickerVisible = this.picker.visible = visible;
+        this.emitInput(date);
         this.picker.resetView && this.picker.resetView();
       });
 
-      this.picker.$on('select-range', (start, end) => {
-        this.refInput.setSelectionRange(start, end);
-        this.refInput.focus();
+      this.picker.$on('select-range', (start, end, pos) => {
+        if (this.refInput.length === 0) return;
+        if (!pos || pos === 'min') {
+          this.refInput[0].setSelectionRange(start, end);
+          this.refInput[0].focus();
+        } else if (pos === 'max') {
+          this.refInput[1].setSelectionRange(start, end);
+          this.refInput[1].focus();
+        }
       });
     },
 
@@ -510,6 +705,33 @@ export default {
           this.unwatchPickerOptions();
         }
         this.picker.$el.parentNode.removeChild(this.picker.$el);
+      }
+    },
+
+    emitChange(val) {
+      // determine user real change only
+      if (val !== this.valueOnOpen) {
+        this.$emit('change', val);
+        this.dispatch('ElFormItem', 'el.form.change', val);
+        this.valueOnOpen = val;
+      }
+    },
+
+    emitInput(val) {
+      const formatted = this.formatToValue(val);
+      if (!valueEquals(this.value, formatted)) {
+        this.$emit('input', formatted);
+      }
+    },
+
+    isValidValue(value) {
+      if (!this.picker) {
+        this.mountPicker();
+      }
+      if (this.picker.isValidValue) {
+        return value && this.picker.isValidValue(value);
+      } else {
+        return true;
       }
     }
   }

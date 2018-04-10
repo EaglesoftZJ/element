@@ -16,10 +16,14 @@ export default {
       startTime: 'Startzeit',
       endDate: 'Enddatum',
       endTime: 'Endzeit',
+      prevYear: 'Letztes Jahr',
+      nextYear: 'Nächtes Jahr',
+      prevMonth: 'Letzter Monat',
+      nextMonth: 'Nächster Monat',
       day: 'Tag',
       week: 'Woche',
       month: 'Monat',
-      year: 'Jahr',
+      year: '',
       month1: 'Januar',
       month2: 'Februar',
       month3: 'März',
@@ -79,6 +83,7 @@ export default {
       error: 'Fehler'
     },
     upload: {
+      deleteTip: 'Klicke löschen zum entfernen',
       delete: 'Löschen',
       preview: 'Vorschau',
       continue: 'Fortsetzen'

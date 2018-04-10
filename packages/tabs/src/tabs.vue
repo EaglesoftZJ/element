@@ -15,8 +15,21 @@
       addable: Boolean,
       value: {},
       editable: Boolean,
+<<<<<<< HEAD
       contentStyle: String,
       headerStyle: String
+=======
+      tabPosition: {
+        type: String,
+        default: 'top'
+      }
+    },
+
+    provide() {
+      return {
+        rootTabs: this
+      };
+>>>>>>> dev
     },
 
     data() {
@@ -64,7 +77,9 @@
         this.$emit('input', value);
       },
       addPanes(item) {
-        const index = this.$slots.default.indexOf(item.$vnode);
+        const index = this.$slots.default.filter(item => {
+          return item.elm.nodeType === 1 && /\bel-tab-pane\b/.test(item.elm.className);
+        }).indexOf(item.$vnode);
         this.panes.splice(index, 0, item);
       },
       removePanes(item) {
@@ -85,19 +100,25 @@
         panes,
         editable,
         addable,
+<<<<<<< HEAD
         contentStyle,
         headerStyle
+=======
+        tabPosition
+>>>>>>> dev
       } = this;
 
       const newButton = editable || addable
         ? (
-            <span
-              class="el-tabs__new-tab"
-              on-click={ handleTabAdd }
-            >
-                <i class="el-icon-plus"></i>
-            </span>
-          )
+          <span
+            class="el-tabs__new-tab"
+            on-click={ handleTabAdd }
+            tabindex="0"
+            on-keydown={ (ev) => { if (ev.keyCode === 13) { handleTabAdd(); }} }
+          >
+            <i class="el-icon-plus"></i>
+          </span>
+        )
         : null;
 
       const navData = {
@@ -111,13 +132,26 @@
         },
         ref: 'nav'
       };
+      const header = (
+        <div class={['el-tabs__header', `is-${tabPosition}`]}>
+          {newButton}
+          <tab-nav { ...navData }></tab-nav>
+        </div>
+      );
+      const panels = (
+        <div class="el-tabs__content">
+          {this.$slots.default}
+        </div>
+      );
 
       return (
         <div class={{
           'el-tabs': true,
           'el-tabs--card': type === 'card',
+          [`el-tabs--${tabPosition}`]: true,
           'el-tabs--border-card': type === 'border-card'
         }}>
+<<<<<<< HEAD
           <div class="el-tabs__header" style={headerStyle}>
             {newButton}
             <tab-nav { ...navData }></tab-nav>
@@ -125,6 +159,9 @@
           <div class="el-tabs__content" style={contentStyle}>
             {this.$slots.default}
           </div>
+=======
+          { tabPosition !== 'bottom' ? [header, panels] : [panels, header] }
+>>>>>>> dev
         </div>
       );
     },

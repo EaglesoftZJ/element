@@ -1,18 +1,29 @@
 <template>
   <div class="el-transfer-panel">
-    <p class="el-transfer-panel__header">{{ title }}</p>
+    <p class="el-transfer-panel__header">
+      <el-checkbox
+        v-model="allChecked"
+        @change="handleAllCheckedChange"
+        :indeterminate="isIndeterminate">
+        {{ title }}
+        <span>{{ checkedSummary }}</span>
+      </el-checkbox>
+    </p>
     
-    <div class="el-transfer-panel__body">
+    <div :class="['el-transfer-panel__body', hasFooter ? 'is-with-footer' : '']">
       <el-input
         class="el-transfer-panel__filter"
         v-model="query"
         size="small"
         :placeholder="placeholder"
-        :icon="inputIcon"
         @mouseenter.native="inputHover = true"
         @mouseleave.native="inputHover = false"
-        @click="clearQuery"
-        v-if="filterable"></el-input>
+        v-if="filterable">
+        <i slot="prefix"
+          :class="['el-input__icon', 'el-icon-' + inputIcon]"
+          @click="clearQuery"
+        ></i>
+      </el-input>
       <el-checkbox-group
         v-model="checked"
         v-show="drag || !hasNoMatch && data.length > 0"
@@ -56,12 +67,7 @@
         class="el-transfer-panel__empty"
         v-show="data.length === 0 && !hasNoMatch">{{ t('el.transfer.noData') }}</p>
     </div>
-    
-    <p class="el-transfer-panel__footer">
-      <el-checkbox
-        v-model="allChecked"
-        @change="handleAllCheckedChange"
-        :indeterminate="isIndeterminate">{{ checkedSummary }}</el-checkbox>
+    <p class="el-transfer-panel__footer" v-if="hasFooter">
       <slot></slot>
     </p>
   </div>
@@ -100,10 +106,13 @@
               return vm;
             }
           };
-          const parent = getParent(this);
-          return parent.renderContent
-            ? parent.renderContent(h, this.option)
-            : <span>{ this.option[parent.labelProp] || this.option[parent.keyProp] }</span>;
+          const panel = getParent(this);
+          const transfer = panel.$parent || panel;
+          return panel.renderContent
+            ? panel.renderContent(h, this.option)
+            : transfer.$scopedSlots.default
+              ? transfer.$scopedSlots.default({ option: this.option })
+              : <span>{ this.option[panel.labelProp] || this.option[panel.keyProp] }</span>;
         }
       }
     },
@@ -122,7 +131,7 @@
       placeholder: String,
       title: String,
       filterable: Boolean,
-      footerFormat: Object,
+      format: Object,
       filterMethod: Function,
       defaultChecked: Array,
       props: Object,
@@ -136,6 +145,7 @@
         allChecked: false,
         query: '',
         inputHover: false,
+<<<<<<< HEAD
         canDrag: true,
         msg: false,
         x1: 0,
@@ -152,13 +162,23 @@
           animation: 150,
           sort: this.draggableSort
         }
+=======
+        checkChangeByUser: true
+>>>>>>> dev
       };
     },
 
     watch: {
-      checked(val) {
+      checked(val, oldVal) {
         this.updateAllChecked();
-        this.$emit('checked-change', val);
+        if (this.checkChangeByUser) {
+          const movedKeys = val.concat(oldVal)
+            .filter(v => val.indexOf(v) === -1 || oldVal.indexOf(v) === -1);
+          this.$emit('checked-change', val, movedKeys);
+        } else {
+          this.$emit('checked-change', val);
+          this.checkChangeByUser = true;
+        }
       },
 
       data() {
@@ -169,6 +189,7 @@
             checked.push(item);
           }
         });
+        this.checkChangeByUser = false;
         this.checked = checked;
       },
 
@@ -194,6 +215,7 @@
               checked.push(item);
             }
           });
+          this.checkChangeByUser = false;
           this.checked = checked;
         }
       }
@@ -218,15 +240,13 @@
       checkedSummary() {
         const checkedLength = this.checked.length;
         const dataLength = this.data.length;
-        const { noChecked, hasChecked } = this.footerFormat;
+        const { noChecked, hasChecked } = this.format;
         if (noChecked && hasChecked) {
           return checkedLength > 0
             ? hasChecked.replace(/\${checked}/g, checkedLength).replace(/\${total}/g, dataLength)
             : noChecked.replace(/\${total}/g, dataLength);
         } else {
-          return checkedLength > 0
-            ? this.t('el.transfer.hasCheckedFormat', { total: dataLength, checked: checkedLength })
-            : this.t('el.transfer.noCheckedFormat', { total: dataLength });
+          return `${ checkedLength }/${ dataLength }`;
         }
       },
 
@@ -255,6 +275,10 @@
 
       disabledProp() {
         return this.props.disabled || 'disabled';
+      },
+
+      hasFooter() {
+        return !!this.$slots.default;
       }
     },
 
@@ -276,7 +300,7 @@
       },
 
       handleAllCheckedChange(value) {
-        this.checked = value.target.checked
+        this.checked = value
           ? this.checkableData.map(item => item[this.keyProp])
           : [];
       },
