@@ -3,32 +3,86 @@
     class="el-date-editor"
     :class="'el-date-editor--' + type"
     :readonly="!editable || readonly"
-    :disabled="disabled"
-    :size="size"
+    :disabled="pickerDisabled"
+    :size="pickerSize"
+    :name="name"
+    v-bind="firstInputId"
+    v-if="!ranged"
     v-clickoutside="handleClose"
     :placeholder="placeholder"
     @focus="handleFocus"
-    @blur="handleBlur"
     @keydown.native="handleKeydown"
     :value="displayValue"
-    @change.native="displayValue = $event.target.value"
+    @input="value => userInput = value"
+    @change="handleChange"
+    @mouseenter.native="handleMouseEnter"
+    @mouseleave.native="showClose = false"
     :validateEvent="false"
     ref="reference">
-    <i slot="icon"
+    <i slot="prefix"
+      class="el-input__icon"
+      :class="triggerClass"
+      @click="handleFocus">
+    </i>
+    <i slot="suffix"
       class="el-input__icon"
       @click="handleClickIcon"
-      :class="[showClose ? 'el-icon-close' : triggerClass]"
-      @mouseenter="handleMouseEnterIcon"
-      @mouseleave="showClose = false"
+      :class="[showClose ? '' + clearIcon : '']"
       v-if="haveTrigger">
     </i>
   </el-input>
+  <div
+    class="el-date-editor el-range-editor el-input__inner"
+    :class="[
+      'el-date-editor--' + type,
+      pickerSize ? `el-range-editor--${ pickerSize }` : '',
+      pickerDisabled ? 'is-disabled' : '',
+      pickerVisible ? 'is-active' : ''
+    ]"
+    @click="handleRangeClick"
+    @mouseenter="handleMouseEnter"
+    @mouseleave="showClose = false"
+    @keydown="handleKeydown"
+    ref="reference"
+    v-clickoutside="handleClose"
+    v-else>
+    <i :class="['el-input__icon', 'el-range__icon', triggerClass]"></i>
+    <input
+      :placeholder="startPlaceholder"
+      :value="displayValue && displayValue[0]"
+      :disabled="pickerDisabled"
+      v-bind="firstInputId"
+      :readonly="!editable || readonly"
+      :name="name && name[0]"
+      @input="handleStartInput"
+      @change="handleStartChange"
+      @focus="handleFocus"
+      class="el-range-input">
+    <span class="el-range-separator">{{ rangeSeparator }}</span>
+    <input
+      :placeholder="endPlaceholder"
+      :value="displayValue && displayValue[1]"
+      :disabled="pickerDisabled"
+      v-bind="secondInputId"
+      :readonly="!editable || readonly"
+      :name="name && name[1]"
+      @input="handleEndInput"
+      @change="handleEndChange"
+      @focus="handleFocus"
+      class="el-range-input">
+    <i
+      @click="handleClickIcon"
+      v-if="haveTrigger"
+      :class="[showClose ? '' + clearIcon : '']"
+      class="el-input__icon el-range__close-icon">
+    </i>
+  </div>
 </template>
 
 <script>
 import Vue from 'vue';
 import Clickoutside from 'element-ui/src/utils/clickoutside';
-import { formatDate, parseDate, getWeekNumber, equalDate, isDate } from './util';
+import { formatDate, parseDate, isDateObject, getWeekNumber } from './util';
 import Popper from 'element-ui/src/utils/vue-popper';
 import Emitter from 'element-ui/src/mixins/emitter';
 import ElInput from 'element-ui/packages/input';
@@ -182,6 +236,26 @@ const PLACEMENT_MAP = {
   right: 'bottom-end'
 };
 
+const parseAsFormatAndType = (value, customFormat, type, rangeSeparator = '-') => {
+  if (!value) return null;
+  const parser = (
+    TYPE_VALUE_RESOLVER_MAP[type] ||
+    TYPE_VALUE_RESOLVER_MAP['default']
+  ).parser;
+  const format = customFormat || DEFAULT_FORMATS[type];
+  return parser(value, format, rangeSeparator);
+};
+
+const formatAsFormatAndType = (value, customFormat, type) => {
+  if (!value) return null;
+  const formatter = (
+    TYPE_VALUE_RESOLVER_MAP[type] ||
+    TYPE_VALUE_RESOLVER_MAP['default']
+  ).formatter;
+  const format = customFormat || DEFAULT_FORMATS[type];
+  return formatter(value, format);
+};
+
 // only considers date-picker's value: Date or [Date, Date]
 const valueEquals = function(a, b) {
   const aIsArray = a instanceof Array;
@@ -196,18 +270,48 @@ const valueEquals = function(a, b) {
   return false;
 };
 
+const isString = function(val) {
+  return typeof val === 'string' || val instanceof String;
+};
+
+const validator = function(val) {
+  // either: String, Array of String, null / undefined
+  return (
+    val === null ||
+    val === undefined ||
+    isString(val) ||
+    (Array.isArray(val) && val.length === 2 && val.every(isString))
+  );
+};
+
 export default {
   mixins: [Emitter, NewPopper],
 
   props: {
     size: String,
     format: String,
+    valueFormat: String,
     readonly: Boolean,
     placeholder: String,
+    startPlaceholder: String,
+    endPlaceholder: String,
+    prefixIcon: String,
+    clearIcon: {
+      type: String,
+      default: 'el-icon-circle-close'
+    },
+    name: {
+      default: '',
+      validator
+    },
     disabled: Boolean,
     clearable: {
       type: Boolean,
       default: true
+    },
+    id: {
+      default: '',
+      validator
     },
     popperClass: String,
     editable: {
@@ -225,7 +329,8 @@ export default {
       default: '-'
     },
     pickerOptions: {},
-    unlinkPanels: Boolean
+    unlinkPanels: Boolean,
+    getAllInput: Boolean
   },
 
   components: { ElInput },

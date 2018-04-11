@@ -350,7 +350,7 @@
     },
     mounted() {
       console.log('buttons', this.buttons);
-      this.$sbar.use(this.$refs, this);
+      this.$sbar && this.$sbar.use(this.$refs, this);
     },
     destoryed() {
       if (this.drag) {

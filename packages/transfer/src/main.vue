@@ -149,6 +149,7 @@
         rightChecked: [],
         leftData: [],
         leftValue: [],
+        draggableName: '',
         allQuery: 0
       };
     },
@@ -174,6 +175,9 @@
           ? this.data.filter(item => this.value.indexOf(item[this.props.key]) > -1)
           : this.value.map(key => this.dataObj[key]);
         }     
+      },
+      hasButtonTexts() {
+        return this.buttonTexts.length === 2;
       }
     },
 

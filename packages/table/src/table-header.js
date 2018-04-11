@@ -524,9 +524,9 @@ export default {
 
       // console.log(column.order);
       // console.log(column.property);
-      this.$emitter.emit(this.store.states.id + '_grid_orderby', column);
+    //   this.$emitter.emit(this.store.states.id + '_grid_orderby', column);
 
-      // 以下代码于2017-6-2注释掉，为elementui原来的代码，在客户端层面实现排序      
+      // 以下代码于2017-6-2注释掉，为elementui原来的代码，在客户端层面实现排序
       // this.store.commit('changeSortCondition');
     }
   },
