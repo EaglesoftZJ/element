@@ -1,12 +1,5 @@
 <template>
   <transition name="msgbox-fade">
-<<<<<<< HEAD
-    <div class="el-message-box__wrapper" v-show="visible" @click.stop.self="handleWrapperClick">
-      <div class="el-message-box" :class="customClass" @click.stop>
-        <div class="el-message-box__header" v-if="title !== undefined">
-          <div class="el-message-box__title">{{ title || t('el.messagebox.title') }}</div>
-          <i class="el-message-box__close el-icon-close" @click="handleAction('cancel')" v-if="showClose"></i>
-=======
     <div
       class="el-message-box__wrapper"
       tabindex="-1"
@@ -33,7 +26,6 @@
             @keydown.enter="handleAction('cancel')">
             <i class="el-message-box__close el-icon-close"></i>
           </button>
->>>>>>> dev
         </div>
         <div class="el-message-box__content">
           <div
@@ -91,12 +83,9 @@
   import ElButton from 'element-ui/packages/button';
   import { addClass, removeClass } from 'element-ui/src/utils/dom';
   import { t } from 'element-ui/src/locale';
-<<<<<<< HEAD
-=======
   import Dialog from 'element-ui/src/utils/aria-dialog';
 
   let messageBox;
->>>>>>> dev
   let typeMap = {
     success: 'success',
     info: 'info',
@@ -163,10 +152,7 @@
         this.visible = false;
         this._closing = true;
         this.onClose && this.onClose();
-<<<<<<< HEAD
-=======
         messageBox.closeDialog(); // 解绑
->>>>>>> dev
         if (this.lockScroll) {
           setTimeout(() => {
             if (this.modal && this.bodyOverflow !== 'hidden') {
@@ -190,8 +176,6 @@
           this.handleAction('cancel');
         }
       },
-<<<<<<< HEAD
-=======
 
       handleInputEnter() {
         if (this.inputType !== 'textarea') {
@@ -199,7 +183,6 @@
         }
       },
 
->>>>>>> dev
       handleAction(action) {
         if (this.$type === 'prompt' && action === 'confirm' && !this.validate()) {
           return;
@@ -285,8 +268,6 @@
         }
       }
     },
-<<<<<<< HEAD
-=======
 
     mounted() {
       if (this.closeOnHashChange) {
@@ -303,7 +284,6 @@
       });
     },
 
->>>>>>> dev
     data() {
       return {
         uid: 1,
@@ -330,13 +310,9 @@
         cancelButtonClass: '',
         editorErrorMessage: null,
         callback: null,
-<<<<<<< HEAD
-        exist: true
-=======
         dangerouslyUseHTMLString: false,
         focusAfterClosed: null,
         isOnComposition: false
->>>>>>> dev
       };
     }
   };

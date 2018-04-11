@@ -91,10 +91,6 @@
 
       top: {
         type: String,
-<<<<<<< HEAD
-        default: '15%'
-      }
-=======
         default: '15vh'
       },
       beforeClose: Function,
@@ -108,7 +104,6 @@
       return {
         closed: false
       };
->>>>>>> dev
     },
 
     watch: {

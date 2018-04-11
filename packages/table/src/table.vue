@@ -685,7 +685,6 @@
         
         let style = {};
 
-      bodyHeight() {
         if (this.height) {
           return {
             height: this.layout.bodyHeight ? this.layout.bodyHeight + 'px' : ''
