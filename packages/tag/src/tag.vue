@@ -2,16 +2,12 @@
   <transition :name="disableTransitions ? '' : 'el-zoom-in-center'">
     <span
       class="el-tag"
-<<<<<<< HEAD
-      :class="[type ? 'el-tag--' + type : '', {'is-hit': hit}]"
-      :title="title"
-=======
       :class="[
         type ? 'el-tag--' + type : '',
         tagSize && `el-tag--${tagSize}`,
         {'is-hit': hit}
       ]"
->>>>>>> dev
+        :title="title"
       :style="{backgroundColor: color}">
       <slot></slot>
       <i class="el-tag__close el-icon-close"
@@ -28,15 +24,11 @@
       closable: Boolean,
       type: String,
       hit: Boolean,
-<<<<<<< HEAD
       closeTransition: Boolean,
       color: String,
-      title: String
-=======
+      title: String,
       disableTransitions: Boolean,
-      color: String,
       size: String
->>>>>>> dev
     },
     methods: {
       handleClose(event) {

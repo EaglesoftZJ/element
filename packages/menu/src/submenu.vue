@@ -1,33 +1,3 @@
-<<<<<<< HEAD
-<template>
-  <li
-    :class="{
-      'el-submenu': true,
-      'is-active': active,
-      'is-opened': opened
-    }"
-  >
-    <div class="el-submenu__title" ref="submenu-title" :style="paddingStyle">
-      <slot name="title"></slot>
-      <i :class="{
-        'el-submenu__icon-arrow': true,
-        'el-icon-chevron-down': rootMenu.mode === 'vertical',
-        'el-icon-caret-down': rootMenu.mode === 'horizontal'
-      }">
-      </i>
-    </div>
-    <template v-if="rootMenu.mode === 'horizontal'">
-      <transition name="el-zoom-in-top">
-        <ul class="el-menu" v-show="opened"><slot></slot></ul>
-      </transition>
-    </template>
-    <el-collapse-transition v-else>
-      <ul class="el-menu" v-show="opened"><slot></slot></ul>
-    </el-collapse-transition>
-  </li>
-</template>
-=======
->>>>>>> dev
 <script>
   import ElCollapseTransition from 'element-ui/src/transitions/collapse-transition';
   import menuMixin from './menu-mixin';

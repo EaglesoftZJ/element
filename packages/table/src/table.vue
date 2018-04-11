@@ -53,12 +53,12 @@
         <span class="el-table__empty-text"><slot name="empty">{{ emptyText || t('el.table.emptyText') }}</slot></span>
       </div>
     </div>
-    <div :style="{ }"  
+    <div
     :class="{ 
       'el-table__footer-wrapper': false,
       'el-table__footer-wrapper-egfooter': true
       }" v-if="showTotal" ref="footerWrapper"
-      :style="fitHeight ? fitHeightFooterStyle  : 'width:100%;box-sizing:border-box;' ;width: bodyWidth + 'px'">
+      :style="fitHeight ? fitHeightFooterStyle  : 'width:100%;box-sizing:border-box;'">
       <span class="EgGridView_BottomInfo_recordCount">
         共约&nbsp;<font color="red" id="GV_Show_recordCount">{{ recordTotal }}</font>&nbsp;条记录
       </span> 
@@ -67,7 +67,7 @@
         已加载&nbsp;<font color="red" id="GV_Show_loadedCount">{{ loadedRecordTotal }}</font>&nbsp;条
       </span>
       <span v-if="exportAction !== ''" class="EgGridView_BottomInfo_excel" title="导出excel。如果数据多，可能需要一段时间，请耐心等待！" 
-        @click="exportExcel">
+        @click="exportExcel"></span>
     </div>
     <div class="el-table__footer-wrapper" ref="footerWrapper" v-else-if="showSummary" v-show="data && data.length > 0">
       <table-footer
@@ -682,10 +682,7 @@
       },
 
       bodyHeight() {
-        
         let style = {};
-
-      bodyHeight() {
         if (this.height) {
           return {
             height: this.layout.bodyHeight ? this.layout.bodyHeight + 'px' : ''
@@ -696,8 +693,7 @@
               ? this.maxHeight - this.layout.headerHeight - this.layout.footerHeight
               : this.maxHeight - this.layout.footerHeight) + 'px'
           };
-        }
-       
+        }  
         return style;
       },
 
@@ -709,8 +705,6 @@
 
       fixedBodyHeight() {
         let style = {};
-
-
         if (this.height) {
           return {
             height: this.layout.fixedBodyHeight ? this.layout.fixedBodyHeight + 'px' : ''
@@ -957,8 +951,9 @@
     width: 17px;
     height: 17px;
     cursor: pointer;
-    background: url('../../../../images/excel.gif') no-repeat center center;
     position: absolute;
     margin-left: 10px;
 }
 </style>
+
+    // background: url('../../../../images/excel.gif') no-repeat center center;

@@ -35,11 +35,8 @@
   import ElTreeNode from './tree-node.vue';
   import {t} from 'element-ui/src/locale';
   import emitter from 'element-ui/src/mixins/emitter';
-<<<<<<< HEAD
-=======
   import { addClass, removeClass } from 'element-ui/src/utils/dom';
 
->>>>>>> dev
   export default {
     name: 'ElTree',
 

@@ -15,10 +15,8 @@
       addable: Boolean,
       value: {},
       editable: Boolean,
-<<<<<<< HEAD
       contentStyle: String,
-      headerStyle: String
-=======
+      headerStyle: String,
       tabPosition: {
         type: String,
         default: 'top'
@@ -29,7 +27,6 @@
       return {
         rootTabs: this
       };
->>>>>>> dev
     },
 
     data() {
@@ -100,12 +97,9 @@
         panes,
         editable,
         addable,
-<<<<<<< HEAD
         contentStyle,
-        headerStyle
-=======
+        headerStyle,
         tabPosition
->>>>>>> dev
       } = this;
 
       const newButton = editable || addable
@@ -133,13 +127,13 @@
         ref: 'nav'
       };
       const header = (
-        <div class={['el-tabs__header', `is-${tabPosition}`]}>
+        <div class={['el-tabs__header', `is-${tabPosition}`]} style={headerStyle}>
           {newButton}
           <tab-nav { ...navData }></tab-nav>
         </div>
       );
       const panels = (
-        <div class="el-tabs__content">
+        <div class="el-tabs__content" style={contentStyle}>
           {this.$slots.default}
         </div>
       );
@@ -151,17 +145,7 @@
           [`el-tabs--${tabPosition}`]: true,
           'el-tabs--border-card': type === 'border-card'
         }}>
-<<<<<<< HEAD
-          <div class="el-tabs__header" style={headerStyle}>
-            {newButton}
-            <tab-nav { ...navData }></tab-nav>
-          </div>
-          <div class="el-tabs__content" style={contentStyle}>
-            {this.$slots.default}
-          </div>
-=======
           { tabPosition !== 'bottom' ? [header, panels] : [panels, header] }
->>>>>>> dev
         </div>
       );
     },

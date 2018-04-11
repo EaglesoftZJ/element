@@ -8,11 +8,7 @@
       class="el-icon more btn-quickprev"
       :class="[quickprevIconClass, { disabled }]"
       v-if="showPrevMore"
-<<<<<<< HEAD
-      @mouseenter="quickprevIconClass = 'el-icon-angle-double-left'"
-=======
-      @mouseenter="onMouseenter('left')"
->>>>>>> dev
+      @mouseenter="onMouseenter('angle-double-left')"
       @mouseleave="quickprevIconClass = 'el-icon-more'">
     </li>
     <li
@@ -24,11 +20,7 @@
       class="el-icon more btn-quicknext"
       :class="[quicknextIconClass, { disabled }]"
       v-if="showNextMore"
-<<<<<<< HEAD
-      @mouseenter="quicknextIconClass = 'el-icon-angle-double-right'"
-=======
-      @mouseenter="onMouseenter('right')"
->>>>>>> dev
+      @mouseenter="onMouseenter('angle-double-right')"
       @mouseleave="quicknextIconClass = 'el-icon-more'">
     </li>
     <li

@@ -12,7 +12,6 @@
       :draggable-name="draggableName"
       draggable-sort
       @val-change="handleChange('left', arguments[0])"
-      ref="transfer1"
       :buttons="buttons && []"
       :functions="functions && []"
       >
@@ -48,7 +47,6 @@
       :drag="drag"
       :draggable-name="draggableName"
       draggable-sort
-      ref="transfer2"
       :buttons="buttons"
       :functions="functions"
       >
@@ -137,15 +135,12 @@
           };
         }
       },
-<<<<<<< HEAD
       buttons: Array,
-      functions: Array
-=======
+      functions: Array,
       targetOrder: {
         type: String,
         default: 'original'
       }
->>>>>>> dev
     },
 
     data() {
@@ -172,21 +167,13 @@
         }
       },
       targetData() {
-<<<<<<< HEAD
         if (this.sort) {
           return this.getArr(this.value);
         } else {
-          return this.data.filter(item => this.value.indexOf(item[this.props.key]) > -1);
-        }       
-=======
-        return this.targetOrder === 'original'
+           return this.targetOrder === 'original'
           ? this.data.filter(item => this.value.indexOf(item[this.props.key]) > -1)
           : this.value.map(key => this.dataObj[key]);
-      },
-
-      hasButtonTexts() {
-        return this.buttonTexts.length === 2;
->>>>>>> dev
+        }     
       }
     },
 
@@ -205,7 +192,6 @@
     },
 
     methods: {
-<<<<<<< HEAD
       getArr(val) {
         let arr = [];
         let index;
@@ -217,8 +203,6 @@
         });
         return arr;
       },
-      onSourceCheckedChange(val) {
-=======
       getMigratingConfig() {
         return {
           props: {
@@ -228,7 +212,6 @@
       },
 
       onSourceCheckedChange(val, movedKeys) {
->>>>>>> dev
         this.leftChecked = val;
         if (movedKeys === undefined) return;
         this.$emit('left-check-change', val, movedKeys);
@@ -255,13 +238,6 @@
 
       addToRight() {
         let currentValue = this.value.slice();
-<<<<<<< HEAD
-        this.leftChecked.forEach(item => {
-          if (this.value.indexOf(item) === -1) {
-            currentValue = currentValue.concat(item);
-            let index = this.leftValue.indexOf(item);
-            this.leftValue.splice(index, 1);
-=======
         const itemsToBeMoved = [];
         const key = this.props.key;
         this.data.forEach(item => {
@@ -271,7 +247,8 @@
             this.value.indexOf(itemKey) === -1
           ) {
             itemsToBeMoved.push(itemKey);
->>>>>>> dev
+            let index = this.leftValue.indexOf(item);
+            this.leftValue.splice(index, 1);
           }
         });
         currentValue = this.targetOrder === 'unshift'
@@ -280,7 +257,6 @@
         this.$emit('input', currentValue);
         this.$emit('change', currentValue, 'right', this.leftChecked);
       },
-<<<<<<< HEAD
       handleChange(type, val) {
         let arr = [];
         if (type === 'right') {
@@ -288,6 +264,13 @@
           this.$emit('input', arr);
         } else if (type === 'left') {
           this.leftData = val;
+        }
+      },
+      clearQuery(which) {
+        if (which === 'left') {
+          this.$refs.leftPanel.query = '';
+        } else if (which === 'right') {
+          this.$refs.rightPanel.query = '';
         }
       }
     },
@@ -297,15 +280,6 @@
       }
       if (this.sort) {
         this.leftData = this.data.filter(item => this.value.indexOf(item[this.props.key]) === -1);
-=======
-
-      clearQuery(which) {
-        if (which === 'left') {
-          this.$refs.leftPanel.query = '';
-        } else if (which === 'right') {
-          this.$refs.rightPanel.query = '';
-        }
->>>>>>> dev
       }
     }
   };

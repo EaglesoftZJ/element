@@ -119,7 +119,6 @@
           </el-option>
           <slot></slot>
         </el-scrollbar>
-<<<<<<< HEAD
         <el-scrollbar
           v-if="action"
           tag="ul"
@@ -140,14 +139,12 @@
           </el-option>
         </el-scrollbar>
         <p class="el-select-dropdown__empty" v-if="emptyText && (allowCreate && options.length === 0 || !allowCreate)">{{ emptyText }}</p>
-=======
         <p
           class="el-select-dropdown__empty"
           v-if="emptyText &&
             (!allowCreate || loading || (allowCreate && options.length === 0 ))">
           {{ emptyText }}
         </p>
->>>>>>> dev
       </el-select-menu>
     </transition>
   </div>
@@ -212,11 +209,7 @@
           !this.multiple &&
           this.value !== undefined &&
           this.value !== '';
-<<<<<<< HEAD
-        return criteria ? 'times-circle is-show-close' : (this.remote && this.filterable ? '' : 'chevron-up');
-=======
         return criteria ? 'circle-close is-show-close' : (this.remote && this.filterable ? '' : 'arrow-up');
->>>>>>> dev
       },
 
       debounce() {
@@ -304,7 +297,6 @@
         }
       },
       defaultFirstOption: Boolean,
-<<<<<<< HEAD
       action: {
                 type: String,
                 default: ''
@@ -316,7 +308,7 @@
       textField: {
           type: String,
           default: 'mc'
-=======
+      },
       reserveKeyword: Boolean,
       valueKey: {
         type: String,
@@ -326,7 +318,6 @@
       popperAppendToBody: {
         type: Boolean,
         default: true
->>>>>>> dev
       }
     },
 
@@ -454,7 +445,6 @@
     },
 
     methods: {
-<<<<<<< HEAD
       dataBind() {
         if (this.action !== '') {
             var options =
@@ -475,7 +465,6 @@
             this.$eg.ajax(null, options);
         }
       },
-=======
       handleComposition(event) {
         if (event.type === 'compositionend') {
           this.isOnComposition = false;
@@ -520,7 +509,6 @@
         }
       },
 
->>>>>>> dev
       handleIconHide() {
         let icon = this.$el.querySelector('.el-input__icon');
         if (icon) {
@@ -876,15 +864,12 @@
 
       this.$on('handleOptionClick', this.handleOptionSelect);
       this.$on('setSelected', this.setSelected);
-<<<<<<< HEAD
 
       // this.bindData=[{bh:'1',mc:"张三"},{bh:'2',mc:"李四"},{bh:'3',mc:"王五"}];
       this.dataBind();
-=======
       this.$on('fieldReset', () => {
         this.dispatch('ElFormItem', 'el.form.change');
       });
->>>>>>> dev
     },
 
     mounted() {

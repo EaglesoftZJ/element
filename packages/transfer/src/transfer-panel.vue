@@ -145,7 +145,6 @@
         allChecked: false,
         query: '',
         inputHover: false,
-<<<<<<< HEAD
         canDrag: true,
         msg: false,
         x1: 0,
@@ -161,10 +160,8 @@
           },
           animation: 150,
           sort: this.draggableSort
-        }
-=======
+        },
         checkChangeByUser: true
->>>>>>> dev
       };
     },
 

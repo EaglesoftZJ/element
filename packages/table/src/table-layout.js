@@ -47,12 +47,7 @@ class TableLayout {
     // console.log('scrollY1', this.table.$el, bodyWrapper);
     if (this.table.$el && bodyWrapper) {
       const body = bodyWrapper.querySelector('.el-table__body');
-<<<<<<< HEAD
-      console.log('scrollY', body.offsetHeight, bodyWrapper.offsetHeight);
-      this.scrollY = body.offsetHeight > bodyWrapper.offsetHeight;
-=======
       this.scrollY = body.offsetHeight > this.bodyHeight;
->>>>>>> dev
     }
   }
 
@@ -81,20 +76,11 @@ class TableLayout {
     return this.setHeight(value, 'max-height');
   }
 
-<<<<<<< HEAD
-  updateHeight() {
-    const height = this.tableHeight = this.table.$el.clientHeight;
-    const noData = !this.table.data || this.table.data.length === 0;
-    const { headerWrapper, footerWrapper } = this.table.$refs;
-
-    const footerHeight = this.footerHeight = footerWrapper ? footerWrapper.offsetHeight : 0;
-=======
   updateElsHeight() {
     if (!this.table.$ready) return Vue.nextTick(() => this.updateElsHeight());
     const { headerWrapper, appendWrapper, footerWrapper } = this.table.$refs;
     this.appendHeight = appendWrapper ? appendWrapper.offsetHeight : 0;
 
->>>>>>> dev
     if (this.showHeader && !headerWrapper) return;
     const headerHeight = this.headerHeight = !this.showHeader ? 0 : headerWrapper.offsetHeight;
     if (this.showHeader && headerWrapper.offsetWidth > 0 && (this.table.columns || []).length > 0 && headerHeight < 2) {

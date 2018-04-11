@@ -33,12 +33,8 @@
           'el-icon-check': ['picture-card', 'picture'].indexOf(listType) > -1
         }"></i>
       </label>
-<<<<<<< HEAD
-      <i class="el-icon-close" @click.stop="$emit('remove', file)"></i>
-=======
-      <i class="el-icon-close" v-if="!disabled" @click="$emit('remove', file)"></i>
+      <i class="el-icon-close" v-if="!disabled" @click.stop="$emit('remove', file)"></i>
       <i class="el-icon-close-tip" v-if="!disabled">{{ t('el.upload.deleteTip') }}</i> <!--因为close按钮只在li:focus的时候 display, li blur后就不存在了，所以键盘导航时永远无法 focus到 close按钮上-->
->>>>>>> dev
       <el-progress
         v-if="file.status === 'uploading'"
         :type="listType === 'picture-card' ? 'circle' : 'line'"
@@ -51,22 +47,14 @@
           v-if="handlePreview && listType === 'picture-card'"
           @click="handlePreview(file)"
         >
-<<<<<<< HEAD
           <i class="el-icon-search-plus"></i>
-=======
-          <i class="el-icon-zoom-in"></i>
->>>>>>> dev
         </span>
         <span
           v-if="!disabled"
           class="el-upload-list__item-delete"
           @click="$emit('remove', file)"
         >
-<<<<<<< HEAD
           <i class="el-icon-trash-o"></i>
-=======
-          <i class="el-icon-delete"></i>
->>>>>>> dev
         </span>
       </span>
     </li>

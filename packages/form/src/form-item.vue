@@ -1,12 +1,5 @@
 <template>
   <div class="el-form-item" :class="[{
-<<<<<<< HEAD
-    'is-error': validateState === 'error',
-    'is-validating': validateState === 'validating',
-    'is-required': isRequired || required,
-  }, labelPosition ? 'el-item-' + labelPosition : '']">
-    <label :for="prop" class="el-form-item__label" v-bind:style="labelStyle" v-if="label">
-=======
       'el-form-item--feedback': elForm && elForm.statusIcon,
       'is-error': validateState === 'error',
       'is-validating': validateState === 'validating',
@@ -16,7 +9,6 @@
     sizeClass ? 'el-form-item--' + sizeClass : ''
   ]">
     <label :for="labelFor" class="el-form-item__label" v-bind:style="labelStyle" v-if="label || $slots.label">
->>>>>>> dev
       <slot name="label">{{label + form.labelSuffix}}</slot>
     </label>
     <div class="el-form-item__content" v-bind:style="contentStyle">
@@ -71,25 +63,19 @@
       rules: [Object, Array],
       error: String,
       validateStatus: String,
-<<<<<<< HEAD
       labelPosition: String,
-=======
       for: String,
       inlineMessage: {
         type: [String, Boolean],
         default: ''
       },
->>>>>>> dev
       showMessage: {
         type: Boolean,
         default: true
       },
-<<<<<<< HEAD
       locateCenter: Boolean,
-      hasLine: Boolean
-=======
+      hasLine: Boolean,
       size: String
->>>>>>> dev
     },
     watch: {
       error: {
@@ -108,35 +94,20 @@
         return this.for || this.prop;
       },
       labelStyle() {
-<<<<<<< HEAD
-        var ret = {};
-        let labelPosition = this.labelPosition || this.form.labelPosition;
-        ret.borderColor = this.labelBorderColor;
-        if (labelPosition === 'top') return ret;
-        var labelWidth = this.labelWidth || this.form.labelWidth;
-=======
         const ret = {};
         if (this.form.labelPosition === 'top') return ret;
         const labelWidth = this.labelWidth || this.form.labelWidth;
->>>>>>> dev
         if (labelWidth) {
           ret.width = labelWidth;
         }
         return ret;
       },
       contentStyle() {
-<<<<<<< HEAD
-        var ret = {};
-        let labelPosition = this.labelPosition || this.form.labelPosition;
-        if (labelPosition === 'top' || this.form.inline) return ret;
-        var labelWidth = this.labelWidth || this.form.labelWidth;
-=======
         const ret = {};
         const label = this.label;
         if (this.form.labelPosition === 'top' || this.form.inline) return ret;
         if (!label && !this.labelWidth && this.isNested) return ret;
         const labelWidth = this.labelWidth || this.form.labelWidth;
->>>>>>> dev
         if (labelWidth) {
           ret.marginLeft = parseFloat(labelWidth) + (this.hasLine ? 10 : 0) + 'px';
         }
@@ -165,13 +136,7 @@
             path = path.replace(/:/, '.');
           }
 
-<<<<<<< HEAD
-//          console.log('fieldValue', model, path);
-
-          return getPropByPath(model, path).v;
-=======
           return getPropByPath(model, path, true).v;
->>>>>>> dev
         }
       },
       isRequired() {
@@ -232,12 +197,7 @@
 
         model[this.prop] = this.fieldValue;
 
-<<<<<<< HEAD
-        validator.validate(model, { firstFields: true }, (errors, fields) => {
-
-=======
         validator.validate(model, { firstFields: true }, (errors, invalidFields) => {
->>>>>>> dev
           this.validateState = !errors ? 'success' : 'error';
           this.validateMessage = errors ? errors[0].message : '';
 
