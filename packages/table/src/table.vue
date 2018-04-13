@@ -7,12 +7,14 @@
       'el-table--hidden': isHidden,
       'el-table--group': isGroup,
       'el-table--fluid-height': maxHeight,
+        'el-table--fit-height': fitHeight,
       'el-table--scrollable-x': layout.scrollX,
       'el-table--scrollable-y': layout.scrollY,
       'el-table--enable-row-hover': !store.states.isComplex,
       'el-table--enable-row-transition': (store.states.data || []).length !== 0 && (store.states.data || []).length < 100
     }, tableSize ? `el-table--${ tableSize }` : '']"
-    @mouseleave="handleMouseLeave($event)">
+    @mouseleave="handleMouseLeave($event)"
+    :style="fitHeight ? fitHeightStyle  : ''">
     <div class="hidden-columns" ref="hiddenColumns"><slot></slot></div>
     <div
       v-if="showHeader"
@@ -30,10 +32,11 @@
       </table-header>
     </div>
     <div
+        :id="id + '_content'"
       class="el-table__body-wrapper"
       ref="bodyWrapper"
       :class="[layout.scrollX ? `is-scrolling-${scrollPosition}` : 'is-scrolling-none']"
-      :style="[bodyHeight]">
+      :style="fitHeight ? fitHeightBodyStyle  : [bodyHeight]">
       <table-body
         :context="context"
         :store="store"
@@ -63,8 +66,24 @@
         <slot name="append"></slot>
       </div>
     </div>
+    <div 
+    :class="{ 
+      'el-table__footer-wrapper': false,
+      'el-table__footer-wrapper-egfooter': true
+      }" v-if="showTotal" ref="footerWrapper"
+      :style="fitHeight ? fitHeightFooterStyle  : 'width:100%;box-sizing:border-box;'">
+      <span class="EgGridView_BottomInfo_recordCount">
+        共约&nbsp;<font color="red" id="GV_Show_recordCount">{{ recordTotal }}</font>&nbsp;条记录
+      </span> 
+      ,
+      <span class="EgGridView_BottomInfo_loadedCount">
+        已加载&nbsp;<font color="red" id="GV_Show_loadedCount">{{ loadedRecordTotal }}</font>&nbsp;条
+      </span>
+      <span v-if="exportAction !== ''" class="EgGridView_BottomInfo_excel" title="导出excel。如果数据多，可能需要一段时间，请耐心等待！" 
+        @click="exportExcel"></span>
+    </div>
     <div
-      v-if="showSummary"
+      v-else-if="showSummary"
       v-show="data && data.length > 0"
       v-mousewheel="handleHeaderFooterMousewheel"
       class="el-table__footer-wrapper"
@@ -290,10 +309,7 @@
       callback: {
         type: Function
       },
-        fitHeight: {
-            type: Boolean,
-            default: false
-        },
+        fitHeight: Boolean,
     id: {
          default: new Date().getTime()
       },
@@ -305,7 +321,7 @@
       sortType: String,
       showTotal: {
         type: Boolean,
-        default: true
+        default: false
       }
       /* end */
 

@@ -3,8 +3,10 @@
 @import "./tag.css";
 @import "./common/var.css";
 
-@component-namespace el {
 
+
+
+@component-namespace el {
   @b table {
     position: relative;
     /* overflow: hidden; */

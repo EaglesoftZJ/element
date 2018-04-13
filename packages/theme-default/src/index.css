@@ -61,3 +61,7 @@
 @import "./cascader.css";
 @import "./color-picker.css";
 @import "./transfer.css";
+
+body {
+    background: red;
+}
