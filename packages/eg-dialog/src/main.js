@@ -81,7 +81,6 @@ const initInstance = () => {
 const showNextMsg = () => {
 
   initInstance();
-  
   instance.action = '';
 
   if (!instance.visible || instance.closeTimer) {
@@ -218,7 +217,7 @@ EgDialog.close = () => {
 EgDialog.closeAll = () => {
   console.log('instanceManager', instanceManager);
   for (var key in instanceManager) {
-     instanceManager[key].close();
+    instanceManager[key].close();
   }
   msgQueue = [];
   currentMsg = null;
