@@ -251,9 +251,10 @@
             this.value.indexOf(itemKey) === -1
           ) {
             itemsToBeMoved.push(itemKey);
-            let index = this.leftValue.indexOf(item);
+            let index = this.leftValue.indexOf(itemKey);
             this.leftValue.splice(index, 1);
           }
+
         });
         currentValue = this.targetOrder === 'unshift'
           ? itemsToBeMoved.concat(currentValue)

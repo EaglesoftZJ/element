@@ -83,6 +83,10 @@
     }
   }
 
+  @include m(fit-height) {
+      height: 100%!important;
+  }
+
   @include m(scrollable-x) {
     .el-table__body-wrapper {
       overflow-x: auto;
@@ -338,7 +342,7 @@
   @include e(fixed-right) {
     top: 0;
     left: auto;
-    right: 0;
+    right: 1px;
 
     .el-table__fixed-header-wrapper,
     .el-table__fixed-body-wrapper,
@@ -385,6 +389,15 @@
     td {
       border-top: $--table-border;
     }
+  }
+
+  @include e(footer-wrapper-egfooter) {
+    height: 37px;
+    border: 1px solid var(--table-border-color);
+    margin-left:-1px;
+    line-height:15px;
+    padding:10px;
+    border-right:0;
   }
 
   @include e((header, body, footer)) {

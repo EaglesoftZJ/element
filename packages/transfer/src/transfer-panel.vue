@@ -154,8 +154,8 @@
         parent: null,
         dragOption: {
           group: {
-            name: this.draggableName, 
-            pull: true, 
+            name: this.draggableName,
+            pull: true,
             put: true
           },
           animation: 150,

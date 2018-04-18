@@ -62,6 +62,9 @@
           region: ''
         },
         labelPosition: 'right',
+        labelPosition1: [],
+        labelPosition2: [],
+        labelPosition3: [],
         formLabelAlign: {
           name: '',
           region: '',
@@ -158,6 +161,12 @@
           value: '',
           key: Date.now()
         });
+      },
+      handleChange(arr) {
+        console.log('handleChange');
+        if (arr.length > 1) {
+            arr.splice(0, 1);
+        }  
       }
     }
   }
@@ -204,6 +213,19 @@
           margin-left: 0;
         }
       }
+    }
+    .check-position-form {
+        .el-checkbox-group {
+            display: inline-block;
+            width: auto;
+        }
+        .el-checkbox {
+            float: none;
+            width: auto;
+            &+.el-checkbox {
+                margin-left: 20px;
+            }
+        }
     }
     .demo-form-normal {
       width: 460px;
@@ -365,7 +387,7 @@ W3C 标准中有如下[规定](https://www.w3.org/MarkUp/html-spec/html-spec_8.h
 ```
 :::
 
-### 对齐方式
+### 对齐方式 <span style="color: red; font-size: 12px;">修改</span>
 
 根据具体目标和制约因素，选择最佳的标签对齐方式。
 
@@ -377,15 +399,30 @@ W3C 标准中有如下[规定](https://www.w3.org/MarkUp/html-spec/html-spec_8.h
   <el-radio-button label="top">顶部对齐</el-radio-button>
 </el-radio-group>
 <div style="margin: 20px;"></div>
-<el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
-  <el-form-item label="名称">
+<el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign" class="check-position-form">
+  <el-form-item label="名称" :label-position="labelPosition1[0]">
     <el-input v-model="formLabelAlign.name"></el-input>
+    <el-checkbox-group v-model="labelPosition1" @change="handleChange(labelPosition1)">
+        <el-checkbox label="left">左对齐</el-checkbox>
+        <el-checkbox label="right">右对齐</el-checkbox>
+        <el-checkbox label="top">顶部对齐</el-checkbox>
+    </el-checkbox-group>
   </el-form-item>
-  <el-form-item label="活动区域">
+  <el-form-item label="活动区域" :label-position="labelPosition2[0]">
     <el-input v-model="formLabelAlign.region"></el-input>
+    <el-checkbox-group v-model="labelPosition2" @change="handleChange(labelPosition2)">
+        <el-checkbox label="left">左对齐</el-checkbox>
+        <el-checkbox label="right">右对齐</el-checkbox>
+        <el-checkbox label="top">顶部对齐</el-checkbox>
+    </el-checkbox-group>
   </el-form-item>
-  <el-form-item label="活动形式">
+  <el-form-item label="活动形式" :label-position="labelPosition3[0]">
     <el-input v-model="formLabelAlign.type"></el-input>
+     <el-checkbox-group v-model="labelPosition3" @change="handleChange(labelPosition3)">
+        <el-checkbox label="left">左对齐</el-checkbox>
+        <el-checkbox label="right">右对齐</el-checkbox>
+        <el-checkbox label="top">顶部对齐</el-checkbox>
+    </el-checkbox-group>
   </el-form-item>
 </el-form>
 <script>
@@ -393,12 +430,23 @@ W3C 标准中有如下[规定](https://www.w3.org/MarkUp/html-spec/html-spec_8.h
     data() {
       return {
         labelPosition: 'right',
+        labelPosition1: [],
+        labelPosition2: [],
+        labelPosition3: [],
         formLabelAlign: {
           name: '',
           region: '',
           type: ''
         }
       };
+    },
+    methods: {
+        handleChange(arr) {
+            console.log('handleChange');
+            if (arr.length > 1) {
+                arr.splice(0, 1);
+            }  
+      }
     }
   }
 </script>
@@ -854,6 +902,7 @@ W3C 标准中有如下[规定](https://www.w3.org/MarkUp/html-spec/html-spec_8.h
 | prop    | 表单域 model 字段，在使用 validate、resetFields 方法的情况下，该属性是必填的 | string    | 传入 Form 组件的 `model` 中的字段 | — |
 | label | 标签文本 | string | — | — |
 | label-width | 表单域标签的的宽度，例如 '50px' | string |       —       | — |
+| label-position <span style="color: red; font-size: 12px;">新增</span> | 表单域标签的位置 | string | right/left/top | - |
 | required | 是否必填，如不设置，则会根据校验规则自动生成 | boolean | — | false |
 | rules    | 表单验证规则 | object | — | — |
 | error    | 表单域验证错误信息, 设置该值会使表单验证状态变为`error`，并显示该错误信息 | string | — | — |

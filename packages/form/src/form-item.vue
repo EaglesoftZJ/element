@@ -4,8 +4,9 @@
       'is-error': validateState === 'error',
       'is-validating': validateState === 'validating',
       'is-success': validateState === 'success',
-      'is-required': isRequired || required
+      'is-required': isRequired || required,
     },
+    labelPosition ? 'el-form-item--' + labelPosition : '',
     sizeClass ? 'el-form-item--' + sizeClass : ''
   ]">
     <label :for="labelFor" class="el-form-item__label" v-bind:style="labelStyle" v-if="label || $slots.label">
@@ -95,7 +96,8 @@
       },
       labelStyle() {
         const ret = {};
-        if (this.form.labelPosition === 'top') return ret;
+        let labelPosition = this.labelPosition || this.form.labelPosition;
+        if (labelPosition === 'top') return ret;
         const labelWidth = this.labelWidth || this.form.labelWidth;
         if (labelWidth) {
           ret.width = labelWidth;
@@ -105,7 +107,8 @@
       contentStyle() {
         const ret = {};
         const label = this.label;
-        if (this.form.labelPosition === 'top' || this.form.inline) return ret;
+        let labelPosition = this.labelPosition || this.form.labelPosition;  
+        if (labelPosition === 'top' || this.form.inline) return ret;
         if (!label && !this.labelWidth && this.isNested) return ret;
         const labelWidth = this.labelWidth || this.form.labelWidth;
         if (labelWidth) {

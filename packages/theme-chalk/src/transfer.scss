@@ -70,6 +70,35 @@
   box-sizing: border-box;
   position: relative;
 
+  // start
+  @include e(outer) {
+    position: relative;
+  }
+
+  .btn-list {
+    position: absolute;
+    top: 8px;
+    right: 15px;
+    z-index: 1;
+    display: flex;
+    flex-direction: row;
+  }
+  .btn-item {
+    width: 16px;
+    height: 16px;
+    padding: 0 1px;
+    text-align: center;
+    line-height: 16px;
+    cursor: pointer;
+    &:hover {
+      color: #409EFF;
+    }
+    &__select {
+      color: #409EFF;
+    }
+  }
+  // end
+
   @include e(body) {
     height: $--transfer-panel-body-height;
 
@@ -83,7 +112,8 @@
     padding: 6px 0;
     list-style: none;
     height: $--transfer-panel-body-height;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
     box-sizing: border-box;
 
     @include when(filterable) {
@@ -161,6 +191,7 @@
     border-bottom: 1px solid $--transfer-border-color;
     box-sizing: border-box;
     color: $--color-black;
+    user-select: none;
 
     .el-checkbox {
       display: block;

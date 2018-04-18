@@ -255,7 +255,18 @@
           zip: 200333
         }],
         currentRow: null,
-        multipleSelection: []
+        multipleSelection: [],
+        query_data: {
+           cpxh: "",
+           dwbh: "1018",
+           location: "http://127.0.0.1:8086/clyy/list",
+           orderBy: "dwbh,bh",
+           pageNum: 0,
+           pageSize:13,
+           sortType:"asc,asc",
+           tj:"大于等于",
+           zws:""
+        }
       };
     },
 
@@ -2120,13 +2131,77 @@
 ```
 :::
 
+
+
+
+
+
+
+### 绑定远程数据
+Table展示远程数据的时候可以使用
+::: demo 通过`action`来指定远程url,`query-data`传递请求参数，`order-by`指定排序字段，`sort-type`指定对应排序字段的排序方式，`primary-key`指定数据的唯一标识，`callback`来指定接口请求成功后的回调函数
+```html
+<template>
+<div style="height: 500px">
+<el-table 
+    ref="table" 
+    :fit-height="true" 
+    primary-key="bh" 
+    order-by="dwbh,bh"
+    sort-type="asc,asc" 
+    action="http://127.0.0.1:8000/rest/JcHysglManage/select"
+    :query-data="query_data">
+    <el-table-column type="index" label="序号" align="center" width="65"></el-table-column>
+    <el-table-column prop="hysmc" label="会议室名称" align="center" width="210"></el-table-column>
+    <el-table-column prop="sbqk" label="设备情况" align="center"  width="210"></el-table-column>
+    <el-table-column prop="krnrs" label="可容纳人数" align="center" ></el-table-column>
+    <el-table-column :sortable="false" fixed="right" label="操作" align="center" width="210">
+        <template scope="scope">
+            <el-button :size="$config.size" @click.stop="hyslcbd(scope.row)" type="text" size="small">
+                {{ scope.row.lcbdbh ? '更新绑定' : '流程绑定'}}
+            </el-button>
+            <el-button :size="$config.size" @click.stop="hysqedit(scope.row)" type="text" size="small" v-if="scope.row.lcbdbh">
+                会议预定
+            </el-button>
+        </template>
+    </el-table-column>
+</el-table>
+</div>
+</template>
+<script>
+export default {
+    data() {
+        return {
+            query_data: {
+                cpxh: "",
+                dwbh: "1018",
+                location: "http://127.0.0.1:8086/clyy/list",
+                orderBy: "dwbh,bh",
+                pageNum: 0,
+                pageSize:13,
+                sortType:"asc,asc",
+                tj:"大于等于",
+                zws:""
+            }
+        }
+    },
+    methods: {
+        callback(res) {
+            console.log(res);
+        }
+    }
+};
+</script>
+```
+:::
+
 ### Table Attributes
 | 参数      | 说明          | 类型      | 可选值                           | 默认值  |
 |---------- |-------------- |---------- |--------------------------------  |-------- |
 | data | 显示的数据 | array | — | — |
 | height | Table 的高度，默认为自动高度。如果 height 为 number 类型，单位 px；如果 height 为 string 类型，则这个高度会设置为 Table 的 style.height 的值，Table 的高度会受控于外部样式。  | string/number | — | — |
 | max-height | Table 的最大高度 | string/number | — | — |
-| fit-height | Table自适应高度 | Boolean | - | false |
+| fit-height <span style="color: red; font-size: 12px;">新增</span> | Table自适应高度 | Boolean | - | false |
 | stripe | 是否为斑马纹 table | boolean | — | false |
 | border | 是否带有纵向边框 | boolean | — | false |
 | size | Table 的尺寸 | string | medium / small / mini | — |
@@ -2153,6 +2228,16 @@
 | summary-method | 自定义的合计计算方法 | Function({ columns, data }) | — | — |
 | span-method | 合并行或列的计算方法 | Function({ row, column, rowIndex, columnIndex }) | — | — |
 | select-on-indeterminate | 在多选表格中，当仅有部分行被选中时，点击表头的多选框时的行为。若为 true，则选中所有行；若为 false，则取消选择所有行 | Boolean | — | true |
+| action | 绑定远程数据的url <span style="color: red; font-size: 12px;">新增</span> | String | - | - |
+| jsontype | 接口data参数的数据类型 <span style="color: red; font-size: 12px;">新增</span> | Boolean | true/false(json对象/json字符串) | false |
+| query-data | 请求的参数，远程绑定数据时使用 <span style="color: red; font-size: 12px;">新增</span> | Object | - | - |
+| order-by | 排序字段(a, b, c)，远程绑定数据时使用 <span style="color: red; font-size: 12px;">新增</span> | String | - | - |
+| sort-by | 排序字段的排序方式(asc, desc, desc)，远程绑定数据时使用 <span style="color: red; font-size: 12px;">新增</span> | String | asc/desc | - |
+| primary-key | 指定数据的唯一标识，远程绑定数据时使用 <span style="color: red; font-size: 12px;">新增</span> | String | - | - |
+| callback | 指定接口的回调函数，远程绑定数据时使用 <span style="color: red; font-size: 12px;">新增</span> | Function | - | - |
+| showTotal | 是否在底部显示数据总条数和当前加载条数，远程绑定数据时使用 <span style="color: red; font-size: 12px;">新增</span> | Boolean | true/false | 指定了acion为true |
+| exportAction | 导出excel的url <span style="color: red; font-size: 12px;">新增</span> | String | - | - |
+
 
 ### Table Events
 | 事件名 | 说明 | 参数 |
@@ -2185,6 +2270,8 @@
 | clearSort | 用于清空排序条件，数据会恢复成未排序的状态 | — |
 | clearFilter | 用于清空过滤条件，数据会恢复成未过滤的状态 | — |
 | doLayout | 对 Table 进行重新布局。当 Table 或其祖先元素由隐藏切换为显示时，可能需要调用此方法 | — |
+| resetGrid <span style="color: red; font-size: 12px;">新增</span> | 整个表格数据刷新，远程绑定数据时使用 | - |
+| refreshGrid <span style="color: red; font-size: 12px;">新增</span> | 增删改后局部刷新表格数据，远程绑定数据时使用 | {bh, statusCode} |
 
 ### Table Slot
 | name | 说明 |

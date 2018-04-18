@@ -107,11 +107,11 @@ const getDefaultColumn = function(type, options) {
   return column;
 };
 
-const DEFAULT_RENDER_CELL = function(h, { row, column }) {
+const DEFAULT_RENDER_CELL = function(h, { row, column, $index }) {
   const property = column.property;
   const value = property && getPropByPath(row, property).v;
   if (column && column.formatter) {
-    return column.formatter(row, column, value);
+    return column.formatter(row, column, value, $index);
   }
   return value;
 };
@@ -154,7 +154,7 @@ export default {
     renderHeader: Function,
     sortable: {
       type: [String, Boolean],
-      default: true
+      default: false
     },
     sortMethod: Function,
     sortBy: [String, Function, Array],

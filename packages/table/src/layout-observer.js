@@ -21,6 +21,7 @@ export default {
   },
 
   mounted() {
+      console.log('mounted', this.$el);
     this.onColumnsChange(this.tableLayout);
     this.onScrollableChange(this.tableLayout);
   },
@@ -35,6 +36,7 @@ export default {
   methods: {
     onColumnsChange() {
       const cols = this.$el.querySelectorAll('colgroup > col');
+      console.log('onColumnsChange', this.$el, cols);
       if (!cols.length) return;
       const flattenColumns = this.tableLayout.getFlattenColumns();
       const columnsMap = {};

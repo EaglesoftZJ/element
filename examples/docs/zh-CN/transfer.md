@@ -45,15 +45,43 @@
         }
         return data;
       };
+      const generateData1 = _ => {
+        const data = [];
+        for (let i = 1; i <= 5; i++) {
+          data.push({
+            key: i,
+            label: `备选项 ${ i }`
+          });
+        }
+        return data;
+      }
+      const generateData4 = _ => {
+        const data = [];
+        for (let i = 1; i <= 5; i++) {
+          data.push({
+            key: i,
+            label: `拖拽 ${ i }`
+          });
+        }
+        return data;
+      }
       return {
         data: generateData(),
         data2: generateData2(),
         data3: generateData3(),
+        data_px: generateData1(),
+        data_tz: generateData4(),
+        data_a:  generateData1(),
         value1: [1, 4],
         value2: [],
         value3: [1],
         value4: [1],
         value5: [],
+        value_px: [1, 2],
+        value_tz: [1, 2],
+        value_a: [1, 2],
+        buttons: [],
+        functions: [],
         filterMethod(query, item) {
           return item.pinyin.indexOf(query) > -1;
         },
@@ -97,6 +125,66 @@
       return {
         data: generateData(),
         value1: [1, 4]
+      };
+    }
+  };
+</script>
+```
+:::
+
+### 左侧框根据操作顺序排序 <span style="color: red; font-size: 12px;">新增</span>
+:::demo 通过`sort`属性设置
+```html
+<template>
+  <el-transfer v-model="value_px" :data="data_px" sort></el-transfer>
+</template>
+
+<script>
+  export default {
+    data() {
+      const generateData1 = _ => {
+        const data = [];
+        for (let i = 1; i <= 5; i++) {
+          data.push({
+            key: i,
+            label: `备选项 ${ i }`
+          });
+        }
+        return data;
+      }
+      return {
+        data_px: generateData1(),
+        value_px: [1, 2]
+      };
+    }
+  };
+</script>
+```
+:::
+
+### 拖拽 <span style="color: red; font-size: 12px;">新增</span>
+:::demo 通过`drag`属性设置
+```html
+<template>
+  <el-transfer v-model="value_tz" :data="data_tz" sort drag></el-transfer>
+</template>
+
+<script>
+  export default {
+    data() {
+      const generateData4 = _ => {
+        const data = [];
+        for (let i = 1; i <= 5; i++) {
+          data.push({
+            key: i,
+            label: `拖拽 ${ i }`
+          });
+        }
+        return data;
+      }
+      return {
+        data_tz: generateData4(),
+        value_tz: [1, 2]
       };
     }
   };
@@ -296,6 +384,8 @@
 | props | 数据源的字段别名 | object{key, label, disabled} | — | — |
 | left-default-checked | 初始状态下左侧列表的已勾选项的 key 数组 | array | — | [ ] |
 | right-default-checked | 初始状态下右侧列表的已勾选项的 key 数组 | array | — | [ ] |
+| sort | 穿梭框左侧是否也根据操作顺序排序 <span style="color: red; font-size: 12px;">新增</span>| boolean | true/false | false |
+| drag | 是否支持拖拽 <span style="color: red; font-size: 12px;">新增</span>| boolean | true/false | false |
 
 ### Slot
 | name | 说明 |

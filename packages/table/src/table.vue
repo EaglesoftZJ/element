@@ -1,5 +1,6 @@
 <template>
   <div class="el-table"
+     v-loading="egLoading"
     :class="[{
       'el-table--fit': fit,
       'el-table--striped': stripe,
@@ -20,6 +21,7 @@
       v-if="showHeader"
       v-mousewheel="handleHeaderFooterMousewheel"
       class="el-table__header-wrapper"
+      :style="fitHeight ? fitHeightHeaderStyle  : ''"
       ref="headerWrapper">
       <table-header
         ref="tableHeader"
@@ -32,10 +34,10 @@
       </table-header>
     </div>
     <div
-        :id="id + '_content'"
       class="el-table__body-wrapper"
       ref="bodyWrapper"
       :class="[layout.scrollX ? `is-scrolling-${scrollPosition}` : 'is-scrolling-none']"
+      @scroll="tableScroll"
       :style="fitHeight ? fitHeightBodyStyle  : [bodyHeight]">
       <table-body
         :context="context"
@@ -49,7 +51,7 @@
         }">
       </table-body>
       <div
-        v-if="!data || data.length === 0"
+        v-if="(!data || data.length === 0) &&  bindData.length === 0"
         class="el-table__empty-block"
         ref="emptyBlock"
         :style="{
@@ -70,7 +72,7 @@
     :class="{ 
       'el-table__footer-wrapper': false,
       'el-table__footer-wrapper-egfooter': true
-      }" v-if="showTotal" ref="footerWrapper"
+      }" v-if="isShowTotal" ref="footerWrapper"
       :style="fitHeight ? fitHeightFooterStyle  : 'width:100%;box-sizing:border-box;'">
       <span class="EgGridView_BottomInfo_recordCount">
         共约&nbsp;<font color="red" id="GV_Show_recordCount">{{ recordTotal }}</font>&nbsp;条记录
@@ -107,7 +109,7 @@
       :style="[{
         width: layout.fixedWidth ? layout.fixedWidth + 'px' : ''
       },
-      fixedHeight]">
+       fitHeight ? fixedHeightFitHeight :fixedHeight]">
       <div
         v-if="showHeader"
         class="el-table__fixed-header-wrapper"
@@ -127,7 +129,7 @@
         :style="[{
           top: layout.headerHeight + 'px'
         },
-        fixedBodyHeight]">
+        fitHeight ? fixedBodyHeightFitHeight : fixedBodyHeight]">
         <table-body
           fixed="left"
           :store="store"
@@ -171,7 +173,7 @@
         width: layout.rightFixedWidth ? layout.rightFixedWidth + 'px' : '',
         right: layout.scrollY ? (border ? layout.gutterWidth : (layout.gutterWidth || 0)) + 'px' : ''
       },
-      fixedHeight]">
+       fitHeight ? fixedHeightFitHeight :fixedHeight]">
       <div v-if="showHeader"
         class="el-table__fixed-header-wrapper"
         ref="rightFixedHeaderWrapper">
@@ -190,7 +192,7 @@
         :style="[{
           top: layout.headerHeight + 'px'
         },
-        fixedBodyHeight]">
+         fitHeight ? fixedBodyHeightFitHeight : fixedBodyHeight]">
         <table-body
           fixed="right"
           :store="store"
@@ -246,6 +248,7 @@
   let tableIdSeed = 1;
   export default {
     name: 'ElTable',
+    componentName: 'ElTable',
     mixins: [Locale, Migrating],
     directives: {
       Mousewheel
@@ -310,15 +313,25 @@
         type: Function
       },
         fitHeight: Boolean,
-    id: {
-         default: new Date().getTime()
+        id: String,
+      queryData: {
+          type: Object,
+          default() {
+              return {};
+          }
       },
-      query_data: Object,
       primaryKey: {
-          default: new Date().getTime()
+          type: String,
+          default: 'bh'
       },
-      orderBy: String,
-      sortType: String,
+      orderBy: {
+         type: String,
+         default: ''
+      },
+      sortType: {
+          type: String,
+          default: ''
+      },
       showTotal: {
         type: Boolean,
         default: false
@@ -337,14 +350,15 @@
       dataBind() {
         if (this.action !== '') {
           this.egLoading = true;
-          this.query_data['pageNum'] = this.pageNum * this.pageSize - this.deleteNum;
-          this.query_data['pageSize'] = this.pageSize;
-          this.query_data['orderBy'] = this.store.states.orderBy;
-          this.query_data['sortType'] = this.store.states.sortType;
+          this.queryData['pageNum'] = this.pageNum * this.pageSize - this.deleteNum;
+          this.queryData['pageSize'] = this.pageSize;
+          this.queryData['orderBy'] = this.store.states.orderBy;
+          this.queryData['sortType'] = this.store.states.sortType;
           var options = {
               url: this.action,
-              data: this.query_data,
+              data: this.queryData,
               jsontype: this.jsontype && 'json',
+              type: 'post',
               success: function(res) {
                   res[0].data.forEach((row)=>{
                       this.bindData.push(row);
@@ -366,14 +380,7 @@
                   this.callback && this.callback(res);
               }
           };
-          this.$eg.ajax('table', options);
-        } else {
-          // 数据分页
-          var size = this.pageNum * this.pageSize + this.pageSize;
-          var arr = this.data.slice(0, size);  
-          this.store.commit('setData', arr);
-          this.recordTotal = this.data.length;
-          this.loadedRecordTotal = size > this.data.length ? this.data.length : size;
+          this.$eg.ajax(null, options);
         }
       },
       refresh(refdata) {
@@ -389,6 +396,7 @@
               url: this.action,
               data: refdata,
               jsontype: this.jsontype && 'json',
+              type: 'post',
               success: function(result) {
                   if (refdata.statusCode === this.$code.INSERT_SUCCESS) {
                       this.bindData.unshift(result[0].data[0]);
@@ -402,7 +410,7 @@
                   this.callback && this.callback(result);
               }
           };
-          this.$eg.ajax(null, options);
+           this.$eg.ajax(null, options);
       },
       delete(result) {
           var rowIndex = this.getRefreshRowIndex(result[this.primaryKey]);
@@ -418,32 +426,34 @@
           }
       },
       getScrollTop() {
-        return document.getElementById(this.id + '_content') ? document.getElementById(this.id + '_content').scrollTop : -1;
+        return this.$refs.bodyWrapper ? this.$refs.bodyWrapper.scrollTop : -1;
       },
       tableScroll(ev) {
-
-        let nDivHight = document.getElementById(this.id + '_content') ? document.getElementById(this.id + '_content').offsetHeight : 0;
-        let nScrollHight = document.getElementById(this.id + '_content') ? document.getElementById(this.id + '_content').scrollHeight : 0;
-        let nScrollTop = document.getElementById(this.id + '_content') ? document.getElementById(this.id + '_content').scrollTop : -1;
-        if (Math.ceil(nScrollTop) + Math.ceil(nDivHight) >= Math.floor(nScrollHight) && !this.egLoading && this.nodata === false) {
-            this.pageNum += 1;
-            this.dataBind();
-        }
-
+          if (this.action) {
+              // 绑定远程滚动加载的处理
+            let nDivHight = this.$refs.bodyWrapper ? this.$refs.bodyWrapper.offsetHeight : 0;
+            let nScrollHight = this.$refs.bodyWrapper ? this.$refs.bodyWrapper.scrollHeight : 0;
+            let nScrollTop = this.$refs.bodyWrapper ? this.$refs.bodyWrapper.scrollTop : -1;
+            if (Math.ceil(nScrollTop) + Math.ceil(nDivHight) >= Math.floor(nScrollHight) && !this.egLoading && this.nodata === false) {
+                this.pageNum += 1;
+                this.dataBind();
+            }
+          }
         this.$emit('table-scroll', ev);
       },
       exportExcel() {
         if (this.exportAction !== '') {
-          this.query_data['pageNum'] = 0;
-          this.query_data['pageSize'] = 147483648;
-          this.query_data['orderBy'] = this.store.states.orderBy;
-          this.query_data['sortType'] = this.store.states.sortType;
+          this.queryData['pageNum'] = 0;
+          this.queryData['pageSize'] = 147483648;
+          this.queryData['orderBy'] = this.store.states.orderBy;
+          this.queryData['sortType'] = this.store.states.sortType;
 
-          let exportData = this.query_data;
+          let exportData = this.queryData;
           exportData['columns'] = this.egColumns;
 
           var options = {
               url: this.exportAction,
+              type: 'post',
               data: exportData,
               success: function(res) {
                   window.location.href = '/rest/export/exportExcel?url=' + res.url + '&filename=' + res.fileName;
@@ -468,6 +478,19 @@
       refreshGrid(obj) {
         // 更新表格数据
         this.refresh(obj);
+      },
+      orderGird(column) {
+        // 排序
+        this.nodata = false;
+        this.bindData.splice(0, this.bindData.length);
+        this.pageNum = 0;
+        this.store.states.orderBy = column.property;
+        this.store.states.sortType = column.order === 'ascending' ? 'asc' : 'desc';
+        if (this.getScrollTop() === 0) {
+            this.dataBind();
+        } else {
+            this.pageNum = -1;
+        }
       },
       /* 自已加的方法结束 */
       getMigratingConfig() {
@@ -546,6 +569,8 @@
         });
         if (this.fit) {
           addResizeListener(this.$el, this.resizeListener);
+          this.doLayout();
+          this.egBodyWidth = this.$refs.bodyWrapper.offsetWidth;
         }
       },
       resizeListener() {
@@ -615,6 +640,9 @@
 
         return style;
       },
+      isShowTotal() {
+          return this.action || this.showTotal;
+      },
       /* end */
       tableSize() {
         return this.size || (this.$ELEMENT || {}).size;
@@ -678,6 +706,14 @@
         }
         return {};
       },
+      fixedBodyHeightFitHeight() {
+        let style = {
+            height: 'auto',         
+            bottom: '0px',
+            right: '0px'
+        };
+        return style;
+      },
       fixedHeight() {
         if (this.maxHeight) {
           if (this.showSummary) {
@@ -706,6 +742,7 @@
         handler(value) {
           this.layout.setHeight(value);
           /* start */
+          // 根据设置的高度得到pageSize
           if (value) {
             this.pageSize = parseInt(value / 35, 10);
             this.pageSize = this.pageSize <= 1 ? 1 : this.pageSize;
@@ -726,20 +763,17 @@
       data: {
         immediate: true,
         handler(value) {
-             /* start */
-            if (this.action) {
-            this.store.commit('setData', value); 
-          } else {
-            this.pageNum = 0;
-            this.dataBind();
-          } 
-          /* end */
-        // this.store.commit('setData', value); // 原始注释 
-          if (this.$ready) {
+        /* start */
+        // if (!this.action) {
+        //     this.store.commit('setData', value);
+        // }
+        this.store.commit('setData', value);
+        /* end */
+        if (this.$ready) {
             this.$nextTick(() => {
-              this.doLayout();
+                this.doLayout();
             });
-          }
+        }
         }
       },
       expandRowKeys: {
@@ -755,38 +789,66 @@
       if (this.resizeListener) removeResizeListener(this.$el, this.resizeListener);
     },
     mounted() {
-        this.$nextTick(() => {
-            /* start */
-             if (this.fitHeight) {
+        /* start */
+        this.$parent && (this.$parent['eg_dataOld'] = this.bindData);
+        if (this.fitHeight) {
+            this.pageSize = parseInt(this.$refs.bodyWrapper.clientHeight / 35, 10) ;
+            this.pageSize = this.pageSize <= 1 ? 1 : this.pageSize;
+        }
+        this.store.states.id = this.id;
+        this.store.states.orderBy = this.orderBy;
+        this.store.states.sortType = this.sortType;
+        this.store.states.action = this.action;
 
-                this.pageSize = parseInt(this.$refs.bodyWrapper.clientHeight / 35, 10) ;
-                this.pageSize = this.pageSize <= 1 ? 1 : this.pageSize;  
+
+        /* 兼容v8 */
+        this.$emitter.on(this.id + '_grid_bind', () => {
+            this.nodata = false;
+            this.bindData.splice(0, this.bindData.length);
+            this.pageNum = 0;
+            this.deleteNum = 0;
+            if (this.getScrollTop() === 0) {
+                this.dataBind();
+            } else {
+                this.pageNum = -1;
             }
+        });
 
-            this.store.states.id = this.id;
-            this.store.states.orderBy = this.orderBy;
-            this.store.states.sortType = this.sortType;
-            /* end */
-            this.bindEvents();
-            this.store.updateColumns();
-            this.doLayout();
-            this.resizeState = {
-                width: this.$el.offsetWidth,
-                height: this.$el.offsetHeight
-            };
-            // init filters
-            this.store.states.columns.forEach(column => {
-                if (column.filteredValue && column.filteredValue.length) {
-                this.store.commit('filterChange', {
-                    column,
-                    values: column.filteredValue,
-                    silent: true
-                });
-                }
-                /* start */
-                    this.egColumns.push({'label': column.label, 'property': column.property});
-                /* end */
+        this.$emitter.on(this.id + '_refresh', (data) => this.refresh(data));
+        /* 兼容v8 */
+
+        this.$on('grid_orderby', (column) => {
+            this.nodata = false;
+            this.bindData.splice(0, this.bindData.length);
+            this.pageNum = 0;
+            this.store.states.orderBy = column.property;
+            this.store.states.sortType = column.order === 'ascending' ? 'asc' : 'desc';
+            if (this.getScrollTop() === 0) {
+                this.dataBind();
+            } else {
+                this.pageNum = -1;
+            }
+        });
+        /* end */
+        this.bindEvents();
+        this.store.updateColumns();
+        this.doLayout();
+        this.resizeState = {
+            width: this.$el.offsetWidth,
+            height: this.$el.offsetHeight
+        };
+        // init filters
+        this.store.states.columns.forEach(column => {
+            if (column.filteredValue && column.filteredValue.length) {
+            this.store.commit('filterChange', {
+                column,
+                values: column.filteredValue,
+                silent: true
             });
+            }
+            /* start */
+            this.egColumns.push({'label': column.label, 'property': column.property});
+            /* end */
         });
         /* start */
         this.dataBind();
@@ -820,7 +882,7 @@
         scrollPosition: 'left',
         /* start */
         bindData: [], //  绑定的数据
-        pageNum: 0,   //  页码
+        pageNum: 0, // 页码
         pageSize: 50, //  每页数据大小
         nodata: false, //  当前页已经没有数据，为true时说明数据已全部加载完成
         recordTotal: 0, // 记录总数
@@ -833,3 +895,13 @@
     }
   };
 </script>
+<style>
+.EgGridView_BottomInfo_excel {
+    width: 17px;
+    height: 17px;
+    cursor: pointer;
+    background: url('data:image/gif;base64,R0lGODlhEQARAPcAAAAAAP////78/v7///v//O/68fH98+357/H38u/48Oz07efx6MXhx+Tw5SiFKqrNq63PrhF0EbnTuczezMnXye/67+jx6PD48O/17/n7+SSEISJyITV9MyN2IC9yLEGJPUeURE2bSVefVEl7R3CrbXuzeXWmc47Gi2B1X3OMcrvXusPcwtbo1UKYO0WFQVWeT0+TS2KyXF+nWWurZoe6hIq5h0tkSYm3hlZvVG+NbX+afYCbfsbjxMzmyt3q3ODs3x9hGSp2IkqWQkiBQ2SqXoC7e4e9gY3EiGOEYHmWdmF4X6zRqIejhMreyOTv4+bw5SZpHUqPQU2SRE+LSFubUoLBeoS8fXiqcnujdlJrT9Lj0Ovz6kZ+PUeAPk6HRVSMTIC2eI3EhJ2xmsndxtTn0dfl1dnm10F7NnCxZHGvZXawaoC6dWt7aMndxdHiztDhzdXl0tvr2NTj0djn1d/q3d7p3OLs4PX69PT580R+NkF0NWmrWWqqW1qMTs3fyc/gy+ny59fn09LizuPv4O727Pb69X6pcYCrc5C5g5S9h53EkaHIlaDHlKXLmabMmqnPnazQoe3060V1NHWgZnehaHijanulbHynbouzfZnBjJa9iZvBjrnSse707EZmOWqYWXCcYHSdZYKtcou2eoexd4u1e4+5foWtdoaud67QofP48WGRTGWTUWiWVWiVVWuXWW6ZXG2VW3KcYHihZnaeZHqjaXmiaH2mbHeeZ3+oboKrcY2oguzz6SxOGzBTHzFVIDRYIjdbJTpfKDldJ1aJPVWJPUFnL1mMQVqMQl6PRmGRS1V8QlmARlyESWGITmaNU2+ZW2mPVnObYHGYXu706ytNGUqCLUuBLUuCLi9RHU+EM1OGNzxgKT5jKz9jLERpMUdsM0lvNUhtNEZrM0txN0pvNkxyOE91OlF4PVF3PVV7QVmARV6FSmSKUGySWE2CL1CEMvD17f3+/P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAPMALAAAAAARABEAAAj/AE2NIiUqVy1a09w9c9Zsnbp058yZSvXI0SJFmRIhwoTq0KVKtnCZKwWJ0B08qi7E67QF0BMnTuTIMkfqUaEAOHFmGJBzAB1Y5HQ1kreERg0TEwJQyLFDh5hBr8LdYhRAhJUiRK4wwUIFRocNvFyBm7Wp0IoZR8LIGPIlhoYIEHyw+iZNU6cAKkgYWfNiShAHEgK4WWUsFqJIGQKUAAEmjRQoXBg8CJSsWzRMgAL0qNIihBo+UfR0uTHnmLB2p6jxcHHGCxAOaPYIkbQrULFg7AxhOIEEhRI2Iz70yePBU5xtwJhZ+iEgwAACAVgksYEjSwoy2n4to2QHgYItCxpYSEhgoECFA2OwZUM3SVAdM2XgaHnzx0+TNk04Wet1LhQoaJ+0wooyySBDzDbwXGPNO9WYYw455YgzzjfGeMPNMMEA84sv2fQSEAA7') no-repeat center center;
+    position: absolute;
+    margin-left: 10px;
+}
+</style>

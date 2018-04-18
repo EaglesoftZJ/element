@@ -1,6 +1,7 @@
 import { hasClass, addClass, removeClass } from 'element-ui/src/utils/dom';
 import ElCheckbox from 'element-ui/packages/checkbox';
 import ElTag from 'element-ui/packages/tag';
+import Emitter from 'element-ui/src/mixins/emitter';
 import Vue from 'vue';
 import FilterPanel from './filter-panel.vue';
 import LayoutObserver from './layout-observer';
@@ -66,7 +67,7 @@ const convertToRows = (originColumns) => {
 export default {
   name: 'ElTableHeader',
 
-  mixins: [LayoutObserver],
+  mixins: [LayoutObserver, Emitter],
 
   render(h) {
     const originColumns = this.store.states.originColumns;
@@ -74,6 +75,7 @@ export default {
     // 是否拥有多级表头
     const isGroup = columnRows.length > 1;
     if (isGroup) this.$parent.isGroup = true;
+    console.log('=====================', this._l);
     return (
       <table
         class="el-table__header"
@@ -522,12 +524,18 @@ export default {
       states.sortProp = sortProp;
       states.sortOrder = sortOrder;
 
+        if (states.action) {
+            this.dispatch('ElTable', 'grid_orderby', column);
+        } else {
+            this.store.commit('changeSortCondition');
+        }
+
       // console.log(column.order);
       // console.log(column.property);
     //   this.$emitter.emit(this.store.states.id + '_grid_orderby', column);
 
       // 以下代码于2017-6-2注释掉，为elementui原来的代码，在客户端层面实现排序
-      // this.store.commit('changeSortCondition');
+    //   this.store.commit('changeSortCondition');
     }
   },
 

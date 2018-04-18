@@ -29,6 +29,7 @@ export default {
 
   render(h) {
     const columnsHidden = this.columns.map((column, index) => this.isColumnHidden(index));
+    console.log('columns', this.columns);
     return (
       <table
         class="el-table__body"
@@ -38,6 +39,9 @@ export default {
         <colgroup>
           {
             this._l(this.columns, column => <col name={ column.id } />)
+          }
+          {
+            this.hasGutter ? <col name="gutter" /> : ''
           }
         </colgroup>
         <tbody>

@@ -84,6 +84,7 @@ const TableStore = function(table, initialState = {}) {
     id: '',
     orderBy: '',
     sortType: '',
+    action: '',
     rowKey: null,
     _columns: [],
     originColumns: [],
@@ -340,6 +341,7 @@ const doFlattenColumns = (columns) => {
 
 TableStore.prototype.updateColumns = function() {
   const states = this.states;
+  console.log('updateColumns=====================', states._columns);
   const _columns = states._columns || [];
   states.fixedColumns = _columns.filter((column) => column.fixed === true || column.fixed === 'left');
   states.rightFixedColumns = _columns.filter((column) => column.fixed === 'right');
