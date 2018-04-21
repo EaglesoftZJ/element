@@ -234,535 +234,632 @@
 </template>
 
 <script type="text/babel">
-  import ElCheckbox from 'element-ui/packages/checkbox';
-  import debounce from 'throttle-debounce/debounce';
-  import { addResizeListener, removeResizeListener } from 'element-ui/src/utils/resize-event';
-  import Mousewheel from 'element-ui/src/directives/mousewheel';
-  import Locale from 'element-ui/src/mixins/locale';
-  import Migrating from 'element-ui/src/mixins/migrating';
-  import TableStore from './table-store';
-  import TableLayout from './table-layout';
-  import TableBody from './table-body';
-  import TableHeader from './table-header';
-  import TableFooter from './table-footer';
-  let tableIdSeed = 1;
-  export default {
-    name: 'ElTable',
-    componentName: 'ElTable',
-    mixins: [Locale, Migrating],
-    directives: {
-      Mousewheel
-    },
-    props: {
-      data: {
-        type: Array,
-        default: function() {
-          return [];
-        }
-      },
-      size: String,
-      width: [String, Number],
-      height: [String, Number],
-      maxHeight: [String, Number],
-      fit: {
-        type: Boolean,
-        default: true
-      },
-      stripe: Boolean,
-      border: Boolean,
-      rowKey: [String, Function],
-      context: {},
-      showHeader: {
-        type: Boolean,
-        default: true
-      },
-      showSummary: Boolean,
-      sumText: String,
-      summaryMethod: Function,
-      rowClassName: [String, Function],
-      rowStyle: [Object, Function],
-      cellClassName: [String, Function],
-      cellStyle: [Object, Function],
-      headerRowClassName: [String, Function],
-      headerRowStyle: [Object, Function],
-      headerCellClassName: [String, Function],
-      headerCellStyle: [Object, Function],
-      highlightCurrentRow: Boolean,
-      currentRowKey: [String, Number],
-      emptyText: String,
-      expandRowKeys: Array,
-      defaultExpandAll: Boolean,
-      defaultSort: Object,
-      tooltipEffect: String,
-      spanMethod: Function,
-      selectOnIndeterminate: {
-        type: Boolean,
-        default: true
-      },
-      /* start */
-      action: {
-        type: String,
-        default: ''
-      },
-      exportAction: {
-        type: String,
-        default: ''
-       },
-      jsontype: Boolean,
-      callback: {
-        type: Function
-      },
-        fitHeight: Boolean,
-        id: String,
-      queryData: {
-          type: Object,
-          default() {
-              return {};
-          }
-      },
-      primaryKey: {
-          type: String,
-          default: 'bh'
-      },
-      orderBy: {
-         type: String,
-         default: ''
-      },
-      sortType: {
-          type: String,
-          default: ''
-      },
-      showTotal: {
-        type: Boolean,
-        default: false
+import ElCheckbox from 'element-ui/packages/checkbox';
+import debounce from 'throttle-debounce/debounce';
+import {
+  addResizeListener,
+  removeResizeListener
+} from 'element-ui/src/utils/resize-event';
+import Mousewheel from 'element-ui/src/directives/mousewheel';
+import Locale from 'element-ui/src/mixins/locale';
+import Migrating from 'element-ui/src/mixins/migrating';
+import TableStore from './table-store';
+import TableLayout from './table-layout';
+import TableBody from './table-body';
+import TableHeader from './table-header';
+import TableFooter from './table-footer';
+let tableIdSeed = 1;
+export default {
+  name: 'ElTable',
+  componentName: 'ElTable',
+  mixins: [Locale, Migrating],
+  directives: {
+    Mousewheel
+  },
+  props: {
+    data: {
+      type: Array,
+      default: function() {
+        return [];
       }
-      /* end */
-
     },
-    components: {
-      TableHeader,
-      TableFooter,
-      TableBody,
-      ElCheckbox
+    size: String,
+    width: [String, Number],
+    height: [String, Number],
+    maxHeight: [String, Number],
+    fit: {
+      type: Boolean,
+      default: true
     },
-    methods: {
+    stripe: Boolean,
+    border: Boolean,
+    rowKey: [String, Function],
+    context: {},
+    showHeader: {
+      type: Boolean,
+      default: true
+    },
+    showSummary: Boolean,
+    sumText: String,
+    summaryMethod: Function,
+    rowClassName: [String, Function],
+    rowStyle: [Object, Function],
+    cellClassName: [String, Function],
+    cellStyle: [Object, Function],
+    headerRowClassName: [String, Function],
+    headerRowStyle: [Object, Function],
+    headerCellClassName: [String, Function],
+    headerCellStyle: [Object, Function],
+    highlightCurrentRow: Boolean,
+    currentRowKey: [String, Number],
+    emptyText: String,
+    expandRowKeys: Array,
+    defaultExpandAll: Boolean,
+    defaultSort: Object,
+    tooltipEffect: String,
+    spanMethod: Function,
+    selectOnIndeterminate: {
+      type: Boolean,
+      default: true
+    },
+    /* start */
+    action: {
+      type: String,
+      default: ''
+    },
+    exportAction: {
+      type: String,
+      default: ''
+    },
+    jsontype: Boolean,
+    callback: {
+      type: Function
+    },
+    fitHeight: Boolean,
+    id: String,
+    queryData: {
+      type: Object,
+      default() {
+        return {};
+      }
+    },
+    primaryKey: {
+      type: String,
+      default: 'bh'
+    },
+    orderBy: {
+      type: String,
+      default: ''
+    },
+    sortType: {
+      type: String,
+      default: ''
+    },
+    showTotal: {
+      type: Boolean,
+      default: false
+    }
+    /* end */
+  },
+  components: {
+    TableHeader,
+    TableFooter,
+    TableBody,
+    ElCheckbox
+  },
+  methods: {
     /* 自已加的方法开始 */
-      dataBind() {
-        if (this.action !== '') {
-          this.egLoading = true;
-          this.queryData['pageNum'] = this.pageNum * this.pageSize - this.deleteNum;
-          this.queryData['pageSize'] = this.pageSize;
-          this.queryData['orderBy'] = this.store.states.orderBy;
-          this.queryData['sortType'] = this.store.states.sortType;
-          var options = {
-              url: this.action,
-              data: this.queryData,
-              jsontype: this.jsontype && 'json',
-              type: 'post',
-              success: function(res) {
-                  res[0].data.forEach((row)=>{
-                      this.bindData.push(row);
-                  });
+    dataBind() {
+      if (this.action !== '') {
+        this.egLoading = true;
+        this.queryData['pageNum'] =
+          this.pageNum * this.pageSize - this.deleteNum;
+        this.queryData['pageSize'] = this.pageSize;
+        this.queryData['orderBy'] = this.store.states.orderBy;
+        this.queryData['sortType'] = this.store.states.sortType;
+        var options = {
+          url: this.action,
+          data: this.queryData,
+          jsontype: this.jsontype && 'json',
+          type: 'post',
+          success: function(res) {
+            res[0].data.forEach(row => {
+              this.bindData.push(row);
+            });
 
-                  this.recordTotal = res[0].total;
-                  this.loadedRecordTotal = this.bindData.length;
+            this.recordTotal = res[0].total;
+            this.loadedRecordTotal = this.bindData.length;
 
-                  if ((res[0].data.length === 0) || (res[0].data.length < this.pageSize)) {
-                    this.nodata = true;
-                  }
-
-                  this.store.commit('setData', this.bindData);
-
-                  this.doLayout();
-
-                  this.egLoading = false;
-
-                  this.callback && this.callback(res);
-              }
-          };
-          this.$eg.ajax(null, options);
-        }
-      },
-      refresh(refdata) {
-          if (refdata.statusCode === this.$code.DELETE_SUCCESS) {
-              this.delete(refdata);
-              return;
-          }
-
-          refdata['egGridviewGetRow'] = true;
-          refdata['pageNum'] = 0;
-          refdata['pageSize'] = 10;
-          var options = {
-              url: this.action,
-              data: refdata,
-              jsontype: this.jsontype && 'json',
-              type: 'post',
-              success: function(result) {
-                  if (refdata.statusCode === this.$code.INSERT_SUCCESS) {
-                      this.bindData.unshift(result[0].data[0]);
-                      this.recordTotal++;
-                      this.loadedRecordTotal++;
-                  } else if (refdata.statusCode === this.$code.UPDATE_SUCCESS) {
-                      var rowIndex = this.getRefreshRowIndex(result[0].data[0][this.primaryKey]);
-                      this.bindData.splice(rowIndex, 1, result[0].data[0]);
-                  }
-                  this.store.commit('setData', this.bindData);
-                  this.callback && this.callback(result);
-              }
-          };
-           this.$eg.ajax(null, options);
-      },
-      delete(result) {
-          var rowIndex = this.getRefreshRowIndex(result[this.primaryKey]);
-          this.bindData.splice(rowIndex, 1);
-          this.store.commit('setData', this.bindData);
-          this.deleteNum++;
-      },
-      getRefreshRowIndex(val) {
-          for (var i = 0; i < this.bindData.length; i++) {
-              if (this.bindData[i][this.primaryKey] === val) {
-                  return i;
-              }
-          }
-      },
-      getScrollTop() {
-        return this.$refs.bodyWrapper ? this.$refs.bodyWrapper.scrollTop : -1;
-      },
-      tableScroll(ev) {
-          if (this.action) {
-              // 绑定远程滚动加载的处理
-            let nDivHight = this.$refs.bodyWrapper ? this.$refs.bodyWrapper.offsetHeight : 0;
-            let nScrollHight = this.$refs.bodyWrapper ? this.$refs.bodyWrapper.scrollHeight : 0;
-            let nScrollTop = this.$refs.bodyWrapper ? this.$refs.bodyWrapper.scrollTop : -1;
-            if (Math.ceil(nScrollTop) + Math.ceil(nDivHight) >= Math.floor(nScrollHight) && !this.egLoading && this.nodata === false) {
-                this.pageNum += 1;
-                this.dataBind();
+            if (
+              res[0].data.length === 0 ||
+              res[0].data.length < this.pageSize
+            ) {
+              this.nodata = true;
             }
-          }
-        this.$emit('table-scroll', ev);
-      },
-      exportExcel() {
-        if (this.exportAction !== '') {
-          this.queryData['pageNum'] = 0;
-          this.queryData['pageSize'] = 147483648;
-          this.queryData['orderBy'] = this.store.states.orderBy;
-          this.queryData['sortType'] = this.store.states.sortType;
 
-          let exportData = this.queryData;
-          exportData['columns'] = this.egColumns;
+            this.store.commit('setData', this.bindData);
 
-          var options = {
-              url: this.exportAction,
-              type: 'post',
-              data: exportData,
-              success: function(res) {
-                  window.location.href = '/rest/export/exportExcel?url=' + res.url + '&filename=' + res.fileName;
-              }
-          };
-          this.$eg.ajax(null, options);
-        }
-      },
-      // 对外接口
-      resetGrid() {
-        // 重置数据
-        this.nodata = false;
-        this.bindData.splice(0, this.bindData.length);
-        this.pageNum = 0;
-        this.deleteNum = 0;
-        if (this.getScrollTop() === 0) {
-          this.dataBind();
-        } else {
-          this.pageNum = -1;
-        }
-      },
-      refreshGrid(obj) {
-        // 更新表格数据
-        this.refresh(obj);
-      },
-      orderGird(column) {
-        // 排序
-        this.nodata = false;
-        this.bindData.splice(0, this.bindData.length);
-        this.pageNum = 0;
-        this.store.states.orderBy = column.property;
-        this.store.states.sortType = column.order === 'ascending' ? 'asc' : 'desc';
-        if (this.getScrollTop() === 0) {
-            this.dataBind();
-        } else {
-            this.pageNum = -1;
-        }
-      },
-      /* 自已加的方法结束 */
-      getMigratingConfig() {
-        return {
-          events: {
-            expand: 'expand is renamed to expand-change'
+            this.doLayout();
+
+            this.egLoading = false;
+
+            this.callback && this.callback(res);
           }
         };
-      },
-      setCurrentRow(row) {
-        this.store.commit('setCurrentRow', row);
-      },
-      toggleRowSelection(row, selected) {
-        this.store.toggleRowSelection(row, selected);
-        this.store.updateAllSelected();
-      },
-      toggleRowExpansion(row, expanded) {
-        this.store.toggleRowExpansion(row, expanded);
-      },
-      clearSelection() {
-        this.store.clearSelection();
-      },
-      clearFilter() {
-        this.store.clearFilter();
-      },
-      clearSort() {
-        this.store.clearSort();
-      },
-      handleMouseLeave() {
-        this.store.commit('setHoverRow', null);
-        if (this.hoverState) this.hoverState = null;
-      },
-      updateScrollY() {
-        this.layout.updateScrollY();
-      },
-      handleFixedMousewheel(event, data) {
-        const bodyWrapper = this.bodyWrapper;
-        if (Math.abs(data.spinY) > 0) {
-          const currentScrollTop = bodyWrapper.scrollTop;
-          if (data.pixelY < 0 && currentScrollTop !== 0) {
-            event.preventDefault();
+        this.$axios.DTO(this.action, this.queryData).then(res => {
+          res[0].data.forEach(row => {
+            this.bindData.push(row);
+          });
+
+          this.recordTotal = res[0].total;
+          this.loadedRecordTotal = this.bindData.length;
+
+          if (res[0].data.length === 0 || res[0].data.length < this.pageSize) {
+            this.nodata = true;
           }
-          if (data.pixelY > 0 && bodyWrapper.scrollHeight - bodyWrapper.clientHeight > currentScrollTop) {
-            event.preventDefault();
-          }
-          bodyWrapper.scrollTop += Math.ceil(data.pixelY / 5);
-        } else {
-          bodyWrapper.scrollLeft += Math.ceil(data.pixelX / 5);
-        }
-      },
-      handleHeaderFooterMousewheel(event, data) {
-        const { pixelX, pixelY } = data;
-        if (Math.abs(pixelX) >= Math.abs(pixelY)) {
-          event.preventDefault();
-          this.bodyWrapper.scrollLeft += data.pixelX / 5;
-        }
-      },
-      bindEvents() {
-        const { headerWrapper, footerWrapper } = this.$refs;
-        const refs = this.$refs;
-        let self = this;
-        this.bodyWrapper.addEventListener('scroll', function() {
-          if (headerWrapper) headerWrapper.scrollLeft = this.scrollLeft;
-          if (footerWrapper) footerWrapper.scrollLeft = this.scrollLeft;
-          if (refs.fixedBodyWrapper) refs.fixedBodyWrapper.scrollTop = this.scrollTop;
-          if (refs.rightFixedBodyWrapper) refs.rightFixedBodyWrapper.scrollTop = this.scrollTop;
-          const maxScrollLeftPosition = this.scrollWidth - this.offsetWidth - 1;
-          const scrollLeft = this.scrollLeft;
-          if (scrollLeft >= maxScrollLeftPosition) {
-            self.scrollPosition = 'right';
-          } else if (scrollLeft === 0) {
-            self.scrollPosition = 'left';
-          } else {
-            self.scrollPosition = 'middle';
-          }
+
+          this.store.commit('setData', this.bindData);
+
+          this.doLayout();
+
+          this.egLoading = false;
+
+          this.callback && this.callback(res);
         });
-        if (this.fit) {
-          addResizeListener(this.$el, this.resizeListener);
-          this.doLayout();
-          this.egBodyWidth = this.$refs.bodyWrapper.offsetWidth;
+      }
+    },
+    refresh(refdata) {
+      if (refdata.statusCode === this.$const.code.DELETE_SUCCESS) {
+        this.delete(refdata);
+        return;
+      }
+
+      refdata['egGridviewGetRow'] = true;
+      refdata['pageNum'] = 0;
+      refdata['pageSize'] = 10;
+      var options = {
+        url: this.action,
+        data: refdata,
+        jsontype: this.jsontype && 'json',
+        type: 'post',
+        success: function(result) {
+          if (refdata.statusCode === this.$const.code.INSERT_SUCCESS) {
+            this.bindData.unshift(result[0].data[0]);
+            this.recordTotal++;
+            this.loadedRecordTotal++;
+          } else if (refdata.statusCode === this.$const.code.UPDATE_SUCCESS) {
+            var rowIndex = this.getRefreshRowIndex(
+              result[0].data[0][this.primaryKey]
+            );
+            this.bindData.splice(rowIndex, 1, result[0].data[0]);
+          }
+          this.store.commit('setData', this.bindData);
+          this.callback && this.callback(result);
         }
-      },
-      resizeListener() {
-        if (!this.$ready) return;
-        let shouldUpdateLayout = false;
-        const el = this.$el;
-        const { width: oldWidth, height: oldHeight } = this.resizeState;
-        const width = el.offsetWidth;
-        if (oldWidth !== width) {
-          shouldUpdateLayout = true;
-        }
-        const height = el.offsetHeight;
-        if ((this.height || this.shouldUpdateHeight) && oldHeight !== height) {
-          shouldUpdateLayout = true;
-        }
-        if (shouldUpdateLayout) {
-          this.resizeState.width = width;
-          this.resizeState.height = height;
-          this.doLayout();
-        }
-      },
-      doLayout() {
-        this.layout.updateColumnsWidth();
-        if (this.shouldUpdateHeight) {
-          this.layout.updateElsHeight();
-        }
-        if (this.fitHeight) {
-            this.layout.setHeight(this.$refs.bodyWrapper ? this.$refs.bodyWrapper.clientHeight : 0);
-        }
-        if (this.bindData.length > 0) {
-            this.tableScroll(null);
+      };
+      this.$axios.DTO(this.action, refdata).then(res => {
+        if (refdata.statusCode === this.$const.code.INSERT_SUCCESS) {
+            this.bindData.unshift(result[0].data[0]);
+            this.recordTotal++;
+            this.loadedRecordTotal++;
+          } else if (refdata.statusCode === this.$const.code.UPDATE_SUCCESS) {
+            var rowIndex = this.getRefreshRowIndex(
+              result[0].data[0][this.primaryKey]
+            );
+            this.bindData.splice(rowIndex, 1, result[0].data[0]);
+          }
+          this.store.commit('setData', this.bindData);
+          this.callback && this.callback(result);
+      });
+    },
+    delete(result) {
+      var rowIndex = this.getRefreshRowIndex(result[this.primaryKey]);
+      this.bindData.splice(rowIndex, 1);
+      this.store.commit('setData', this.bindData);
+      this.deleteNum++;
+    },
+    getRefreshRowIndex(val) {
+      for (var i = 0; i < this.bindData.length; i++) {
+        if (this.bindData[i][this.primaryKey] === val) {
+          return i;
         }
       }
     },
-    created() {
-      this.tableId = 'el-table_' + tableIdSeed++;
-      this.debouncedUpdateLayout = debounce(50, () => this.doLayout());
+    getScrollTop() {
+      return this.$refs.bodyWrapper ? this.$refs.bodyWrapper.scrollTop : -1;
     },
-    computed: {
-        /* start */
-        fitHeightStyle() {
-        return 'width:100%;height:100%;box-sizing:border-box;padding:' + (this.layout.headerHeight ? this.layout.headerHeight : 0) + 'px 0px ' + (this.layout.footerHeight ? this.layout.footerHeight : 0) + 'px' ;
-      },
-      fitHeightHeaderStyle() {
-        return 'position:relative;top:-' + (this.layout.headerHeight ? this.layout.headerHeight : 0) + 'px';
-      },
-      fitHeightBodyStyle() {
-        return 'position:relative;height:100%;top:-' + (this.layout.headerHeight ? this.layout.headerHeight : 0) + 'px';
-      },
-      fitHeightFooterStyle() {
-         return 'width:100%;box-sizing:border-box;position:relative;top:-' + (this.layout.headerHeight ? this.layout.headerHeight : 0) + 'px';
-      },
-      fixedHeightFitHeight() {
-        let style = {};
-
-        if (this.layout.scrollX) {
-          style = {
-            height: 'auto',
-            bottom: (this.layout.gutterWidth + this.layout.footerHeight) + 'px'
-          };
-        } else {
-          style = {
-            height: 'auto',
-            bottom: this.layout.footerHeight + 'px'
-          };
+    tableScroll(ev) {
+      if (this.action) {
+        // 绑定远程滚动加载的处理
+        let nDivHight = this.$refs.bodyWrapper
+          ? this.$refs.bodyWrapper.offsetHeight
+          : 0;
+        let nScrollHight = this.$refs.bodyWrapper
+          ? this.$refs.bodyWrapper.scrollHeight
+          : 0;
+        let nScrollTop = this.$refs.bodyWrapper
+          ? this.$refs.bodyWrapper.scrollTop
+          : -1;
+        if (
+          Math.ceil(nScrollTop) + Math.ceil(nDivHight) >=
+            Math.floor(nScrollHight) &&
+          !this.egLoading &&
+          this.nodata === false
+        ) {
+          this.pageNum += 1;
+          this.dataBind();
         }
+      }
+      this.$emit('table-scroll', ev);
+    },
+    exportExcel() {
+      if (this.exportAction !== '') {
+        this.queryData['pageNum'] = 0;
+        this.queryData['pageSize'] = 147483648;
+        this.queryData['orderBy'] = this.store.states.orderBy;
+        this.queryData['sortType'] = this.store.states.sortType;
 
-        return style;
-      },
-      isShowTotal() {
-          return this.action || this.showTotal;
-      },
-      /* end */
-      tableSize() {
-        return this.size || (this.$ELEMENT || {}).size;
-      },
-      bodyWrapper() {
-        return this.$refs.bodyWrapper;
-      },
-      shouldUpdateHeight() {
-        return this.height ||
-          this.maxHeight ||
-          this.fixedColumns.length > 0 ||
-          this.rightFixedColumns.length > 0;
-      },
-      selection() {
-        return this.store.states.selection;
-      },
-      columns() {
-        return this.store.states.columns;
-      },
-      tableData() {
-        return this.store.states.data;
-      },
-      fixedColumns() {
-        return this.store.states.fixedColumns;
-      },
-      rightFixedColumns() {
-        return this.store.states.rightFixedColumns;
-      },
-      bodyWidth() {
-        const { bodyWidth, scrollY, gutterWidth } = this.layout;
-        return bodyWidth ? bodyWidth - (scrollY ? gutterWidth : 0) + 'px' : '';
-      },
-      bodyHeight() {
-        if (this.height) {
-          return {
-            height: this.layout.bodyHeight ? this.layout.bodyHeight + 'px' : ''
-          };
-        } else if (this.maxHeight) {
-          return {
-            'max-height': (this.showHeader
-              ? this.maxHeight - this.layout.headerHeight - this.layout.footerHeight
-              : this.maxHeight - this.layout.footerHeight) + 'px'
-          };
-        }
-        return {};
-      },
-      fixedBodyHeight() {
-        if (this.height) {
-          return {
-            height: this.layout.fixedBodyHeight ? this.layout.fixedBodyHeight + 'px' : ''
-          };
-        } else if (this.maxHeight) {
-          let maxHeight = this.layout.scrollX ? this.maxHeight - this.layout.gutterWidth : this.maxHeight;
-          if (this.showHeader) {
-            maxHeight -= this.layout.headerHeight;
+        let exportData = this.queryData;
+        exportData['columns'] = this.egColumns;
+
+        var options = {
+          url: this.exportAction,
+          type: 'post',
+          data: exportData,
+          success: function(res) {
+            window.location.href =
+              '/rest/export/exportExcel?url=' +
+              res.url +
+              '&filename=' +
+              res.fileName;
           }
-          maxHeight -= this.layout.footerHeight;
-          return {
-            'max-height': maxHeight + 'px'
-          };
-        }
-        return {};
-      },
-      fixedBodyHeightFitHeight() {
-        let style = {
-            height: 'auto',         
-            bottom: '0px',
-            right: '0px'
         };
-        return style;
-      },
-      fixedHeight() {
-        if (this.maxHeight) {
-          if (this.showSummary) {
-            return {
-              bottom: 0
-            };
-          }
-          return {
-            bottom: (this.layout.scrollX && this.data.length) ? this.layout.gutterWidth + 'px' : ''
-          };
-        } else {
-          if (this.showSummary) {
-            return {
-              height: this.layout.tableHeight ? this.layout.tableHeight + 'px' : ''
-            };
-          }
-          return {
-            height: this.layout.viewportHeight ? this.layout.viewportHeight + 'px' : ''
-          };
-        }
+        this.$eg.ajax(null, options);
       }
     },
-    watch: {
-      height: {
-        immediate: true,
-        handler(value) {
+    // 对外接口
+    resetGrid() {
+      // 重置数据
+      this.nodata = false;
+      this.bindData.splice(0, this.bindData.length);
+      this.pageNum = 0;
+      this.deleteNum = 0;
+      if (this.getScrollTop() === 0) {
+        this.dataBind();
+      } else {
+        this.pageNum = -1;
+      }
+    },
+    refreshGrid(obj) {
+      // 更新表格数据
+      this.refresh(obj);
+    },
+    orderGird(column) {
+      // 排序
+      this.nodata = false;
+      this.bindData.splice(0, this.bindData.length);
+      this.pageNum = 0;
+      this.store.states.orderBy = column.property;
+      this.store.states.sortType =
+        column.order === 'ascending' ? 'asc' : 'desc';
+      if (this.getScrollTop() === 0) {
+        this.dataBind();
+      } else {
+        this.pageNum = -1;
+      }
+    },
+    /* 自已加的方法结束 */
+    getMigratingConfig() {
+      return {
+        events: {
+          expand: 'expand is renamed to expand-change'
+        }
+      };
+    },
+    setCurrentRow(row) {
+      this.store.commit('setCurrentRow', row);
+    },
+    toggleRowSelection(row, selected) {
+      this.store.toggleRowSelection(row, selected);
+      this.store.updateAllSelected();
+    },
+    toggleRowExpansion(row, expanded) {
+      this.store.toggleRowExpansion(row, expanded);
+    },
+    clearSelection() {
+      this.store.clearSelection();
+    },
+    clearFilter() {
+      this.store.clearFilter();
+    },
+    clearSort() {
+      this.store.clearSort();
+    },
+    handleMouseLeave() {
+      this.store.commit('setHoverRow', null);
+      if (this.hoverState) this.hoverState = null;
+    },
+    updateScrollY() {
+      this.layout.updateScrollY();
+    },
+    handleFixedMousewheel(event, data) {
+      const bodyWrapper = this.bodyWrapper;
+      if (Math.abs(data.spinY) > 0) {
+        const currentScrollTop = bodyWrapper.scrollTop;
+        if (data.pixelY < 0 && currentScrollTop !== 0) {
+          event.preventDefault();
+        }
+        if (
+          data.pixelY > 0 &&
+          bodyWrapper.scrollHeight - bodyWrapper.clientHeight > currentScrollTop
+        ) {
+          event.preventDefault();
+        }
+        bodyWrapper.scrollTop += Math.ceil(data.pixelY / 5);
+      } else {
+        bodyWrapper.scrollLeft += Math.ceil(data.pixelX / 5);
+      }
+    },
+    handleHeaderFooterMousewheel(event, data) {
+      const { pixelX, pixelY } = data;
+      if (Math.abs(pixelX) >= Math.abs(pixelY)) {
+        event.preventDefault();
+        this.bodyWrapper.scrollLeft += data.pixelX / 5;
+      }
+    },
+    bindEvents() {
+      const { headerWrapper, footerWrapper } = this.$refs;
+      const refs = this.$refs;
+      let self = this;
+      this.bodyWrapper.addEventListener('scroll', function() {
+        if (headerWrapper) headerWrapper.scrollLeft = this.scrollLeft;
+        if (footerWrapper) footerWrapper.scrollLeft = this.scrollLeft;
+        if (refs.fixedBodyWrapper)
+          refs.fixedBodyWrapper.scrollTop = this.scrollTop;
+        if (refs.rightFixedBodyWrapper)
+          refs.rightFixedBodyWrapper.scrollTop = this.scrollTop;
+        const maxScrollLeftPosition = this.scrollWidth - this.offsetWidth - 1;
+        const scrollLeft = this.scrollLeft;
+        if (scrollLeft >= maxScrollLeftPosition) {
+          self.scrollPosition = 'right';
+        } else if (scrollLeft === 0) {
+          self.scrollPosition = 'left';
+        } else {
+          self.scrollPosition = 'middle';
+        }
+      });
+      if (this.fit) {
+        addResizeListener(this.$el, this.resizeListener);
+        this.doLayout();
+        this.egBodyWidth = this.$refs.bodyWrapper.offsetWidth;
+      }
+    },
+    resizeListener() {
+      if (!this.$ready) return;
+      let shouldUpdateLayout = false;
+      const el = this.$el;
+      const { width: oldWidth, height: oldHeight } = this.resizeState;
+      const width = el.offsetWidth;
+      if (oldWidth !== width) {
+        shouldUpdateLayout = true;
+      }
+      const height = el.offsetHeight;
+      if ((this.height || this.shouldUpdateHeight) && oldHeight !== height) {
+        shouldUpdateLayout = true;
+      }
+      if (shouldUpdateLayout) {
+        this.resizeState.width = width;
+        this.resizeState.height = height;
+        this.doLayout();
+      }
+    },
+    doLayout() {
+      this.layout.updateColumnsWidth();
+      if (this.shouldUpdateHeight) {
+        this.layout.updateElsHeight();
+      }
+      if (this.fitHeight) {
+        this.layout.setHeight(
+          this.$refs.bodyWrapper ? this.$refs.bodyWrapper.clientHeight : 0
+        );
+      }
+      if (this.bindData.length > 0) {
+        this.tableScroll(null);
+      }
+    }
+  },
+  created() {
+    this.tableId = 'el-table_' + tableIdSeed++;
+    this.debouncedUpdateLayout = debounce(50, () => this.doLayout());
+  },
+  computed: {
+    /* start */
+    fitHeightStyle() {
+      return (
+        'width:100%;height:100%;box-sizing:border-box;padding:' +
+        (this.layout.headerHeight ? this.layout.headerHeight : 0) +
+        'px 0px ' +
+        (this.layout.footerHeight ? this.layout.footerHeight : 0) +
+        'px'
+      );
+    },
+    fitHeightHeaderStyle() {
+      return (
+        'position:relative;top:-' +
+        (this.layout.headerHeight ? this.layout.headerHeight : 0) +
+        'px'
+      );
+    },
+    fitHeightBodyStyle() {
+      return (
+        'position:relative;height:100%;top:-' +
+        (this.layout.headerHeight ? this.layout.headerHeight : 0) +
+        'px'
+      );
+    },
+    fitHeightFooterStyle() {
+      return (
+        'width:100%;box-sizing:border-box;position:relative;top:-' +
+        (this.layout.headerHeight ? this.layout.headerHeight : 0) +
+        'px'
+      );
+    },
+    fixedHeightFitHeight() {
+      let style = {};
+
+      if (this.layout.scrollX) {
+        style = {
+          height: 'auto',
+          bottom: this.layout.gutterWidth + this.layout.footerHeight + 'px'
+        };
+      } else {
+        style = {
+          height: 'auto',
+          bottom: this.layout.footerHeight + 'px'
+        };
+      }
+
+      return style;
+    },
+    isShowTotal() {
+      return this.action || this.showTotal;
+    },
+    /* end */
+    tableSize() {
+      return this.size || (this.$ELEMENT || {}).size;
+    },
+    bodyWrapper() {
+      return this.$refs.bodyWrapper;
+    },
+    shouldUpdateHeight() {
+      return (
+        this.height ||
+        this.maxHeight ||
+        this.fixedColumns.length > 0 ||
+        this.rightFixedColumns.length > 0
+      );
+    },
+    selection() {
+      return this.store.states.selection;
+    },
+    columns() {
+      return this.store.states.columns;
+    },
+    tableData() {
+      return this.store.states.data;
+    },
+    fixedColumns() {
+      return this.store.states.fixedColumns;
+    },
+    rightFixedColumns() {
+      return this.store.states.rightFixedColumns;
+    },
+    bodyWidth() {
+      const { bodyWidth, scrollY, gutterWidth } = this.layout;
+      return bodyWidth ? bodyWidth - (scrollY ? gutterWidth : 0) + 'px' : '';
+    },
+    bodyHeight() {
+      if (this.height) {
+        return {
+          height: this.layout.bodyHeight ? this.layout.bodyHeight + 'px' : ''
+        };
+      } else if (this.maxHeight) {
+        return {
+          'max-height':
+            (this.showHeader
+              ? this.maxHeight -
+                this.layout.headerHeight -
+                this.layout.footerHeight
+              : this.maxHeight - this.layout.footerHeight) + 'px'
+        };
+      }
+      return {};
+    },
+    fixedBodyHeight() {
+      if (this.height) {
+        return {
+          height: this.layout.fixedBodyHeight
+            ? this.layout.fixedBodyHeight + 'px'
+            : ''
+        };
+      } else if (this.maxHeight) {
+        let maxHeight = this.layout.scrollX
+          ? this.maxHeight - this.layout.gutterWidth
+          : this.maxHeight;
+        if (this.showHeader) {
+          maxHeight -= this.layout.headerHeight;
+        }
+        maxHeight -= this.layout.footerHeight;
+        return {
+          'max-height': maxHeight + 'px'
+        };
+      }
+      return {};
+    },
+    fixedBodyHeightFitHeight() {
+      let style = {
+        height: 'auto',
+        bottom: '0px',
+        right: '0px'
+      };
+      return style;
+    },
+    fixedHeight() {
+      if (this.maxHeight) {
+        if (this.showSummary) {
+          return {
+            bottom: 0
+          };
+        }
+        return {
+          bottom:
+            this.layout.scrollX && this.data.length
+              ? this.layout.gutterWidth + 'px'
+              : ''
+        };
+      } else {
+        if (this.showSummary) {
+          return {
+            height: this.layout.tableHeight
+              ? this.layout.tableHeight + 'px'
+              : ''
+          };
+        }
+        return {
+          height: this.layout.viewportHeight
+            ? this.layout.viewportHeight + 'px'
+            : ''
+        };
+      }
+    }
+  },
+  watch: {
+    height: {
+      immediate: true,
+      handler(value) {
+        this.layout.setHeight(value);
+        /* start */
+        // 根据设置的高度得到pageSize
+        if (value) {
+          this.pageSize = parseInt(value / 35, 10);
+          this.pageSize = this.pageSize <= 1 ? 1 : this.pageSize;
           this.layout.setHeight(value);
-          /* start */
-          // 根据设置的高度得到pageSize
-          if (value) {
-            this.pageSize = parseInt(value / 35, 10);
-            this.pageSize = this.pageSize <= 1 ? 1 : this.pageSize;
-            this.layout.setHeight(value);
-          }
-          /* end */
         }
-      },
-      maxHeight: {
-        immediate: true,
-        handler(value) {
-          this.layout.setMaxHeight(value);
-        }
-      },
-      currentRowKey(newVal) {
-        this.store.setCurrentRowKey(newVal);
-      },
-      data: {
-        immediate: true,
-        handler(value) {
+        /* end */
+      }
+    },
+    maxHeight: {
+      immediate: true,
+      handler(value) {
+        this.layout.setMaxHeight(value);
+      }
+    },
+    currentRowKey(newVal) {
+      this.store.setCurrentRowKey(newVal);
+    },
+    data: {
+      immediate: true,
+      handler(value) {
         /* start */
         // if (!this.action) {
         //     this.store.commit('setData', value);
@@ -770,138 +867,140 @@
         this.store.commit('setData', value);
         /* end */
         if (this.$ready) {
-            this.$nextTick(() => {
-                this.doLayout();
-            });
-        }
-        }
-      },
-      expandRowKeys: {
-        immediate: true,
-        handler(newVal) {
-          if (newVal) {
-            this.store.setExpandRowKeys(newVal);
-          }
+          this.$nextTick(() => {
+            this.doLayout();
+          });
         }
       }
     },
-    destroyed() {
-      if (this.resizeListener) removeResizeListener(this.$el, this.resizeListener);
-    },
-    mounted() {
-        /* start */
-        this.$parent && (this.$parent['eg_dataOld'] = this.bindData);
-        if (this.fitHeight) {
-            this.pageSize = parseInt(this.$refs.bodyWrapper.clientHeight / 35, 10) ;
-            this.pageSize = this.pageSize <= 1 ? 1 : this.pageSize;
+    expandRowKeys: {
+      immediate: true,
+      handler(newVal) {
+        if (newVal) {
+          this.store.setExpandRowKeys(newVal);
         }
-        this.store.states.id = this.id;
-        this.store.states.orderBy = this.orderBy;
-        this.store.states.sortType = this.sortType;
-        this.store.states.action = this.action;
-
-
-        /* 兼容v8 */
-        this.$emitter.on(this.id + '_grid_bind', () => {
-            this.nodata = false;
-            this.bindData.splice(0, this.bindData.length);
-            this.pageNum = 0;
-            this.deleteNum = 0;
-            if (this.getScrollTop() === 0) {
-                this.dataBind();
-            } else {
-                this.pageNum = -1;
-            }
-        });
-
-        this.$emitter.on(this.id + '_refresh', (data) => this.refresh(data));
-        /* 兼容v8 */
-
-        this.$on('grid_orderby', (column) => {
-            this.nodata = false;
-            this.bindData.splice(0, this.bindData.length);
-            this.pageNum = 0;
-            this.store.states.orderBy = column.property;
-            this.store.states.sortType = column.order === 'ascending' ? 'asc' : 'desc';
-            if (this.getScrollTop() === 0) {
-                this.dataBind();
-            } else {
-                this.pageNum = -1;
-            }
-        });
-        /* end */
-        this.bindEvents();
-        this.store.updateColumns();
-        this.doLayout();
-        this.resizeState = {
-            width: this.$el.offsetWidth,
-            height: this.$el.offsetHeight
-        };
-        // init filters
-        this.store.states.columns.forEach(column => {
-            if (column.filteredValue && column.filteredValue.length) {
-            this.store.commit('filterChange', {
-                column,
-                values: column.filteredValue,
-                silent: true
-            });
-            }
-            /* start */
-            this.egColumns.push({'label': column.label, 'property': column.property});
-            /* end */
-        });
-        /* start */
-        this.dataBind();
-        /* end */
-        this.$ready = true;
-    },
-    data() {
-      const store = new TableStore(this, {
-        rowKey: this.rowKey,
-        defaultExpandAll: this.defaultExpandAll,
-        selectOnIndeterminate: this.selectOnIndeterminate
-      });
-      const layout = new TableLayout({
-        store,
-        table: this,
-        fit: this.fit,
-        showHeader: this.showHeader
-      });
-      return {
-        layout,
-        store,
-        isHidden: false,
-        renderExpanded: null,
-        resizeProxyVisible: false,
-        resizeState: {
-          width: null,
-          height: null
-        },
-        // 是否拥有多级表头
-        isGroup: false,
-        scrollPosition: 'left',
-        /* start */
-        bindData: [], //  绑定的数据
-        pageNum: 0, // 页码
-        pageSize: 50, //  每页数据大小
-        nodata: false, //  当前页已经没有数据，为true时说明数据已全部加载完成
-        recordTotal: 0, // 记录总数
-        loadedRecordTotal: 0, // 已加载记录数
-        egColumns: [], // 获取列的集合，记录label和property,用于导出至excel
-        egLoading: false, // 是否显示加载圈
-        deleteNum: 0 // 删除的数据
-        /* end */
-      };
+      }
     }
-  };
+  },
+  destroyed() {
+    if (this.resizeListener)
+      removeResizeListener(this.$el, this.resizeListener);
+  },
+  mounted() {
+    /* start */
+    this.$parent && (this.$parent['eg_dataOld'] = this.bindData);
+    if (this.fitHeight) {
+      this.pageSize = parseInt(this.$refs.bodyWrapper.clientHeight / 35, 10);
+      this.pageSize = this.pageSize <= 1 ? 1 : this.pageSize;
+    }
+    this.store.states.id = this.id;
+    this.store.states.orderBy = this.orderBy;
+    this.store.states.sortType = this.sortType;
+    this.store.states.action = this.action;
+
+    /* 兼容v8 */
+    this.$emitter.on(this.id + '_grid_bind', () => {
+      this.nodata = false;
+      this.bindData.splice(0, this.bindData.length);
+      this.pageNum = 0;
+      this.deleteNum = 0;
+      if (this.getScrollTop() === 0) {
+        this.dataBind();
+      } else {
+        this.pageNum = -1;
+      }
+    });
+
+    this.$emitter.on(this.id + '_refresh', data => this.refresh(data));
+    /* 兼容v8 */
+
+    this.$on('grid_orderby', column => {
+      this.nodata = false;
+      this.bindData.splice(0, this.bindData.length);
+      this.pageNum = 0;
+      this.store.states.orderBy = column.property;
+      this.store.states.sortType =
+        column.order === 'ascending' ? 'asc' : 'desc';
+      if (this.getScrollTop() === 0) {
+        this.dataBind();
+      } else {
+        this.pageNum = -1;
+      }
+    });
+    /* end */
+    this.bindEvents();
+    this.store.updateColumns();
+    this.doLayout();
+    this.resizeState = {
+      width: this.$el.offsetWidth,
+      height: this.$el.offsetHeight
+    };
+    // init filters
+    this.store.states.columns.forEach(column => {
+      if (column.filteredValue && column.filteredValue.length) {
+        this.store.commit('filterChange', {
+          column,
+          values: column.filteredValue,
+          silent: true
+        });
+      }
+      /* start */
+      this.egColumns.push({ label: column.label, property: column.property });
+      /* end */
+    });
+    /* start */
+    this.dataBind();
+    /* end */
+    this.$ready = true;
+  },
+  data() {
+    const store = new TableStore(this, {
+      rowKey: this.rowKey,
+      defaultExpandAll: this.defaultExpandAll,
+      selectOnIndeterminate: this.selectOnIndeterminate
+    });
+    const layout = new TableLayout({
+      store,
+      table: this,
+      fit: this.fit,
+      showHeader: this.showHeader
+    });
+    return {
+      layout,
+      store,
+      isHidden: false,
+      renderExpanded: null,
+      resizeProxyVisible: false,
+      resizeState: {
+        width: null,
+        height: null
+      },
+      // 是否拥有多级表头
+      isGroup: false,
+      scrollPosition: 'left',
+      /* start */
+      bindData: [], //  绑定的数据
+      pageNum: 0, // 页码
+      pageSize: 50, //  每页数据大小
+      nodata: false, //  当前页已经没有数据，为true时说明数据已全部加载完成
+      recordTotal: 0, // 记录总数
+      loadedRecordTotal: 0, // 已加载记录数
+      egColumns: [], // 获取列的集合，记录label和property,用于导出至excel
+      egLoading: false, // 是否显示加载圈
+      deleteNum: 0 // 删除的数据
+      /* end */
+    };
+  }
+};
 </script>
 <style>
 .EgGridView_BottomInfo_excel {
-    width: 17px;
-    height: 17px;
-    cursor: pointer;
-    background: url('data:image/gif;base64,R0lGODlhEQARAPcAAAAAAP////78/v7///v//O/68fH98+357/H38u/48Oz07efx6MXhx+Tw5SiFKqrNq63PrhF0EbnTuczezMnXye/67+jx6PD48O/17/n7+SSEISJyITV9MyN2IC9yLEGJPUeURE2bSVefVEl7R3CrbXuzeXWmc47Gi2B1X3OMcrvXusPcwtbo1UKYO0WFQVWeT0+TS2KyXF+nWWurZoe6hIq5h0tkSYm3hlZvVG+NbX+afYCbfsbjxMzmyt3q3ODs3x9hGSp2IkqWQkiBQ2SqXoC7e4e9gY3EiGOEYHmWdmF4X6zRqIejhMreyOTv4+bw5SZpHUqPQU2SRE+LSFubUoLBeoS8fXiqcnujdlJrT9Lj0Ovz6kZ+PUeAPk6HRVSMTIC2eI3EhJ2xmsndxtTn0dfl1dnm10F7NnCxZHGvZXawaoC6dWt7aMndxdHiztDhzdXl0tvr2NTj0djn1d/q3d7p3OLs4PX69PT580R+NkF0NWmrWWqqW1qMTs3fyc/gy+ny59fn09LizuPv4O727Pb69X6pcYCrc5C5g5S9h53EkaHIlaDHlKXLmabMmqnPnazQoe3060V1NHWgZnehaHijanulbHynbouzfZnBjJa9iZvBjrnSse707EZmOWqYWXCcYHSdZYKtcou2eoexd4u1e4+5foWtdoaud67QofP48WGRTGWTUWiWVWiVVWuXWW6ZXG2VW3KcYHihZnaeZHqjaXmiaH2mbHeeZ3+oboKrcY2oguzz6SxOGzBTHzFVIDRYIjdbJTpfKDldJ1aJPVWJPUFnL1mMQVqMQl6PRmGRS1V8QlmARlyESWGITmaNU2+ZW2mPVnObYHGYXu706ytNGUqCLUuBLUuCLi9RHU+EM1OGNzxgKT5jKz9jLERpMUdsM0lvNUhtNEZrM0txN0pvNkxyOE91OlF4PVF3PVV7QVmARV6FSmSKUGySWE2CL1CEMvD17f3+/P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAPMALAAAAAARABEAAAj/AE2NIiUqVy1a09w9c9Zsnbp058yZSvXI0SJFmRIhwoTq0KVKtnCZKwWJ0B08qi7E67QF0BMnTuTIMkfqUaEAOHFmGJBzAB1Y5HQ1kreERg0TEwJQyLFDh5hBr8LdYhRAhJUiRK4wwUIFRocNvFyBm7Wp0IoZR8LIGPIlhoYIEHyw+iZNU6cAKkgYWfNiShAHEgK4WWUsFqJIGQKUAAEmjRQoXBg8CJSsWzRMgAL0qNIihBo+UfR0uTHnmLB2p6jxcHHGCxAOaPYIkbQrULFg7AxhOIEEhRI2Iz70yePBU5xtwJhZ+iEgwAACAVgksYEjSwoy2n4to2QHgYItCxpYSEhgoECFA2OwZUM3SVAdM2XgaHnzx0+TNk04Wet1LhQoaJ+0wooyySBDzDbwXGPNO9WYYw455YgzzjfGeMPNMMEA84sv2fQSEAA7') no-repeat center center;
-    position: absolute;
-    margin-left: 10px;
+  width: 17px;
+  height: 17px;
+  cursor: pointer;
+  background: url('data:image/gif;base64,R0lGODlhEQARAPcAAAAAAP////78/v7///v//O/68fH98+357/H38u/48Oz07efx6MXhx+Tw5SiFKqrNq63PrhF0EbnTuczezMnXye/67+jx6PD48O/17/n7+SSEISJyITV9MyN2IC9yLEGJPUeURE2bSVefVEl7R3CrbXuzeXWmc47Gi2B1X3OMcrvXusPcwtbo1UKYO0WFQVWeT0+TS2KyXF+nWWurZoe6hIq5h0tkSYm3hlZvVG+NbX+afYCbfsbjxMzmyt3q3ODs3x9hGSp2IkqWQkiBQ2SqXoC7e4e9gY3EiGOEYHmWdmF4X6zRqIejhMreyOTv4+bw5SZpHUqPQU2SRE+LSFubUoLBeoS8fXiqcnujdlJrT9Lj0Ovz6kZ+PUeAPk6HRVSMTIC2eI3EhJ2xmsndxtTn0dfl1dnm10F7NnCxZHGvZXawaoC6dWt7aMndxdHiztDhzdXl0tvr2NTj0djn1d/q3d7p3OLs4PX69PT580R+NkF0NWmrWWqqW1qMTs3fyc/gy+ny59fn09LizuPv4O727Pb69X6pcYCrc5C5g5S9h53EkaHIlaDHlKXLmabMmqnPnazQoe3060V1NHWgZnehaHijanulbHynbouzfZnBjJa9iZvBjrnSse707EZmOWqYWXCcYHSdZYKtcou2eoexd4u1e4+5foWtdoaud67QofP48WGRTGWTUWiWVWiVVWuXWW6ZXG2VW3KcYHihZnaeZHqjaXmiaH2mbHeeZ3+oboKrcY2oguzz6SxOGzBTHzFVIDRYIjdbJTpfKDldJ1aJPVWJPUFnL1mMQVqMQl6PRmGRS1V8QlmARlyESWGITmaNU2+ZW2mPVnObYHGYXu706ytNGUqCLUuBLUuCLi9RHU+EM1OGNzxgKT5jKz9jLERpMUdsM0lvNUhtNEZrM0txN0pvNkxyOE91OlF4PVF3PVV7QVmARV6FSmSKUGySWE2CL1CEMvD17f3+/P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAPMALAAAAAARABEAAAj/AE2NIiUqVy1a09w9c9Zsnbp058yZSvXI0SJFmRIhwoTq0KVKtnCZKwWJ0B08qi7E67QF0BMnTuTIMkfqUaEAOHFmGJBzAB1Y5HQ1kreERg0TEwJQyLFDh5hBr8LdYhRAhJUiRK4wwUIFRocNvFyBm7Wp0IoZR8LIGPIlhoYIEHyw+iZNU6cAKkgYWfNiShAHEgK4WWUsFqJIGQKUAAEmjRQoXBg8CJSsWzRMgAL0qNIihBo+UfR0uTHnmLB2p6jxcHHGCxAOaPYIkbQrULFg7AxhOIEEhRI2Iz70yePBU5xtwJhZ+iEgwAACAVgksYEjSwoy2n4to2QHgYItCxpYSEhgoECFA2OwZUM3SVAdM2XgaHnzx0+TNk04Wet1LhQoaJ+0wooyySBDzDbwXGPNO9WYYw455YgzzjfGeMPNMMEA84sv2fQSEAA7')
+    no-repeat center center;
+  position: absolute;
+  margin-left: 10px;
 }
 </style>
