@@ -439,6 +439,7 @@
                 this.dataBind();
             }
           }
+        this.currentScroll = this.$refs.bodyWrapper && this.$refs.bodyWrapper.scrollTop;
         this.$emit('table-scroll', ev);
       },
       exportExcel() {
@@ -855,6 +856,14 @@
         /* end */
         this.$ready = true;
     },
+    activated() {
+        // start
+        // 路由切换，组件被激活的时候滚动条复原
+        if (this.currentScroll && this.$refs.bodyWrapper.scrollHeight >= this.currentScroll) {
+            this.$refs.bodyWrapper.scrollTop = this.currentScroll;
+        }
+        // end
+    },
     data() {
       const store = new TableStore(this, {
         rowKey: this.rowKey,
@@ -889,7 +898,8 @@
         loadedRecordTotal: 0, // 已加载记录数
         egColumns: [], // 获取列的集合，记录label和property,用于导出至excel
         egLoading: false, // 是否显示加载圈
-        deleteNum: 0 // 删除的数据
+        deleteNum: 0, // 删除的数据,
+        currentScroll: 0 // 记录当前的滚动位置
         /* end */
       };
     }

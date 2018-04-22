@@ -2235,8 +2235,8 @@ export default {
 | sort-by | 排序字段的排序方式(asc, desc, desc)，远程绑定数据时使用 <span style="color: red; font-size: 12px;">新增</span> | String | asc/desc | - |
 | primary-key | 指定数据的唯一标识，远程绑定数据时使用 <span style="color: red; font-size: 12px;">新增</span> | String | - | - |
 | callback | 指定接口的回调函数，远程绑定数据时使用 <span style="color: red; font-size: 12px;">新增</span> | Function | - | - |
-| showTotal | 是否在底部显示数据总条数和当前加载条数，远程绑定数据时使用 <span style="color: red; font-size: 12px;">新增</span> | Boolean | true/false | 指定了acion为true |
-| exportAction | 导出excel的url <span style="color: red; font-size: 12px;">新增</span> | String | - | - |
+| show-total | 是否在底部显示数据总条数和当前加载条数，远程绑定数据时使用 <span style="color: red; font-size: 12px;">新增</span> | Boolean | true/false | 指定了acion为true |
+| export-action | 导出excel的url <span style="color: red; font-size: 12px;">新增</span> | String | - | - |
 
 
 ### Table Events
