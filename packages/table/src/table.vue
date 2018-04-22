@@ -380,7 +380,7 @@
         //           this.callback && this.callback(res);
         //       }
         //   };
-           this.$axios.DTO(this.action, this.queryData).then(res => {
+        this.$axios && this.$axios.DTO(this.action, this.queryData).then(res => {
                 res[0].data.forEach(row => {
                     this.bindData.push(row);
                 });
@@ -424,7 +424,7 @@
             this.callback && this.callback(result);
             }
         };
-        this.$axios.DTO(this.action, refdata).then(res => {
+        this.$axios && this.$axios.DTO(this.action, refdata).then(res => {
             if (refdata.statusCode === this.$const.code.INSERT_SUCCESS) {
                 this.bindData.unshift(result[0].data[0]);
                 this.recordTotal++;
