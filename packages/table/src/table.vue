@@ -354,64 +354,91 @@
           this.queryData['pageSize'] = this.pageSize;
           this.queryData['orderBy'] = this.store.states.orderBy;
           this.queryData['sortType'] = this.store.states.sortType;
-          var options = {
-              url: this.action,
-              data: this.queryData,
-              jsontype: this.jsontype && 'json',
-              type: 'post',
-              success: function(res) {
-                  res[0].data.forEach((row)=>{
-                      this.bindData.push(row);
-                  });
+        //   var options = {
+        //       url: this.action,
+        //       data: this.queryData,
+        //       jsontype: this.jsontype && 'json',
+        //       type: 'post',
+        //       success: function(res) {
+        //           res[0].data.forEach((row)=>{
+        //               this.bindData.push(row);
+        //           });
 
-                  this.recordTotal = res[0].total;
-                  this.loadedRecordTotal = this.bindData.length;
+        //           this.recordTotal = res[0].total;
+        //           this.loadedRecordTotal = this.bindData.length;
 
-                  if ((res[0].data.length === 0) || (res[0].data.length < this.pageSize)) {
+        //           if ((res[0].data.length === 0) || (res[0].data.length < this.pageSize)) {
+        //             this.nodata = true;
+        //           }
+
+        //           this.store.commit('setData', this.bindData);
+
+        //           this.doLayout();
+
+        //           this.egLoading = false;
+
+        //           this.callback && this.callback(res);
+        //       }
+        //   };
+           this.$axios.DTO(this.action, this.queryData).then(res => {
+                res[0].data.forEach(row => {
+                    this.bindData.push(row);
+                });
+                this.recordTotal = res[0].total;
+                this.loadedRecordTotal = this.bindData.length;
+                if (res[0].data.length === 0 || res[0].data.length < this.pageSize) {
                     this.nodata = true;
-                  }
-
-                  this.store.commit('setData', this.bindData);
-
-                  this.doLayout();
-
-                  this.egLoading = false;
-
-                  this.callback && this.callback(res);
-              }
-          };
-          this.$eg.ajax(null, options);
+                }
+                this.store.commit('setData', this.bindData);
+                this.doLayout();
+                this.egLoading = false;
+                this.callback && this.callback(res);
+            });
         }
       },
       refresh(refdata) {
-          if (refdata.statusCode === this.$code.DELETE_SUCCESS) {
-              this.delete(refdata);
-              return;
-          }
-
-          refdata['egGridviewGetRow'] = true;
-          refdata['pageNum'] = 0;
-          refdata['pageSize'] = 10;
-          var options = {
-              url: this.action,
-              data: refdata,
-              jsontype: this.jsontype && 'json',
-              type: 'post',
-              success: function(result) {
-                  if (refdata.statusCode === this.$code.INSERT_SUCCESS) {
-                      this.bindData.unshift(result[0].data[0]);
-                      this.recordTotal++;
-                      this.loadedRecordTotal++;
-                  } else if (refdata.statusCode === this.$code.UPDATE_SUCCESS) {
-                      var rowIndex = this.getRefreshRowIndex(result[0].data[0][this.primaryKey]);
-                      this.bindData.splice(rowIndex, 1, result[0].data[0]);
-                  }
-                  this.store.commit('setData', this.bindData);
-                  this.callback && this.callback(result);
-              }
-          };
-           this.$eg.ajax(null, options);
-      },
+        if (refdata.statusCode === this.$const.code.DELETE_SUCCESS) {
+            this.delete(refdata);
+            return;
+        }
+        refdata['egGridviewGetRow'] = true;
+        refdata['pageNum'] = 0;
+        refdata['pageSize'] = 10;
+        var options = {
+            url: this.action,
+            data: refdata,
+            jsontype: this.jsontype && 'json',
+            type: 'post',
+            success: function(result) {
+            if (refdata.statusCode === this.$const.code.INSERT_SUCCESS) {
+                this.bindData.unshift(result[0].data[0]);
+                this.recordTotal++;
+                this.loadedRecordTotal++;
+            } else if (refdata.statusCode === this.$const.code.UPDATE_SUCCESS) {
+                var rowIndex = this.getRefreshRowIndex(
+                result[0].data[0][this.primaryKey]
+                );
+                this.bindData.splice(rowIndex, 1, result[0].data[0]);
+            }
+            this.store.commit('setData', this.bindData);
+            this.callback && this.callback(result);
+            }
+        };
+        this.$axios.DTO(this.action, refdata).then(res => {
+            if (refdata.statusCode === this.$const.code.INSERT_SUCCESS) {
+                this.bindData.unshift(result[0].data[0]);
+                this.recordTotal++;
+                this.loadedRecordTotal++;
+            } else if (refdata.statusCode === this.$const.code.UPDATE_SUCCESS) {
+                var rowIndex = this.getRefreshRowIndex(
+                result[0].data[0][this.primaryKey]
+                );
+                this.bindData.splice(rowIndex, 1, result[0].data[0]);
+            }
+            this.store.commit('setData', this.bindData);
+            this.callback && this.callback(result);
+        });
+        },
       delete(result) {
           var rowIndex = this.getRefreshRowIndex(result[this.primaryKey]);
           this.bindData.splice(rowIndex, 1);
@@ -800,8 +827,6 @@
         this.store.states.orderBy = this.orderBy;
         this.store.states.sortType = this.sortType;
         this.store.states.action = this.action;
-
-
         /* 兼容v8 */
         this.$emitter.on(this.id + '_grid_bind', () => {
             this.nodata = false;
@@ -815,10 +840,10 @@
             }
         });
 
-        this.$emitter.on(this.id + '_refresh', (data) => this.refresh(data));
+        this.$emitter.on(this.id + '_refresh', data => this.refresh(data));
         /* 兼容v8 */
 
-        this.$on('grid_orderby', (column) => {
+        this.$on('grid_orderby', column => {
             this.nodata = false;
             this.bindData.splice(0, this.bindData.length);
             this.pageNum = 0;
