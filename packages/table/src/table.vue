@@ -479,15 +479,19 @@
           let exportData = this.queryData;
           exportData['columns'] = this.egColumns;
 
-          var options = {
-              url: this.exportAction,
-              type: 'post',
-              data: exportData,
-              success: function(res) {
-                  window.location.href = '/rest/export/exportExcel?url=' + res.url + '&filename=' + res.fileName;
-              }
-          };
-          this.$eg.ajax(null, options);
+          // var options = {
+          //     url: this.exportAction,
+          //     type: 'post',
+          //     data: exportData,
+          //     success: function(res) {
+          //         window.location.href = '/rest/export/exportExcel?url=' + res.url + '&filename=' + res.fileName;
+          //     }
+          // };
+          // this.$eg.ajax(null, options);
+
+          this.$axios && this.$axios.DTO(this.exportAction, exportData).then(res => {
+            window.location.href = '/rest/export/exportExcel?url=' + res.url + '&filename=' + res.fileName;
+          });
         }
       },
       // 对外接口
