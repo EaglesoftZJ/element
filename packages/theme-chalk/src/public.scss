@@ -40,6 +40,19 @@
 .el-font-color-info {
   color: $--color-info;
 }
+.el-font-color-success.el-button:hover {
+  color: mix($--color-white, $--color-success, 10%);
+}
+.el-font-color-warning.el-button:hover {
+  color: mix($--color-white, $--color-warning, 10%);
+ }
+ .el-font-color-danger.el-button:hover {
+  color: mix($--color-white, $--color-danger, 10%);
+ }
+ .el-font-color-info.el-button:hover {
+  color: mix($--color-white, $--color-info, 10%);
+ }
+
 .el-bg-color-primary {
   background: $--color-primary;
 }
