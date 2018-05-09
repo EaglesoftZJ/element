@@ -426,17 +426,17 @@
         };
         this.$axios && this.$axios.DTO(this.action, refdata).then(res => {
             if (refdata.statusCode === this.$const.code.INSERT_SUCCESS) {
-                this.bindData.unshift(result[0].data[0]);
+                this.bindData.unshift(res[0].data[0]);
                 this.recordTotal++;
                 this.loadedRecordTotal++;
             } else if (refdata.statusCode === this.$const.code.UPDATE_SUCCESS) {
                 var rowIndex = this.getRefreshRowIndex(
-                result[0].data[0][this.primaryKey]
+                res[0].data[0][this.primaryKey]
                 );
-                this.bindData.splice(rowIndex, 1, result[0].data[0]);
+                this.bindData.splice(rowIndex, 1, res[0].data[0]);
             }
             this.store.commit('setData', this.bindData);
-            this.callback && this.callback(result);
+            this.callback && this.callback(res);
         });
         },
       delete(result) {

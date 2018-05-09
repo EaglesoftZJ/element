@@ -613,7 +613,7 @@
       },
 
       handleIconClick(event) {
-        if (this.iconClass.indexOf('times-circl') > -1) {
+        if (this.iconClass.indexOf('circle-close') > -1) {
           this.deleteSelected(event);
         }
       },

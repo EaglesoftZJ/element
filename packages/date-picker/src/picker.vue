@@ -86,15 +86,19 @@ import { formatDate, parseDate, isDateObject, getWeekNumber } from './util';
 import Popper from 'element-ui/src/utils/vue-popper';
 import Emitter from 'element-ui/src/mixins/emitter';
 import ElInput from 'element-ui/packages/input';
+import merge from 'element-ui/src/utils/merge';
 
 const NewPopper = {
   props: {
     appendToBody: Popper.props.appendToBody,
     offset: Popper.props.offset,
-    boundariesPadding: Popper.props.boundariesPadding
+    boundariesPadding: Popper.props.boundariesPadding,
+    arrowOffset: Popper.props.arrowOffset
   },
   methods: Popper.methods,
-  data: Popper.data,
+  data() {
+    return merge({ visibleArrow: true }, Popper.data);
+  },
   beforeDestroy: Popper.beforeDestroy
 };
 
@@ -122,29 +126,33 @@ const HAVE_TRIGGER_TYPES = [
   'datetimerange'
 ];
 const DATE_FORMATTER = function(value, format) {
+  if (format === 'timestamp') return value.getTime();
   return formatDate(value, format);
 };
 const DATE_PARSER = function(text, format) {
+  if (format === 'timestamp') return new Date(Number(text));
   return parseDate(text, format);
 };
-const RANGE_FORMATTER = function(value, format, separator) {
+const RANGE_FORMATTER = function(value, format) {
   if (Array.isArray(value) && value.length === 2) {
     const start = value[0];
     const end = value[1];
 
     if (start && end) {
-      return formatDate(start, format) + separator + formatDate(end, format);
+      return [DATE_FORMATTER(start, format), DATE_FORMATTER(end, format)];
     }
   }
   return '';
 };
-const RANGE_PARSER = function(text, format, separator) {
-  const array = text.split(separator);
+const RANGE_PARSER = function(array, format, separator) {
+  if (!Array.isArray(array)) {
+    array = array.split(separator);
+  }
   if (array.length === 2) {
     const range1 = array[0];
     const range2 = array[1];
 
-    return [parseDate(range1, format), parseDate(range2, format)];
+     return [DATE_PARSER(range1, format), DATE_PARSER(range2, format)];
   }
   return [];
 };
@@ -161,8 +169,14 @@ const TYPE_VALUE_RESOLVER_MAP = {
   },
   week: {
     formatter(value, format) {
-      let date = formatDate(value, format);
-      const week = getWeekNumber(value);
+      let week = getWeekNumber(value);
+      let month = value.getMonth();
+      const trueDate = new Date(value);
+      if (week === 1 && month === 11) {
+        trueDate.setHours(0, 0, 0, 0);
+        trueDate.setDate(trueDate.getDate() + 3 - (trueDate.getDay() + 6) % 7);
+      }
+      let date = formatDate(trueDate, format);
 
       date = /WW/.test(date)
             ? date.replace(/WW/, week < 10 ? '0' + week : week)
@@ -232,7 +246,7 @@ const TYPE_VALUE_RESOLVER_MAP = {
 };
 const PLACEMENT_MAP = {
   left: 'bottom-start',
-  center: 'bottom-center',
+  center: 'bottom',
   right: 'bottom-end'
 };
 
@@ -286,6 +300,14 @@ const validator = function(val) {
 
 export default {
   mixins: [Emitter, NewPopper],
+  inject: {
+    elForm: {
+      default: ''
+    },
+    elFormItem: {
+      default: ''
+    }
+  },
 
   props: {
     size: String,
@@ -417,7 +439,7 @@ export default {
     },
 
     triggerClass() {
-      return this.type.indexOf('time') !== -1 ? 'el-icon-clock-o' : 'el-icon-calendar';
+      return this.prefixIcon || (this.type.indexOf('time') !== -1 ? 'el-icon-time' : 'el-icon-date');
     },
 
     selectionMode() {
@@ -440,8 +462,11 @@ export default {
     },
 
     displayValue() {
+      console.log('displayValue', this.userInput, this.parsedValue);
       const formattedValue = formatAsFormatAndType(this.parsedValue, this.format, this.type, this.rangeSeparator);
+      console.log('displayValue', formattedValue);
       if (Array.isArray(this.userInput)) {
+        console.log('displayValue', this.userInput);
         return [
           this.userInput[0] || (formattedValue && formattedValue[0]) || '',
           this.userInput[1] || (formattedValue && formattedValue[1]) || ''
@@ -784,6 +809,7 @@ export default {
 
       this.picker.$on('dodestroy', this.doDestroy);
       this.picker.$on('pick', (date = '', visible = false) => {
+        console.log('pick', date);
         this.userInput = null;
         this.pickerVisible = this.picker.visible = visible;
         this.emitInput(date);
@@ -791,6 +817,7 @@ export default {
       });
 
       this.picker.$on('select-range', (start, end, pos) => {
+        console.log('select-range');
         if (this.refInput.length === 0) return;
         if (!pos || pos === 'min') {
           this.refInput[0].setSelectionRange(start, end);
@@ -823,8 +850,10 @@ export default {
     },
 
     emitInput(val) {
+      console.log(val);
       const formatted = this.formatToValue(val);
       if (!valueEquals(this.value, formatted)) {
+        console.log(formatted);
         this.$emit('input', formatted);
       }
     },
