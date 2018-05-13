@@ -1,57 +1,51 @@
 <template>
   <div class="el-form-item" :class="[{
-      'el-form-item--feedback': elForm && elForm.statusIcon,
-      'is-error': validateState === 'error',
-      'is-validating': validateState === 'validating',
-      'is-success': validateState === 'success',
-      'is-required': isRequired || required,
-    },
-    labelPosition ? 'el-form-item--' + labelPosition : '',
-    sizeClass ? 'el-form-item--' + sizeClass : ''
-  ]">
+        'el-form-item--feedback': elForm && elForm.statusIcon,
+        'is-error': validateState === 'error',
+        'is-validating': validateState === 'validating',
+        'is-success': validateState === 'success',
+        'is-required': isRequired || required,
+      },
+      labelPosition ? 'el-form-item--' + labelPosition : '',
+      sizeClass ? 'el-form-item--' + sizeClass : ''
+    ]">
     <label :for="labelFor" class="el-form-item__label" v-bind:style="labelStyle" v-if="label || $slots.label">
-      <slot name="label">{{label + form.labelSuffix}}</slot>
-    </label>
+        <slot name="label">{{label + form.labelSuffix}}</slot>
+      </label>
     <div class="el-form-item__content" v-bind:style="contentStyle">
       <div v-if="locateCenter" style="width:100%;height:24px"></div>
       <slot></slot>
       <transition name="el-zoom-in-top">
-        <div
-          v-if="validateState === 'error' && showMessage && form.showMessage"
-          class="el-form-item__error"
-          :class="{
-            'el-form-item__error--inline': typeof inlineMessage === 'boolean'
-              ? inlineMessage
-              : (elForm && elForm.inlineMessage || false)
-          }"
-        >
+        <div v-if="validateState === 'error' && showMessage && form.showMessage" class="el-form-item__error" :class="{
+              'el-form-item__error--inline': typeof inlineMessage === 'boolean'
+                ? inlineMessage
+                : (elForm && elForm.inlineMessage || false)
+            }">
           {{validateMessage}}
         </div>
       </transition>
     </div>
   </div>
 </template>
+
 <script>
   import AsyncValidator from 'async-validator';
   import emitter from 'element-ui/src/mixins/emitter';
   import objectAssign from 'element-ui/src/utils/merge';
-  import { noop, getPropByPath } from 'element-ui/src/utils/util';
-
+  import {
+    noop,
+    getPropByPath
+  } from 'element-ui/src/utils/util';
   export default {
     name: 'ElFormItem',
-
     componentName: 'ElFormItem',
-
     mixins: [emitter],
-
     provide() {
       return {
         elFormItem: this
       };
     },
-
     inject: ['elForm'],
-
     props: {
       label: String,
       labelWidth: String,
@@ -107,7 +101,7 @@
       contentStyle() {
         const ret = {};
         const label = this.label;
-        let labelPosition = this.labelPosition || this.form.labelPosition;  
+        let labelPosition = this.labelPosition || this.form.labelPosition;
         if (labelPosition === 'top' || this.form.inline) return ret;
         if (!label && !this.labelWidth && this.isNested) return ret;
         const labelWidth = this.labelWidth || this.form.labelWidth;
@@ -132,20 +126,19 @@
         cache: false,
         get() {
           const model = this.form.model;
-          if (!model || !this.prop) { return; }
-
+          if (!model || !this.prop) {
+            return;
+          }
           let path = this.prop;
           if (path.indexOf(':') !== -1) {
             path = path.replace(/:/, '.');
           }
-
           return getPropByPath(model, path, true).v;
         }
       },
       isRequired() {
         let rules = this.getRules();
         let isRequired = false;
-
         if (rules && rules.length) {
           rules.every(rule => {
             if (rule.required) {
@@ -184,9 +177,7 @@
           callback();
           return true;
         }
-
         this.validateState = 'validating';
-
         const descriptor = {};
         if (rules && rules.length > 0) {
           rules.forEach(rule => {
@@ -194,16 +185,14 @@
           });
         }
         descriptor[this.prop] = rules;
-
         const validator = new AsyncValidator(descriptor);
         const model = {};
-
         model[this.prop] = this.fieldValue;
-
-        validator.validate(model, { firstFields: true }, (errors, invalidFields) => {
+        validator.validate(model, {
+          firstFields: true
+        }, (errors, invalidFields) => {
           this.validateState = !errors ? 'success' : 'error';
           this.validateMessage = errors ? errors[0].message : '';
-
           callback(this.validateMessage, invalidFields);
           this.elForm && this.elForm.$emit('validate', this.prop, !errors);
         });
@@ -216,16 +205,13 @@
       resetField() {
         this.validateState = '';
         this.validateMessage = '';
-
         let model = this.form.model;
         let value = this.fieldValue;
         let path = this.prop;
         if (path.indexOf(':') !== -1) {
           path = path.replace(/:/, '.');
         }
-
         let prop = getPropByPath(model, path, true);
-
         this.validateDisabled = true;
         if (Array.isArray(value)) {
           prop.o[prop.k] = [].concat(this.initialValue);
@@ -236,22 +222,20 @@
            这里需要强行触发一次，刷新 validateDisabled 的值，
            确保 Select 下一次值改变时能正确触发校验 */
         this.broadcast('ElSelect', 'fieldReset');
-
         this.broadcast('ElTimeSelect', 'fieldReset', this.initialValue);
       },
       getRules() {
         let formRules = this.form.rules;
         const selfRules = this.rules;
-        const requiredRule = this.required !== undefined ? { required: !!this.required } : [];
-
+        const requiredRule = this.required !== undefined ? {
+          required: !!this.required
+        } : [];
         const prop = getPropByPath(formRules, this.prop || '');
         formRules = formRules ? (prop.o[this.prop || ''] || prop.v) : [];
-
         return [].concat(selfRules || formRules || []).concat(requiredRule);
       },
       getFilteredRule(trigger) {
         const rules = this.getRules();
-
         return rules.filter(rule => {
           if (!rule.trigger || trigger === '') return true;
           if (Array.isArray(rule.trigger)) {
@@ -269,14 +253,12 @@
           this.validateDisabled = false;
           return;
         }
-
         this.validate('change');
       }
     },
     mounted() {
       if (this.prop) {
         this.dispatch('ElForm', 'el.form.addField', [this]);
-
         let initialValue = this.fieldValue;
         if (Array.isArray(initialValue)) {
           initialValue = [].concat(initialValue);
@@ -284,9 +266,7 @@
         Object.defineProperty(this, 'initialValue', {
           value: initialValue
         });
-
         let rules = this.getRules();
-
         if (rules.length || this.required !== undefined) {
           this.$on('el.form.blur', this.onFieldBlur);
           this.$on('el.form.change', this.onFieldChange);

@@ -1,55 +1,21 @@
 <template>
   <div class="el-transfer">
-    <transfer-panel
-      v-bind="$props"
-      ref="leftPanel"
-      :data="sourceData"
-      :title="titles[0] || t('el.transfer.titles.0')"
-      :default-checked="leftDefaultChecked"
-      :placeholder="filterPlaceholder || t('el.transfer.filterPlaceholder')"
-      @checked-change="onSourceCheckedChange"
-      :drag="drag"
-      :draggable-name="draggableName"
-      draggable-sort
-      @val-change="handleChange('left', arguments[0])"
-      :buttons="buttons && []"
-      :functions="functions && []"
-      >
+    <transfer-panel v-bind="$props" ref="leftPanel" :data="sourceData" :title="titles[0] || t('el.transfer.titles.0')" :default-checked="leftDefaultChecked" :placeholder="filterPlaceholder || t('el.transfer.filterPlaceholder')" @checked-change="onSourceCheckedChange"
+      :drag="drag" :draggable-name="draggableName" draggable-sort @val-change="handleChange('left', arguments[0])" :buttons="buttons && []" :functions="functions && []">
       <slot name="left-footer"></slot>
     </transfer-panel>
     <div class="el-transfer__buttons">
-      <el-button
-        type="primary"
-        :class="['el-transfer__button', hasButtonTexts ? 'is-with-texts' : '']"
-        @click.native="addToLeft"
-        :disabled="rightChecked.length === 0">
+      <el-button type="primary" :class="['el-transfer__button', hasButtonTexts ? 'is-with-texts' : '']" @click.native="addToLeft" :disabled="rightChecked.length === 0">
         <i class="el-icon-arrow-left"></i>
         <span v-if="buttonTexts[0] !== undefined">{{ buttonTexts[0] }}</span>
       </el-button>
-      <el-button
-        type="primary"
-        :class="['el-transfer__button', hasButtonTexts ? 'is-with-texts' : '']"
-        @click.native="addToRight"
-        :disabled="leftChecked.length === 0">
+      <el-button type="primary" :class="['el-transfer__button', hasButtonTexts ? 'is-with-texts' : '']" @click.native="addToRight" :disabled="leftChecked.length === 0">
         <span v-if="buttonTexts[1] !== undefined">{{ buttonTexts[1] }}</span>
         <i class="el-icon-arrow-right"></i>
       </el-button>
     </div>
-    <transfer-panel
-      v-bind="$props"
-      ref="rightPanel"
-      :data="targetData"
-      :title="titles[1] || t('el.transfer.titles.1')"
-      :default-checked="rightDefaultChecked"
-      :placeholder="filterPlaceholder || t('el.transfer.filterPlaceholder')"
-      @checked-change="onTargetCheckedChange"
-      @val-change="handleChange('right', arguments[0])"
-      :drag="drag"
-      :draggable-name="draggableName"
-      draggable-sort
-      :buttons="buttons"
-      :functions="functions"
-      >
+    <transfer-panel v-bind="$props" ref="rightPanel" :data="targetData" :title="titles[1] || t('el.transfer.titles.1')" :default-checked="rightDefaultChecked" :placeholder="filterPlaceholder || t('el.transfer.filterPlaceholder')" @checked-change="onTargetCheckedChange"
+      @val-change="handleChange('right', arguments[0])" :drag="drag" :draggable-name="draggableName" draggable-sort :buttons="buttons" :functions="functions">
       <slot name="right-footer"></slot>
     </transfer-panel>
   </div>
@@ -61,34 +27,30 @@
   import Locale from 'element-ui/src/mixins/locale';
   import TransferPanel from './transfer-panel.vue';
   import Migrating from 'element-ui/src/mixins/migrating';
-
   export default {
     name: 'ElTransfer',
     componentName: 'ElTransfer',
-
     mixins: [Emitter, Locale, Migrating],
-
     components: {
       TransferPanel,
       ElButton
     },
-
     props: {
       data: {
         type: Array,
-        default() {
+        default () {
           return [];
         }
       },
       titles: {
         type: Array,
-        default() {
+        default () {
           return [];
         }
       },
       buttonTexts: {
         type: Array,
-        default() {
+        default () {
           return [];
         }
       },
@@ -99,26 +61,26 @@
       filterMethod: Function,
       leftDefaultChecked: {
         type: Array,
-        default() {
+        default () {
           return [];
         }
       },
       rightDefaultChecked: {
         type: Array,
-        default() {
+        default () {
           return [];
         }
       },
       renderContent: Function,
       value: {
         type: Array,
-        default() {
+        default () {
           return [];
         }
       },
       format: {
         type: Object,
-        default() {
+        default () {
           return {};
         }
       },
@@ -127,7 +89,7 @@
       drag: Boolean,
       props: {
         type: Object,
-        default() {
+        default () {
           return {
             label: 'label',
             key: 'key',
@@ -142,7 +104,6 @@
         default: 'original'
       }
     },
-
     data() {
       return {
         leftChecked: [],
@@ -153,13 +114,11 @@
         allQuery: 0
       };
     },
-
     computed: {
       dataObj() {
         const key = this.props.key;
         return this.data.reduce((o, cur) => (o[cur[key]] = cur) && o, {});
       },
-  
       sourceData() {
         if (this.sort) {
           return this.getArr(this.leftValue);
@@ -171,16 +130,15 @@
         if (this.sort) {
           return this.getArr(this.value);
         } else {
-           return this.targetOrder === 'original'
-          ? this.data.filter(item => this.value.indexOf(item[this.props.key]) > -1)
-          : this.value.map(key => this.dataObj[key]);
-        }     
+          return this.targetOrder === 'original' ?
+            this.data.filter(item => this.value.indexOf(item[this.props.key]) > -1) :
+            this.value.map(key => this.dataObj[key]);
+        }
       },
       hasButtonTexts() {
         return this.buttonTexts.length === 2;
       }
     },
-
     watch: {
       value(val) {
         this.dispatch('ElFormItem', 'el.form.change', val);
@@ -194,7 +152,6 @@
         }
       }
     },
-
     methods: {
       getArr(val) {
         let arr = [];
@@ -214,19 +171,16 @@
           }
         };
       },
-
       onSourceCheckedChange(val, movedKeys) {
         this.leftChecked = val;
         if (movedKeys === undefined) return;
         this.$emit('left-check-change', val, movedKeys);
       },
-
       onTargetCheckedChange(val, movedKeys) {
         this.rightChecked = val;
         if (movedKeys === undefined) return;
         this.$emit('right-check-change', val, movedKeys);
       },
-
       addToLeft() {
         let currentValue = this.value.slice();
         this.rightChecked.forEach(item => {
@@ -239,7 +193,6 @@
         this.$emit('input', currentValue);
         this.$emit('change', currentValue, 'left', this.rightChecked);
       },
-
       addToRight() {
         let currentValue = this.value.slice();
         const itemsToBeMoved = [];
@@ -254,18 +207,19 @@
             let index = this.leftValue.indexOf(itemKey);
             this.leftValue.splice(index, 1);
           }
-
         });
-        currentValue = this.targetOrder === 'unshift'
-          ? itemsToBeMoved.concat(currentValue)
-          : currentValue.concat(itemsToBeMoved);
+        currentValue = this.targetOrder === 'unshift' ?
+          itemsToBeMoved.concat(currentValue) :
+          currentValue.concat(itemsToBeMoved);
         this.$emit('input', currentValue);
         this.$emit('change', currentValue, 'right', this.leftChecked);
       },
       handleChange(type, val) {
         let arr = [];
         if (type === 'right') {
-          arr = val.map((item) => {return item[this.props.key];});
+          arr = val.map((item) => {
+            return item[this.props.key];
+          });
           this.$emit('input', arr);
         } else if (type === 'left') {
           this.leftData = val;

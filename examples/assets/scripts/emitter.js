@@ -5,16 +5,16 @@
 import Vue from 'vue';
 
 export default {
-    EgEmitter: new Vue(),
-    emit: function(name, ...val) {
-        this.EgEmitter.$nextTick(() => {
-            this.EgEmitter.$emit(name, ...val);
-        });
-    },
-    on: function(name, fn) {
-        this.EgEmitter.$on(name, fn);
-    },
-    off: function(name, fn) {
-        this.EgEmitter.$off(name, fn);
-    }
+  EgEmitter: new Vue(),
+  emit: function(name, ...val) {
+    this.EgEmitter.$nextTick(() => {
+      this.EgEmitter.$emit(name, ...val);
+    });
+  },
+  on: function(name, fn) {
+    this.EgEmitter.$on(name, fn);
+  },
+  off: function(name, fn) {
+    this.EgEmitter.$off(name, fn);
+  }
 };

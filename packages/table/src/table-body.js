@@ -46,16 +46,16 @@ export default {
         </colgroup>
         <tbody>
           {
-            this._l(this.data, (row, $index) =>
-              [<tr
+            this._l(this.data, (row, $index) =>{
+              return [<tr
                 style={ this.rowStyle ? this.getRowStyle(row, $index) : null }
-                key={ this.table.rowKey ? this.getKeyOfRow(row, $index) : $index }
+                key={ this.table.primaryKey ? row[this.table.primaryKey] : this.table.rowKey ? this.getKeyOfRow(row, $index) : $index }
                 on-dblclick={ ($event) => this.handleDoubleClick($event, row) }
                 on-click={ ($event) => this.handleClick($event, row) }
                 on-contextmenu={ ($event) => this.handleContextMenu($event, row) }
                 on-mouseenter={ _ => this.handleMouseEnter($index) }
                 on-mouseleave={ _ => this.handleMouseLeave() }
-                class={ [this.getRowClass(row, $index)] }>
+                class={ [this.getRowClass(row, $index), {'current-row': this.store.states.currentRow && this.table.primaryKey && row[this.table.primaryKey] === this.store.states.currentRow[this.table.primaryKey]}] }>
                 {
                   this._l(this.columns, (column, cellIndex) => {
                     const { rowspan, colspan } = this.getSpan(row, column, $index, cellIndex);
@@ -122,8 +122,8 @@ export default {
                   </td>
                 </tr>)
                 : ''
-              ]
-            ).concat(
+              ];
+            }).concat(
               <el-tooltip effect={ this.table.tooltipEffect } placement="top" ref="tooltip" content={ this.tooltipContent }></el-tooltip>
             )
           }

@@ -194,7 +194,7 @@ export default {
         // this.abort(file);
         let fileList = this.uploadFiles;
         // fileList.splice(fileList.indexOf(file), 1);
-         let removeData = () => {
+        let removeData = () => {
           this.abort(file);
           fileList.splice(fileList.indexOf(file), 1);
         };
@@ -204,12 +204,12 @@ export default {
             before.then(() => {
               removeData();
             }, () => {
-              // do nothing
+            // do nothing
             });
           } else if (before) {
             removeData();
           } else {
-             // do nothing
+            // do nothing
           }
         } else {
           removeData();

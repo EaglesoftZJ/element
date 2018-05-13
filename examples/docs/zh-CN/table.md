@@ -3,6 +3,7 @@
     data() {
       return {
         tableData: [{
+          id: 1,
           date: '2016-05-03',
           name: '王小虎',
           province: '上海',
@@ -11,6 +12,7 @@
           zip: 200333,
           tag: '家'
         }, {
+          id: 2,
           date: '2016-05-02',
           name: '王小虎',
           province: '上海',
@@ -19,6 +21,7 @@
           zip: 200333,
           tag: '公司'
         }, {
+          id: 3,
           date: '2016-05-04',
           name: '王小虎',
           province: '上海',
@@ -27,6 +30,7 @@
           zip: 200333,
           tag: '家'
         }, {
+          id: 4,
           date: '2016-05-01',
           name: '王小虎',
           province: '上海',
@@ -271,6 +275,22 @@
     },
 
     methods: {
+       handleClick1() {
+        	var obj = {
+            id: 1,
+            date: '2016-05-03',
+            name: '111',
+            province: '上海',
+            city: '普陀区',
+            address: '上海市普陀区金沙江路 1518 弄',
+            zip: 200333,
+            tag: '家'
+          };
+          this.tableData.splice(0, 1, obj);
+          // this.$nextTick(() => {
+          //   this.$refs.aaa.setCurrentRow(obj);
+          // })
+			},
       getSummaries(param) {
         const { columns, data } = param;
         const sums = [];
@@ -432,24 +452,17 @@
 :::demo 当`el-table`元素中注入`data`对象数组后，在`el-table-column`中用`prop`属性来对应对象中的键名即可填入数据，用`label`属性来定义表格的列名。可以使用`width`属性来定义列宽。
 ```html
   <template>
-    <el-table
-      :data="tableData"
-      style="width: 100%">
-      <el-table-column
-        prop="date"
-        label="日期"
-        width="180">
+     <div>
+       <el-table primary-key="id" highlight-current-row ref="aaa" :data="tableData" style="width: 100%">
+      <el-table-column prop="date" label="日期" width="180">
       </el-table-column>
-      <el-table-column
-        prop="name"
-        label="姓名"
-        width="180">
+      <el-table-column prop="name" label="姓名" width="180">
       </el-table-column>
-      <el-table-column
-        prop="address"
-        label="地址">
+      <el-table-column prop="address" label="地址">
       </el-table-column>
     </el-table>
+    <el-button @click="handleClick1">click</el-button>
+    </div>
   </template>
 
   <script>

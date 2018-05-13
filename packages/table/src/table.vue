@@ -1,234 +1,116 @@
 <template>
-  <div class="el-table"
-     v-loading="egLoading"
-    :class="[{
-      'el-table--fit': fit,
-      'el-table--striped': stripe,
-      'el-table--border': border || isGroup,
-      'el-table--hidden': isHidden,
-      'el-table--group': isGroup,
-      'el-table--fluid-height': maxHeight,
-        'el-table--fit-height': fitHeight,
-      'el-table--scrollable-x': layout.scrollX,
-      'el-table--scrollable-y': layout.scrollY,
-      'el-table--enable-row-hover': !store.states.isComplex,
-      'el-table--enable-row-transition': (store.states.data || []).length !== 0 && (store.states.data || []).length < 100
-    }, tableSize ? `el-table--${ tableSize }` : '']"
-    @mouseleave="handleMouseLeave($event)"
-    :style="fitHeight ? fitHeightStyle  : ''">
-    <div class="hidden-columns" ref="hiddenColumns"><slot></slot></div>
-    <div
-      v-if="showHeader"
-      v-mousewheel="handleHeaderFooterMousewheel"
-      class="el-table__header-wrapper"
-      :style="fitHeight ? fitHeightHeaderStyle  : ''"
-      ref="headerWrapper">
-      <table-header
-        ref="tableHeader"
-        :store="store"
-        :border="border"
-        :default-sort="defaultSort"
-        :style="{
-          width: layout.bodyWidth ? layout.bodyWidth + 'px' : ''
-        }">
+  <div class="el-table" v-loading="egLoading" :class="[{
+              'el-table--fit': fit,
+              'el-table--striped': stripe,
+              'el-table--border': border || isGroup,
+              'el-table--hidden': isHidden,
+              'el-table--group': isGroup,
+              'el-table--fluid-height': maxHeight,
+                'el-table--fit-height': fitHeight,
+              'el-table--scrollable-x': layout.scrollX,
+              'el-table--scrollable-y': layout.scrollY,
+              'el-table--enable-row-hover': !store.states.isComplex,
+              'el-table--enable-row-transition': (store.states.data || []).length !== 0 && (store.states.data || []).length < 100
+            }, tableSize ? `el-table--${ tableSize }` : '']" @mouseleave="handleMouseLeave($event)" :style="fitHeight ? fitHeightStyle  : ''">
+    <div class="hidden-columns" ref="hiddenColumns">
+      <slot></slot>
+    </div>
+    <div v-if="showHeader" v-mousewheel="handleHeaderFooterMousewheel" class="el-table__header-wrapper" :style="fitHeight ? fitHeightHeaderStyle  : ''" ref="headerWrapper">
+      <table-header ref="tableHeader" :store="store" :border="border" :default-sort="defaultSort" :style="{
+                  width: layout.bodyWidth ? layout.bodyWidth + 'px' : ''
+                }">
       </table-header>
     </div>
-    <div
-      class="el-table__body-wrapper"
-      ref="bodyWrapper"
-      :class="[layout.scrollX ? `is-scrolling-${scrollPosition}` : 'is-scrolling-none']"
-      @scroll="tableScroll"
-      :style="fitHeight ? fitHeightBodyStyle  : [bodyHeight]">
-      <table-body
-        :context="context"
-        :store="store"
-        :stripe="stripe"
-        :row-class-name="rowClassName"
-        :row-style="rowStyle"
-        :highlight="highlightCurrentRow"
-        :style="{
-           width: bodyWidth
-        }">
+    <div class="el-table__body-wrapper" ref="bodyWrapper" :class="[layout.scrollX ? `is-scrolling-${scrollPosition}` : 'is-scrolling-none']" @scroll="tableScroll" :style="fitHeight ? fitHeightBodyStyle  : [bodyHeight]">
+      <table-body :context="context" :store="store" :stripe="stripe" :row-class-name="rowClassName" :row-style="rowStyle" :highlight="highlightCurrentRow" :style="{
+                   width: bodyWidth
+                }">
       </table-body>
-      <div
-        v-if="(!data || data.length === 0) &&  bindData.length === 0"
-        class="el-table__empty-block"
-        ref="emptyBlock"
-        :style="{
-          width: bodyWidth
-        }">
+      <div v-if="(!data || data.length === 0) &&  bindData.length === 0" class="el-table__empty-block" ref="emptyBlock" :style="{
+                  width: bodyWidth
+                }">
         <span class="el-table__empty-text">
-          <slot name="empty">{{ emptyText || t('el.table.emptyText') }}</slot>
-        </span>
+                  <slot name="empty">{{ emptyText || t('el.table.emptyText') }}</slot>
+                </span>
       </div>
-      <div
-        v-if="$slots.append"
-        class="el-table__append-wrapper"
-        ref="appendWrapper">
+      <div v-if="$slots.append" class="el-table__append-wrapper" ref="appendWrapper">
         <slot name="append"></slot>
       </div>
     </div>
-    <div 
-    :class="{ 
-      'el-table__footer-wrapper': false,
-      'el-table__footer-wrapper-egfooter': true
-      }" v-if="isShowTotal" ref="footerWrapper"
-      :style="fitHeight ? fitHeightFooterStyle  : 'width:100%;box-sizing:border-box;'">
+    <div :class="{ 
+              'el-table__footer-wrapper': false,
+              'el-table__footer-wrapper-egfooter': true
+              }" v-if="isShowTotal" ref="footerWrapper" :style="fitHeight ? fitHeightFooterStyle  : 'width:100%;box-sizing:border-box;'">
       <span class="EgGridView_BottomInfo_recordCount">
-        共约&nbsp;<font color="red" id="GV_Show_recordCount">{{ recordTotal }}</font>&nbsp;条记录
-      </span> 
-      ,
+                共约&nbsp;<font color="red" id="GV_Show_recordCount">{{ recordTotal }}</font>&nbsp;条记录
+              </span> ,
       <span class="EgGridView_BottomInfo_loadedCount">
-        已加载&nbsp;<font color="red" id="GV_Show_loadedCount">{{ loadedRecordTotal }}</font>&nbsp;条
-      </span>
-      <span v-if="exportAction !== ''" class="EgGridView_BottomInfo_excel" title="导出excel。如果数据多，可能需要一段时间，请耐心等待！" 
-        @click="exportExcel"></span>
+                已加载&nbsp;<font color="red" id="GV_Show_loadedCount">{{ loadedRecordTotal }}</font>&nbsp;条
+              </span>
+      <span v-if="exportAction !== ''" class="EgGridView_BottomInfo_excel" title="导出excel。如果数据多，可能需要一段时间，请耐心等待！" @click="exportExcel"></span>
     </div>
-    <div
-      v-else-if="showSummary"
-      v-show="data && data.length > 0"
-      v-mousewheel="handleHeaderFooterMousewheel"
-      class="el-table__footer-wrapper"
-      ref="footerWrapper">
-      <table-footer
-        :store="store"
-        :border="border"
-        :sum-text="sumText || t('el.table.sumText')"
-        :summary-method="summaryMethod"
-        :default-sort="defaultSort"
-        :style="{
-          width: layout.bodyWidth ? layout.bodyWidth + 'px' : ''
-        }">
+    <div v-else-if="showSummary" v-show="data && data.length > 0" v-mousewheel="handleHeaderFooterMousewheel" class="el-table__footer-wrapper" ref="footerWrapper">
+      <table-footer :store="store" :border="border" :sum-text="sumText || t('el.table.sumText')" :summary-method="summaryMethod" :default-sort="defaultSort" :style="{
+                  width: layout.bodyWidth ? layout.bodyWidth + 'px' : ''
+                }">
       </table-footer>
     </div>
-    <div
-      v-if="fixedColumns.length > 0"
-      v-mousewheel="handleFixedMousewheel"
-      class="el-table__fixed"
-      ref="fixedWrapper"
-      :style="[{
-        width: layout.fixedWidth ? layout.fixedWidth + 'px' : ''
-      },
-       fitHeight ? fixedHeightFitHeight :fixedHeight]">
-      <div
-        v-if="showHeader"
-        class="el-table__fixed-header-wrapper"
-        ref="fixedHeaderWrapper" >
-        <table-header
-          ref="fixedTableHeader"
-          fixed="left"
-          :border="border"
-          :store="store"
-          :style="{
-            width: bodyWidth
-          }"></table-header>
+    <div v-if="fixedColumns.length > 0" v-mousewheel="handleFixedMousewheel" class="el-table__fixed" ref="fixedWrapper" :style="[{
+                width: layout.fixedWidth ? layout.fixedWidth + 'px' : ''
+              },
+               fitHeight ? fixedHeightFitHeight :fixedHeight]">
+      <div v-if="showHeader" class="el-table__fixed-header-wrapper" ref="fixedHeaderWrapper">
+        <table-header ref="fixedTableHeader" fixed="left" :border="border" :store="store" :style="{
+                    width: bodyWidth
+                  }"></table-header>
       </div>
-      <div
-        class="el-table__fixed-body-wrapper"
-        ref="fixedBodyWrapper"
-        :style="[{
-          top: layout.headerHeight + 'px'
-        },
-        fitHeight ? fixedBodyHeightFitHeight : fixedBodyHeight]">
-        <table-body
-          fixed="left"
-          :store="store"
-          :stripe="stripe"
-          :highlight="highlightCurrentRow"
-          :row-class-name="rowClassName"
-          :row-style="rowStyle"
-          :style="{
-            width: bodyWidth
-          }">
+      <div class="el-table__fixed-body-wrapper" ref="fixedBodyWrapper" :style="[{
+                  top: layout.headerHeight + 'px'
+                },
+                fitHeight ? fixedBodyHeightFitHeight : fixedBodyHeight]">
+        <table-body fixed="left" :store="store" :stripe="stripe" :highlight="highlightCurrentRow" :row-class-name="rowClassName" :row-style="rowStyle" :style="{
+                    width: bodyWidth
+                  }">
         </table-body>
-        <div
-          v-if="$slots.append"
-          class="el-table__append-gutter"
-          :style="{
-            height: layout.appendHeight + 'px'
-          }"></div>
+        <div v-if="$slots.append" class="el-table__append-gutter" :style="{
+                    height: layout.appendHeight + 'px'
+                  }"></div>
       </div>
-      <div
-        v-if="showSummary"
-        v-show="data && data.length > 0"
-        class="el-table__fixed-footer-wrapper"
-        ref="fixedFooterWrapper">
-        <table-footer
-          fixed="left"
-          :border="border"
-          :sum-text="sumText || t('el.table.sumText')"
-          :summary-method="summaryMethod"
-          :store="store"
-          :style="{
-            width: bodyWidth
-          }"></table-footer>
+      <div v-if="showSummary" v-show="data && data.length > 0" class="el-table__fixed-footer-wrapper" ref="fixedFooterWrapper">
+        <table-footer fixed="left" :border="border" :sum-text="sumText || t('el.table.sumText')" :summary-method="summaryMethod" :store="store" :style="{
+                    width: bodyWidth
+                  }"></table-footer>
       </div>
     </div>
-    <div
-      v-if="rightFixedColumns.length > 0"
-      v-mousewheel="handleFixedMousewheel"
-      class="el-table__fixed-right"
-      ref="rightFixedWrapper"
-      :style="[{
-        width: layout.rightFixedWidth ? layout.rightFixedWidth + 'px' : '',
-        right: layout.scrollY ? (border ? layout.gutterWidth : (layout.gutterWidth || 0)) + 'px' : ''
-      },
-       fitHeight ? fixedHeightFitHeight :fixedHeight]">
-      <div v-if="showHeader"
-        class="el-table__fixed-header-wrapper"
-        ref="rightFixedHeaderWrapper">
-        <table-header
-          ref="rightFixedTableHeader"
-          fixed="right"
-          :border="border"
-          :store="store"
-          :style="{
-            width: bodyWidth
-          }"></table-header>
+    <div v-if="rightFixedColumns.length > 0" v-mousewheel="handleFixedMousewheel" class="el-table__fixed-right" ref="rightFixedWrapper" :style="[{
+                width: layout.rightFixedWidth ? layout.rightFixedWidth + 'px' : '',
+                right: layout.scrollY ? (border ? layout.gutterWidth : (layout.gutterWidth || 0)) + 'px' : ''
+              },
+               fitHeight ? fixedHeightFitHeight :fixedHeight]">
+      <div v-if="showHeader" class="el-table__fixed-header-wrapper" ref="rightFixedHeaderWrapper">
+        <table-header ref="rightFixedTableHeader" fixed="right" :border="border" :store="store" :style="{
+                    width: bodyWidth
+                  }"></table-header>
       </div>
-      <div
-        class="el-table__fixed-body-wrapper"
-        ref="rightFixedBodyWrapper"
-        :style="[{
-          top: layout.headerHeight + 'px'
-        },
-         fitHeight ? fixedBodyHeightFitHeight : fixedBodyHeight]">
-        <table-body
-          fixed="right"
-          :store="store"
-          :stripe="stripe"
-          :row-class-name="rowClassName"
-          :row-style="rowStyle"
-          :highlight="highlightCurrentRow"
-          :style="{
-            width: bodyWidth
-          }">
+      <div class="el-table__fixed-body-wrapper" ref="rightFixedBodyWrapper" :style="[{
+                  top: layout.headerHeight + 'px'
+                },
+                 fitHeight ? fixedBodyHeightFitHeight : fixedBodyHeight]">
+        <table-body fixed="right" :store="store" :stripe="stripe" :row-class-name="rowClassName" :row-style="rowStyle" :highlight="highlightCurrentRow" :style="{
+                    width: bodyWidth
+                  }">
         </table-body>
       </div>
-      <div
-        v-if="showSummary"
-        v-show="data && data.length > 0"
-        class="el-table__fixed-footer-wrapper"
-        ref="rightFixedFooterWrapper">
-        <table-footer
-          fixed="right"
-          :border="border"
-          :sum-text="sumText || t('el.table.sumText')"
-          :summary-method="summaryMethod"
-          :store="store"
-          :style="{
-            width: bodyWidth
-          }"></table-footer>
+      <div v-if="showSummary" v-show="data && data.length > 0" class="el-table__fixed-footer-wrapper" ref="rightFixedFooterWrapper">
+        <table-footer fixed="right" :border="border" :sum-text="sumText || t('el.table.sumText')" :summary-method="summaryMethod" :store="store" :style="{
+                    width: bodyWidth
+                  }"></table-footer>
       </div>
     </div>
-    <div
-      v-if="rightFixedColumns.length > 0"
-      class="el-table__fixed-right-patch"
-      ref="rightFixedPatch"
-      :style="{
-        width: layout.scrollY ? layout.gutterWidth + 'px' : '0',
-        height: layout.headerHeight + 'px'
-      }"></div>
+    <div v-if="rightFixedColumns.length > 0" class="el-table__fixed-right-patch" ref="rightFixedPatch" :style="{
+                width: layout.scrollY ? layout.gutterWidth + 'px' : '0',
+                height: layout.headerHeight + 'px'
+              }"></div>
     <div class="el-table__column-resize-proxy" ref="resizeProxy" v-show="resizeProxyVisible"></div>
   </div>
 </template>
@@ -236,7 +118,10 @@
 <script type="text/babel">
   import ElCheckbox from 'element-ui/packages/checkbox';
   import debounce from 'throttle-debounce/debounce';
-  import { addResizeListener, removeResizeListener } from 'element-ui/src/utils/resize-event';
+  import {
+    addResizeListener,
+    removeResizeListener
+  } from 'element-ui/src/utils/resize-event';
   import Mousewheel from 'element-ui/src/directives/mousewheel';
   import Locale from 'element-ui/src/mixins/locale';
   import Migrating from 'element-ui/src/mixins/migrating';
@@ -307,37 +192,35 @@
       exportAction: {
         type: String,
         default: ''
-       },
+      },
       jsontype: Boolean,
       callback: {
         type: Function
       },
-        fitHeight: Boolean,
-        id: String,
+      fitHeight: Boolean,
+      id: String,
       queryData: {
-          type: Object,
-          default() {
-              return {};
-          }
+        type: Object,
+        default () {
+          return {};
+        }
       },
       primaryKey: {
-          type: String,
-          default: 'bh'
+        type: String
       },
       orderBy: {
-         type: String,
-         default: ''
+        type: String,
+        default: ''
       },
       sortType: {
-          type: String,
-          default: ''
+        type: String,
+        default: ''
       },
       showTotal: {
         type: Boolean,
         default: false
       }
       /* end */
-
     },
     components: {
       TableHeader,
@@ -346,7 +229,7 @@
       ElCheckbox
     },
     methods: {
-    /* 自已加的方法开始 */
+      /* 自已加的方法开始 */
       dataBind() {
         if (this.action !== '') {
           this.egLoading = true;
@@ -354,118 +237,114 @@
           this.queryData['pageSize'] = this.pageSize;
           this.queryData['orderBy'] = this.store.states.orderBy;
           this.queryData['sortType'] = this.store.states.sortType;
-        //   var options = {
-        //       url: this.action,
-        //       data: this.queryData,
-        //       jsontype: this.jsontype && 'json',
-        //       type: 'post',
-        //       success: function(res) {
-        //           res[0].data.forEach((row)=>{
-        //               this.bindData.push(row);
-        //           });
-
-        //           this.recordTotal = res[0].total;
-        //           this.loadedRecordTotal = this.bindData.length;
-
-        //           if ((res[0].data.length === 0) || (res[0].data.length < this.pageSize)) {
-        //             this.nodata = true;
-        //           }
-
-        //           this.store.commit('setData', this.bindData);
-
-        //           this.doLayout();
-
-        //           this.egLoading = false;
-
-        //           this.callback && this.callback(res);
-        //       }
-        //   };
-        this.$axios && this.$axios.DTO(this.action, this.queryData).then(res => {
-                res[0].data.forEach(row => {
-                    this.bindData.push(row);
-                });
-                this.recordTotal = res[0].total;
-                this.loadedRecordTotal = this.bindData.length;
-                if (res[0].data.length === 0 || res[0].data.length < this.pageSize) {
-                    this.nodata = true;
-                }
-                this.store.commit('setData', this.bindData);
-                this.doLayout();
-                this.egLoading = false;
-                this.callback && this.callback(res);
+          //   var options = {
+          //       url: this.action,
+          //       data: this.queryData,
+          //       jsontype: this.jsontype && 'json',
+          //       type: 'post',
+          //       success: function(res) {
+          //           res[0].data.forEach((row)=>{
+          //               this.bindData.push(row);
+          //           });
+          //           this.recordTotal = res[0].total;
+          //           this.loadedRecordTotal = this.bindData.length;
+          //           if ((res[0].data.length === 0) || (res[0].data.length < this.pageSize)) {
+          //             this.nodata = true;
+          //           }
+          //           this.store.commit('setData', this.bindData);
+          //           this.doLayout();
+          //           this.egLoading = false;
+          //           this.callback && this.callback(res);
+          //       }
+          //   };
+          this.$axios && this.$axios.DTO(this.action, this.queryData).then(res => {
+            res[0].data.forEach(row => {
+              this.bindData.push(row);
             });
+            this.recordTotal = res[0].total;
+            this.loadedRecordTotal = this.bindData.length;
+            if (res[0].data.length === 0 || res[0].data.length < this.pageSize) {
+              this.nodata = true;
+            }
+            this.store.commit('setData', this.bindData);
+            this.doLayout();
+            this.egLoading = false;
+            this.callback && this.callback(res);
+          });
         }
       },
       refresh(refdata) {
         if (refdata.statusCode === this.$const.code.DELETE_SUCCESS) {
-            this.delete(refdata);
-            return;
+          this.delete(refdata);
+          this.recordTotal--;
+          this.loadedRecordTotal--;
+          return;
         }
         refdata['egGridviewGetRow'] = true;
         refdata['pageNum'] = 0;
         refdata['pageSize'] = 10;
         var options = {
-            url: this.action,
-            data: refdata,
-            jsontype: this.jsontype && 'json',
-            type: 'post',
-            success: function(result) {
+          url: this.action,
+          data: refdata,
+          jsontype: this.jsontype && 'json',
+          type: 'post',
+          success: function(result) {
             if (refdata.statusCode === this.$const.code.INSERT_SUCCESS) {
-                this.bindData.unshift(result[0].data[0]);
-                this.recordTotal++;
-                this.loadedRecordTotal++;
+              this.bindData.unshift(result[0].data[0]);
+              this.recordTotal++;
+              this.loadedRecordTotal++;
             } else if (refdata.statusCode === this.$const.code.UPDATE_SUCCESS) {
-                var rowIndex = this.getRefreshRowIndex(
+              var rowIndex = this.getRefreshRowIndex(
                 result[0].data[0][this.primaryKey]
-                );
-                this.bindData.splice(rowIndex, 1, result[0].data[0]);
+              );
+              this.bindData.splice(rowIndex, 1, result[0].data[0]);
             }
             this.store.commit('setData', this.bindData);
             this.callback && this.callback(result);
-            }
+          }
         };
         this.$axios && this.$axios.DTO(this.action, refdata).then(res => {
-            if (refdata.statusCode === this.$const.code.INSERT_SUCCESS) {
-                this.bindData.unshift(res[0].data[0]);
-                this.recordTotal++;
-                this.loadedRecordTotal++;
-            } else if (refdata.statusCode === this.$const.code.UPDATE_SUCCESS) {
-                var rowIndex = this.getRefreshRowIndex(
-                res[0].data[0][this.primaryKey]
-                );
-                this.bindData.splice(rowIndex, 1, res[0].data[0]);
-            }
-            this.store.commit('setData', this.bindData);
-            this.callback && this.callback(res);
-        });
-        },
-      delete(result) {
-          var rowIndex = this.getRefreshRowIndex(result[this.primaryKey]);
-          this.bindData.splice(rowIndex, 1);
+          if (refdata.statusCode === this.$const.code.INSERT_SUCCESS) {
+            this.bindData.unshift(res[0].data[0]);
+            this.recordTotal++;
+            this.loadedRecordTotal++;
+          } else if (refdata.statusCode === this.$const.code.UPDATE_SUCCESS) {
+            var rowIndex = this.getRefreshRowIndex(
+              res[0].data[0][this.primaryKey]
+            );
+            this.bindData.splice(rowIndex, 1, res[0].data[0]);
+          }
           this.store.commit('setData', this.bindData);
-          this.deleteNum++;
+          this.callback && this.callback(res);
+        });
+      },
+      delete(result) {
+        var rowIndex = this.getRefreshRowIndex(result[this.primaryKey]);
+        this.bindData.splice(rowIndex, 1);
+        this.store.commit('setData', this.bindData);
+        this.deleteNum++;
       },
       getRefreshRowIndex(val) {
-          for (var i = 0; i < this.bindData.length; i++) {
-              if (this.bindData[i][this.primaryKey] === val) {
-                  return i;
-              }
+        for (var i = 0; i < this.bindData.length; i++) {
+          if (this.bindData[i][this.primaryKey] === val) {
+            return i;
           }
+        }
       },
       getScrollTop() {
         return this.$refs.bodyWrapper ? this.$refs.bodyWrapper.scrollTop : -1;
       },
       tableScroll(ev) {
-          if (this.action) {
-              // 绑定远程滚动加载的处理
-            let nDivHight = this.$refs.bodyWrapper ? this.$refs.bodyWrapper.offsetHeight : 0;
-            let nScrollHight = this.$refs.bodyWrapper ? this.$refs.bodyWrapper.scrollHeight : 0;
-            let nScrollTop = this.$refs.bodyWrapper ? this.$refs.bodyWrapper.scrollTop : -1;
-            if (Math.ceil(nScrollTop) + Math.ceil(nDivHight) >= Math.floor(nScrollHight) && !this.egLoading && this.nodata === false) {
-                this.pageNum += 1;
-                this.dataBind();
-            }
+        if (this.action) {
+          // 绑定远程滚动加载的处理
+          let nDivHight = this.$refs.bodyWrapper ? this.$refs.bodyWrapper.offsetHeight : 0;
+          let nScrollHight = this.$refs.bodyWrapper ? this.$refs.bodyWrapper.scrollHeight : 0;
+          let nScrollTop = this.$refs.bodyWrapper ? this.$refs.bodyWrapper.scrollTop : -1;
+          if (Math.ceil(nScrollTop) + Math.ceil(nDivHight) >= Math.floor(nScrollHight) && !this.egLoading && this.nodata === false) {
+            this.pageNum += 1;
+            this.dataBind();
           }
+        }
         this.currentScroll = this.$refs.bodyWrapper && this.$refs.bodyWrapper.scrollTop;
         this.$emit('table-scroll', ev);
       },
@@ -475,10 +354,8 @@
           this.queryData['pageSize'] = 147483648;
           this.queryData['orderBy'] = this.store.states.orderBy;
           this.queryData['sortType'] = this.store.states.sortType;
-
           let exportData = this.queryData;
           exportData['columns'] = this.egColumns;
-
           // var options = {
           //     url: this.exportAction,
           //     type: 'post',
@@ -488,7 +365,6 @@
           //     }
           // };
           // this.$eg.ajax(null, options);
-
           this.$axios && this.$axios.DTO(this.exportAction, exportData).then(res => {
             window.location.href = '/rest/export/exportExcel?url=' + res.url + '&filename=' + res.fileName;
           });
@@ -519,9 +395,9 @@
         this.store.states.orderBy = column.property;
         this.store.states.sortType = column.order === 'ascending' ? 'asc' : 'desc';
         if (this.getScrollTop() === 0) {
-            this.dataBind();
+          this.dataBind();
         } else {
-            this.pageNum = -1;
+          this.pageNum = -1;
         }
       },
       /* 自已加的方法结束 */
@@ -574,14 +450,20 @@
         }
       },
       handleHeaderFooterMousewheel(event, data) {
-        const { pixelX, pixelY } = data;
+        const {
+          pixelX,
+          pixelY
+        } = data;
         if (Math.abs(pixelX) >= Math.abs(pixelY)) {
           event.preventDefault();
           this.bodyWrapper.scrollLeft += data.pixelX / 5;
         }
       },
       bindEvents() {
-        const { headerWrapper, footerWrapper } = this.$refs;
+        const {
+          headerWrapper,
+          footerWrapper
+        } = this.$refs;
         const refs = this.$refs;
         let self = this;
         this.bodyWrapper.addEventListener('scroll', function() {
@@ -609,7 +491,10 @@
         if (!this.$ready) return;
         let shouldUpdateLayout = false;
         const el = this.$el;
-        const { width: oldWidth, height: oldHeight } = this.resizeState;
+        const {
+          width: oldWidth,
+          height: oldHeight
+        } = this.resizeState;
         const width = el.offsetWidth;
         if (oldWidth !== width) {
           shouldUpdateLayout = true;
@@ -630,10 +515,10 @@
           this.layout.updateElsHeight();
         }
         if (this.fitHeight) {
-            this.layout.setHeight(this.$refs.bodyWrapper ? this.$refs.bodyWrapper.clientHeight : 0);
+          this.layout.setHeight(this.$refs.bodyWrapper ? this.$refs.bodyWrapper.clientHeight : 0);
         }
         if (this.bindData.length > 0) {
-            this.tableScroll(null);
+          this.tableScroll(null);
         }
       }
     },
@@ -642,9 +527,9 @@
       this.debouncedUpdateLayout = debounce(50, () => this.doLayout());
     },
     computed: {
-        /* start */
-        fitHeightStyle() {
-        return 'width:100%;height:100%;box-sizing:border-box;padding:' + (this.layout.headerHeight ? this.layout.headerHeight : 0) + 'px 0px ' + (this.layout.footerHeight ? this.layout.footerHeight : 0) + 'px' ;
+      /* start */
+      fitHeightStyle() {
+        return 'width:100%;height:100%;box-sizing:border-box;padding:' + (this.layout.headerHeight ? this.layout.headerHeight : 0) + 'px 0px ' + (this.layout.footerHeight ? this.layout.footerHeight : 0) + 'px';
       },
       fitHeightHeaderStyle() {
         return 'position:relative;top:-' + (this.layout.headerHeight ? this.layout.headerHeight : 0) + 'px';
@@ -653,11 +538,10 @@
         return 'position:relative;height:100%;top:-' + (this.layout.headerHeight ? this.layout.headerHeight : 0) + 'px';
       },
       fitHeightFooterStyle() {
-         return 'width:100%;box-sizing:border-box;position:relative;top:-' + (this.layout.headerHeight ? this.layout.headerHeight : 0) + 'px';
+        return 'width:100%;box-sizing:border-box;position:relative;top:-' + (this.layout.headerHeight ? this.layout.headerHeight : 0) + 'px';
       },
       fixedHeightFitHeight() {
         let style = {};
-
         if (this.layout.scrollX) {
           style = {
             height: 'auto',
@@ -669,11 +553,10 @@
             bottom: this.layout.footerHeight + 'px'
           };
         }
-
         return style;
       },
       isShowTotal() {
-          return this.action || this.showTotal;
+        return this.action || this.showTotal;
       },
       /* end */
       tableSize() {
@@ -704,7 +587,11 @@
         return this.store.states.rightFixedColumns;
       },
       bodyWidth() {
-        const { bodyWidth, scrollY, gutterWidth } = this.layout;
+        const {
+          bodyWidth,
+          scrollY,
+          gutterWidth
+        } = this.layout;
         return bodyWidth ? bodyWidth - (scrollY ? gutterWidth : 0) + 'px' : '';
       },
       bodyHeight() {
@@ -714,9 +601,9 @@
           };
         } else if (this.maxHeight) {
           return {
-            'max-height': (this.showHeader
-              ? this.maxHeight - this.layout.headerHeight - this.layout.footerHeight
-              : this.maxHeight - this.layout.footerHeight) + 'px'
+            'max-height': (this.showHeader ?
+              this.maxHeight - this.layout.headerHeight - this.layout.footerHeight :
+              this.maxHeight - this.layout.footerHeight) + 'px'
           };
         }
         return {};
@@ -740,9 +627,9 @@
       },
       fixedBodyHeightFitHeight() {
         let style = {
-            height: 'auto',         
-            bottom: '0px',
-            right: '0px'
+          height: 'auto',
+          bottom: '0px',
+          right: '0px'
         };
         return style;
       },
@@ -795,17 +682,17 @@
       data: {
         immediate: true,
         handler(value) {
-        /* start */
-        // if (!this.action) {
-        //     this.store.commit('setData', value);
-        // }
-        this.store.commit('setData', value);
-        /* end */
-        if (this.$ready) {
+          /* start */
+          // if (!this.action) {
+          //     this.store.commit('setData', value);
+          // }
+          this.store.commit('setData', value);
+          /* end */
+          if (this.$ready) {
             this.$nextTick(() => {
-                this.doLayout();
+              this.doLayout();
             });
-        }
+          }
         }
       },
       expandRowKeys: {
@@ -821,77 +708,78 @@
       if (this.resizeListener) removeResizeListener(this.$el, this.resizeListener);
     },
     mounted() {
-        /* start */
-        this.$parent && (this.$parent['eg_dataOld'] = this.bindData);
-        if (this.fitHeight) {
-            this.pageSize = parseInt(this.$refs.bodyWrapper.clientHeight / 35, 10) ;
-            this.pageSize = this.pageSize <= 1 ? 1 : this.pageSize;
+      /* start */
+      this.$parent && (this.$parent['eg_dataOld'] = this.bindData);
+      if (this.fitHeight) {
+        this.pageSize = parseInt(this.$refs.bodyWrapper.clientHeight / 35, 10);
+        this.pageSize = this.pageSize <= 1 ? 1 : this.pageSize;
+      }
+      this.store.states.id = this.id;
+      this.store.states.orderBy = this.orderBy;
+      this.store.states.sortType = this.sortType;
+      this.store.states.action = this.action;
+      /* 兼容v8 */
+      this.$emitter.on(this.id + '_grid_bind', () => {
+        this.nodata = false;
+        this.bindData.splice(0, this.bindData.length);
+        this.pageNum = 0;
+        this.deleteNum = 0;
+        if (this.getScrollTop() === 0) {
+          this.dataBind();
+        } else {
+          this.pageNum = -1;
         }
-        this.store.states.id = this.id;
-        this.store.states.orderBy = this.orderBy;
-        this.store.states.sortType = this.sortType;
-        this.store.states.action = this.action;
-        /* 兼容v8 */
-        this.$emitter.on(this.id + '_grid_bind', () => {
-            this.nodata = false;
-            this.bindData.splice(0, this.bindData.length);
-            this.pageNum = 0;
-            this.deleteNum = 0;
-            if (this.getScrollTop() === 0) {
-                this.dataBind();
-            } else {
-                this.pageNum = -1;
-            }
-        });
-
-        this.$emitter.on(this.id + '_refresh', data => this.refresh(data));
-        /* 兼容v8 */
-
-        this.$on('grid_orderby', column => {
-            this.nodata = false;
-            this.bindData.splice(0, this.bindData.length);
-            this.pageNum = 0;
-            this.store.states.orderBy = column.property;
-            this.store.states.sortType = column.order === 'ascending' ? 'asc' : 'desc';
-            if (this.getScrollTop() === 0) {
-                this.dataBind();
-            } else {
-                this.pageNum = -1;
-            }
-        });
-        /* end */
-        this.bindEvents();
-        this.store.updateColumns();
-        this.doLayout();
-        this.resizeState = {
-            width: this.$el.offsetWidth,
-            height: this.$el.offsetHeight
-        };
-        // init filters
-        this.store.states.columns.forEach(column => {
-            if (column.filteredValue && column.filteredValue.length) {
-            this.store.commit('filterChange', {
-                column,
-                values: column.filteredValue,
-                silent: true
-            });
-            }
-            /* start */
-            this.egColumns.push({'label': column.label, 'property': column.property});
-            /* end */
-        });
+      });
+      this.$emitter.on(this.id + '_refresh', data => this.refresh(data));
+      /* 兼容v8 */
+      this.$on('grid_orderby', column => {
+        this.nodata = false;
+        this.bindData.splice(0, this.bindData.length);
+        this.pageNum = 0;
+        this.store.states.orderBy = column.property;
+        this.store.states.sortType = column.order === 'ascending' ? 'asc' : 'desc';
+        if (this.getScrollTop() === 0) {
+          this.dataBind();
+        } else {
+          this.pageNum = -1;
+        }
+      });
+      /* end */
+      this.bindEvents();
+      this.store.updateColumns();
+      this.doLayout();
+      this.resizeState = {
+        width: this.$el.offsetWidth,
+        height: this.$el.offsetHeight
+      };
+      // init filters
+      this.store.states.columns.forEach(column => {
+        if (column.filteredValue && column.filteredValue.length) {
+          this.store.commit('filterChange', {
+            column,
+            values: column.filteredValue,
+            silent: true
+          });
+        }
         /* start */
-        this.dataBind();
+        this.egColumns.push({
+          'label': column.label,
+          'property': column.property
+        });
         /* end */
-        this.$ready = true;
+      });
+      /* start */
+      this.dataBind();
+      /* end */
+      this.$ready = true;
     },
     activated() {
-        // start
-        // 路由切换，组件被激活的时候滚动条复原
-        if (this.currentScroll && this.$refs.bodyWrapper.scrollHeight >= this.currentScroll) {
-            this.$refs.bodyWrapper.scrollTop = this.currentScroll;
-        }
-        // end
+      // start
+      // 路由切换，组件被激活的时候滚动条复原
+      if (this.currentScroll && this.$refs.bodyWrapper.scrollHeight >= this.currentScroll) {
+        this.$refs.bodyWrapper.scrollTop = this.currentScroll;
+      }
+      // end
     },
     data() {
       const store = new TableStore(this, {
@@ -934,13 +822,14 @@
     }
   };
 </script>
+
 <style>
-.EgGridView_BottomInfo_excel {
+  .EgGridView_BottomInfo_excel {
     width: 17px;
     height: 17px;
     cursor: pointer;
     background: url('data:image/gif;base64,R0lGODlhEQARAPcAAAAAAP////78/v7///v//O/68fH98+357/H38u/48Oz07efx6MXhx+Tw5SiFKqrNq63PrhF0EbnTuczezMnXye/67+jx6PD48O/17/n7+SSEISJyITV9MyN2IC9yLEGJPUeURE2bSVefVEl7R3CrbXuzeXWmc47Gi2B1X3OMcrvXusPcwtbo1UKYO0WFQVWeT0+TS2KyXF+nWWurZoe6hIq5h0tkSYm3hlZvVG+NbX+afYCbfsbjxMzmyt3q3ODs3x9hGSp2IkqWQkiBQ2SqXoC7e4e9gY3EiGOEYHmWdmF4X6zRqIejhMreyOTv4+bw5SZpHUqPQU2SRE+LSFubUoLBeoS8fXiqcnujdlJrT9Lj0Ovz6kZ+PUeAPk6HRVSMTIC2eI3EhJ2xmsndxtTn0dfl1dnm10F7NnCxZHGvZXawaoC6dWt7aMndxdHiztDhzdXl0tvr2NTj0djn1d/q3d7p3OLs4PX69PT580R+NkF0NWmrWWqqW1qMTs3fyc/gy+ny59fn09LizuPv4O727Pb69X6pcYCrc5C5g5S9h53EkaHIlaDHlKXLmabMmqnPnazQoe3060V1NHWgZnehaHijanulbHynbouzfZnBjJa9iZvBjrnSse707EZmOWqYWXCcYHSdZYKtcou2eoexd4u1e4+5foWtdoaud67QofP48WGRTGWTUWiWVWiVVWuXWW6ZXG2VW3KcYHihZnaeZHqjaXmiaH2mbHeeZ3+oboKrcY2oguzz6SxOGzBTHzFVIDRYIjdbJTpfKDldJ1aJPVWJPUFnL1mMQVqMQl6PRmGRS1V8QlmARlyESWGITmaNU2+ZW2mPVnObYHGYXu706ytNGUqCLUuBLUuCLi9RHU+EM1OGNzxgKT5jKz9jLERpMUdsM0lvNUhtNEZrM0txN0pvNkxyOE91OlF4PVF3PVV7QVmARV6FSmSKUGySWE2CL1CEMvD17f3+/P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAPMALAAAAAARABEAAAj/AE2NIiUqVy1a09w9c9Zsnbp058yZSvXI0SJFmRIhwoTq0KVKtnCZKwWJ0B08qi7E67QF0BMnTuTIMkfqUaEAOHFmGJBzAB1Y5HQ1kreERg0TEwJQyLFDh5hBr8LdYhRAhJUiRK4wwUIFRocNvFyBm7Wp0IoZR8LIGPIlhoYIEHyw+iZNU6cAKkgYWfNiShAHEgK4WWUsFqJIGQKUAAEmjRQoXBg8CJSsWzRMgAL0qNIihBo+UfR0uTHnmLB2p6jxcHHGCxAOaPYIkbQrULFg7AxhOIEEhRI2Iz70yePBU5xtwJhZ+iEgwAACAVgksYEjSwoy2n4to2QHgYItCxpYSEhgoECFA2OwZUM3SVAdM2XgaHnzx0+TNk04Wet1LhQoaJ+0wooyySBDzDbwXGPNO9WYYw455YgzzjfGeMPNMMEA84sv2fQSEAA7') no-repeat center center;
     position: absolute;
     margin-left: 10px;
-}
+  }
 </style>

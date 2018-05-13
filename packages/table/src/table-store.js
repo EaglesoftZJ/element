@@ -553,8 +553,20 @@ TableStore.prototype.updateCurrentRow = function() {
   const table = this.table;
   const data = states.data || [];
   const oldCurrentRow = states.currentRow;
+  // update
+  var currentRowChange = false;
+  if (this.table.primaryKey && oldCurrentRow) {
+    var i = 0;
+    for (i = 0; i < data.length; i++) {
+      if (data[i][this.table.primaryKey] === oldCurrentRow[this.table.primaryKey]) break;
+    }
+    if (i === data.length) {
+      currentRowChange = true;
+    }
+  }
+  console.log('currentRowChange', currentRowChange);
 
-  if (data.indexOf(oldCurrentRow) === -1) {
+  if (this.table.primaryKey && currentRowChange || !this.table.primaryKey && data.indexOf(oldCurrentRow) === -1) {
     states.currentRow = null;
 
     if (states.currentRow !== oldCurrentRow) {
