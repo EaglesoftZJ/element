@@ -55,7 +55,7 @@ export default {
                 on-contextmenu={ ($event) => this.handleContextMenu($event, row) }
                 on-mouseenter={ _ => this.handleMouseEnter($index) }
                 on-mouseleave={ _ => this.handleMouseLeave() }
-                class={ [this.getRowClass(row, $index), {'current-row': this.store.states.currentRow && this.table.primaryKey && row[this.table.primaryKey] === this.store.states.currentRow[this.table.primaryKey]}] }>
+                class={ [this.getRowClass(row, $index), {'current-row': this.table.highlightCurrentRow && this.store.states.currentRow && this.table.primaryKey && row[this.table.primaryKey] === this.store.states.currentRow[this.table.primaryKey]}] }>
                 {
                   this._l(this.columns, (column, cellIndex) => {
                     const { rowspan, colspan } = this.getSpan(row, column, $index, cellIndex);

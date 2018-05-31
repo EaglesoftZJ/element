@@ -1,5 +1,5 @@
 <template>
-  <div class="el-table" v-loading="egLoading" :class="[{
+  <div class="el-table" :class="[{
               'el-table--fit': fit,
               'el-table--striped': stripe,
               'el-table--border': border || isGroup,
