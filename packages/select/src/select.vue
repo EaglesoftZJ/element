@@ -1,5 +1,5 @@
 <template>
-  <div class="el-select" :class="[selectSize ? 'el-select--' + selectSize : '']" @click.stop="toggleMenu" v-clickoutside="handleClose">
+  <div class="el-select" :class="[selectSize ? 'el-select--' + selectSize : '']" @mousedown="toggleMenu" v-clickoutside="handleClose">
     <div class="el-select__tags" v-if="multiple" ref="tags" :style="{ 'max-width': inputWidth - 32 + 'px' }">
       <span v-if="collapseTags && selected.length">
             <el-tag
@@ -27,7 +27,7 @@
     <el-input ref="reference" v-model="selectedLabel" type="text" :placeholder="currentPlaceholder" :name="name" :id="id" :auto-complete="autoComplete" :size="selectSize" :disabled="selectDisabled" :readonly="!filterable || multiple || !visible" :validate-event="false"
       :class="{ 'is-focus': visible }" @focus="handleFocus" @blur="handleBlur" @keyup.native="debouncedOnInputChange" @keydown.native.down.stop.prevent="navigateOptions('next')" @keydown.native.up.stop.prevent="navigateOptions('prev')" @keydown.native.enter.prevent="selectOption"
       @keydown.native.esc.stop.prevent="visible = false" @keydown.native.tab="visible = false" @paste.native="debouncedOnInputChange" @mouseenter.native="inputHovering = true" @mouseleave.native="inputHovering = false">
-      <i slot="suffix" :class="['el-select__caret', 'el-input__icon', 'el-icon-' + iconClass]" @click="handleIconClick"></i>
+      <i slot="suffix" :class="['el-select__caret', 'el-input__icon', 'el-icon-' + iconClass]" @click="handleIconClick" @mousedown="handleIconMousedown"></i>
     </el-input>
     <transition name="el-zoom-in-top" @before-enter="handleMenuEnter" @after-leave="doDestroy">
       <el-select-menu ref="popper" :append-to-body="popperAppendToBody" v-show="visible && emptyText !== false">
@@ -494,6 +494,11 @@
       handleIconClick(event) {
         if (this.iconClass.indexOf('circle-close') > -1) {
           this.deleteSelected(event);
+        }
+      },
+      handleIconMousedown(event) {
+        if (this.iconClass.indexOf('circle-close') > -1) {
+          event.stopPropagation();
         }
       },
       doDestroy() {
