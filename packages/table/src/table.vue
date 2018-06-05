@@ -315,6 +315,7 @@
             this.bindData.splice(rowIndex, 1, res[0].data[0]);
           }
           this.store.commit('setData', this.bindData);
+          this.doLayout();
           this.callback && this.callback(res);
         });
       },
@@ -511,6 +512,9 @@
       },
       doLayout() {
         this.layout.updateColumnsWidth();
+        this.$nextTick(() => {
+          this.updateScrollY();
+        });
         if (this.shouldUpdateHeight) {
           this.layout.updateElsHeight();
         }
