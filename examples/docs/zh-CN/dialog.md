@@ -300,7 +300,7 @@ Dialog 组件的内容可以是任意的，甚至可以是表格或表单，下�
 :::
 
 ### 可拖拽
-弹窗可拖拽
+dialog可拖拽
 
 :::demo 使用属性drag设置可拖拽 close-reset指定下次打开时dailog位置是否重置
 ```html
