@@ -27,6 +27,7 @@
         centerDialogVisible: false,
         visible: false,
         dragVisible: false,
+        show: false,
         form: {
           name: '',
           region: '',
@@ -39,6 +40,17 @@
         },
         formLabelWidth: '80px'
       };
+    },
+    watch: {
+      dragVisible(val) {
+        if (val) {
+          setTimeout(() => {
+            this.show = true;
+          }, 1000);
+        } else {
+          this.show = false;
+        }
+      }
     },
     methods: {
       handleClose(done) {
@@ -308,13 +320,15 @@ Dialog 组件的内容可以是任意的，甚至可以是表格或表单，下�
   <el-button type="text" @click="dragVisible = true">可拖拽的dialog</el-button>
   <el-dialog drag close-reset :visible.sync="dragVisible" title="标题">
     <div style="width: 600px; height: 300px;">可拖拽的dialog</div>
+    <div v-if="show" style="height: 300px;">可拖拽的dialog1</div>
   </el-dialog>
 </template>
 
 <script>
   export default {
     data() {
-      dragVisible: false
+      dragVisible: false,
+      show: false
     }
   }
 </script>

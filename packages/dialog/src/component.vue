@@ -1,5 +1,5 @@
 <template>
-  <transition name="dialog-fade" @enter="handleEnter" @after-enter="handleAfterEnter" @afterLeave="handleAfterLeave">
+  <transition name="dialog-fade" @enter="handleEnter" @after-enter="handleAfterEnter" @after-leave="handleAfterLeave">
     <div class="el-dialog__wrapper" v-show="visible" @click.stop.self="handleWrapperClick">
       <div
         @click.stop
@@ -212,9 +212,6 @@
         this.openAfterAnimate = true;
         this.closeAfterAnimate = false;
         this.updateMaxHeight();
-        if (this.drag) {
-          this.initDrag();
-        }
       },
       updateMaxHeight() {
         var winHeight = document.body.clientHeight;
@@ -230,7 +227,7 @@
         this.isDraged = true;
       },
       handleMouseDown(event) {
-        console.log('handleMouseDown123');
+        this.initDrag();
         var self = this;
         var left = self.dialogLeft;
         var top = self.dialogTop;
@@ -268,11 +265,14 @@
         }
       },
       bindEvent() {
-        this.$refs['header'].addEventListener('mousedown', this.handleMouseDown);
-        console.log('绑定事件123', this.$refs['header']);
+        if (this.drag) {
+          this.$refs['header'].addEventListener('mousedown', this.handleMouseDown);
+        }
       },
       unBindEvent() {
-        this.$refs['header'].addEventListener('mousedown', this.handleMouseDown);
+        if (this.drag) {
+          this.$refs['header'].addEventListener('mousedown', this.handleMouseDown);
+        }
       }
     },
     updated() {
@@ -289,8 +289,8 @@
         if (this.appendToBody) {
           document.body.appendChild(this.$el);
         }
-        this.updateMaxHeight();
       }
+      this.updateMaxHeight();
       this.bindEvent();
     },
     beforeDestroy() {
