@@ -5,12 +5,17 @@
 
 @include b(dialog) {
   position: relative;
-  margin: 0 auto 50px;
+  display: inline-block;
+  // margin: 0 auto 50px;
   background: $--color-white;
   border-radius: $--border-radius-small;
   box-shadow: $--dialog-box-shadow;
   box-sizing: border-box;
-  width: 50%;
+  max-width: 100%;
+  overflow: hidden;
+  // width: 50%;
+  text-align: left;
+  vertical-align: middle;
 
   @include when(fullscreen) {
     width: 100%;
@@ -22,17 +27,30 @@
 
   @include e(wrapper) {
     position: fixed;
+    // display: flex;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
     overflow: auto;
     margin: 0;
+    // justify-content: center;
+    // align-items: center;
+    text-align: center;
+    &::after {
+      display: inline-block;
+      content: '';
+      height: 100%;
+      vertical-align: middle;
+    }
   }
 
   @include e(header) {
+    position: relative;
+    z-index: 2;
     padding: $--dialog-padding-primary;
     padding-bottom: 10px;
+    text-align: left;
   }
 
   @include e(headerbtn) {
@@ -68,6 +86,8 @@
     color: $--color-text-regular;
     line-height: $--dialog-line-height;
     font-size: $--dialog-font-size;
+    box-sizing: border-box;
+    overflow: auto;
   }
 
   @include e(footer) {

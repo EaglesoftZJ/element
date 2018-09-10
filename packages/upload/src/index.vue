@@ -274,6 +274,7 @@ export default {
           files={this.uploadFiles}
           on-remove={this.handleRemove}
           handlePreview={this.onPreview}>
+          {(props) => {return this.$scopedSlots.btn && this.$scopedSlots.btn(props);}}
         </UploadList>
       );
     }

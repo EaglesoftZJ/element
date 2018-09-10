@@ -496,10 +496,11 @@
           width: oldWidth,
           height: oldHeight
         } = this.resizeState;
-        const width = el.offsetWidth;
+        const width = el.clientWidth; // 原来是offsetWidth会取到border的宽度
         if (oldWidth !== width) {
           shouldUpdateLayout = true;
         }
+        console.log('shouldUpdateLayout bodyWidth', shouldUpdateLayout, oldWidth, width);
         const height = el.offsetHeight;
         if ((this.height || this.shouldUpdateHeight) && oldHeight !== height) {
           shouldUpdateLayout = true;

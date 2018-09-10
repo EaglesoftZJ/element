@@ -24,7 +24,11 @@
         :src="file.url" alt=""
       >
       <a class="el-upload-list__item-name" @click="handleClick(file)">
-        <i class="el-icon-document"></i>{{file.name}}
+        <i class="el-icon-document" v-if="!$scopedSlots.default"></i>
+        <template v-else>
+          <slot :file="file"></slot>
+        </template>
+        {{file.name}}
       </a>
       <label class="el-upload-list__item-status-label">
         <i :class="{

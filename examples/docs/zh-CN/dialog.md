@@ -25,6 +25,8 @@
         outerVisible: false,
         innerVisible: false,
         centerDialogVisible: false,
+        visible: false,
+        dragVisible: false,
         form: {
           name: '',
           region: '',
@@ -275,12 +277,59 @@ Dialog 组件的内容可以是任意的，甚至可以是表格或表单，下�
 如果 `visible` 属性绑定的变量位于 Vuex 的 store 内，那么 `.sync` 不会正常工作。此时需要去除 `.sync` 修饰符，同时监听 Dialog 的 `open` 和 `close` 事件，在事件回调中执行 Vuex 中对应的 mutation 更新 `visible` 属性绑定的变量的值。
 :::
 
+### 自适应高度
+高度根据浏览器高度自适应到合适位置
+
+:::demo 使用属性fit-height
+```html
+<template>
+  <el-button type="text" @click="visible = true">自适应高度的dialog</el-button>
+  <el-dialog fit-height :visible.sync="visible" title="标题">
+    <div style="width: 600px;">自适应高度</div>
+  </el-dialog>
+</template>
+
+<script>
+  export default {
+    data() {
+      visible: false
+    }
+  }
+</script>
+```
+:::
+
+### 可拖拽
+弹窗可拖拽
+
+:::demo 使用属性drag设置可拖拽 close-reset指定下次打开时dailog位置是否重置
+```html
+<template>
+  <el-button type="text" @click="dragVisible = true">可拖拽的dialog</el-button>
+  <el-dialog drag close-reset :visible.sync="dragVisible" title="标题">
+    <div style="width: 600px; height: 300px;">可拖拽的dialog</div>
+  </el-dialog>
+</template>
+
+<script>
+  export default {
+    data() {
+      dragVisible: false
+    }
+  }
+</script>
+```
+:::
+
 ### Attributes
 | 参数      | 说明          | 类型      | 可选值                           | 默认值  |
 |---------- |-------------- |---------- |--------------------------------  |-------- |
 | visible   | 是否显示 Dialog，支持 .sync 修饰符 | boolean | — | false |
 | title     | Dialog 的标题，也可通过具名 slot （见下表）传入 | string    | — | — |
 | width     | Dialog 的宽度 | string    | — | 50% |
+| fit-height | Dialog的高度根据浏览器可视区自适应到合适位置 | boolean | - | false |
+| drag | Dialog可拖拽 | boolean | - | false |
+| close-reset | 拖拽后的Dialog重新打开后位置是否重置 | boolean | - | false |
 | fullscreen     | 是否为全屏 Dialog | boolean    | — | false |
 | top       | Dialog CSS 中的 margin-top 值 | string | — | 15vh |
 | modal     | 是否需要遮罩层   | boolean   | — | true |

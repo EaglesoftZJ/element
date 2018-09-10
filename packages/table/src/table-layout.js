@@ -117,6 +117,7 @@ class TableLayout {
   updateColumnsWidth() {
     const fit = this.fit;
     const bodyWidth = this.table.$el.clientWidth;
+    // console.log('bodyWidth', bodyWidth);
     let bodyMinWidth = 0;
 
     const flattenColumns = this.getFlattenColumns();
@@ -160,7 +161,7 @@ class TableLayout {
           column.realWidth = column.minWidth;
         });
       }
-
+      console.log('bodyWidth bodyMinWidth', bodyMinWidth, 'bodyWidth bodyWidth', bodyWidth);
       this.bodyWidth = Math.max(bodyMinWidth, bodyWidth);
       this.table.resizeState.width = this.bodyWidth;
     } else {
