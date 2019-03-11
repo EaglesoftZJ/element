@@ -350,6 +350,11 @@
       left: auto;
       right: 0;
     }
+    @include when(bottom-border-hide) {
+      &::before {
+        display: none;
+      }
+    }
   }
 
   @include e(fixed-header-wrapper) {

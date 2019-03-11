@@ -856,11 +856,12 @@
 ```html
 <template>
   <el-table
+    is-show-total
     :data="tableData3"
     style="width: 100%"
+    border
     height="250">
     <el-table-column
-      fixed
       prop="date"
       label="日期"
       width="150">
@@ -868,7 +869,7 @@
     <el-table-column
       prop="name"
       label="姓名"
-      width="120">
+      min-width="120">
     </el-table-column>
     <el-table-column
       prop="province"
@@ -887,6 +888,7 @@
     </el-table-column>
     <el-table-column
       prop="zip"
+      fixed="right"
       label="邮编"
       width="120">
     </el-table-column>

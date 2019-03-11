@@ -295,10 +295,10 @@ Dialog 组件的内容可以是任意的，甚至可以是表格或表单，下�
 :::demo 使用属性fit-height
 ```html
 <template>
-  <el-button type="text" @click="visible = true">自适应高度的dialog</el-button>
-  <el-dialog fit-height :visible.sync="visible" title="标题">
-    <div style="width: 600px;">自适应高度</div>
-  </el-dialog>
+    <el-button type="text" @click="visible = true">自适应高度的dialog</el-button>
+    <el-dialog drag fit-height close-reset v-if="visible" :visible.sync="visible" title="标题">
+      <div style="width: 600px;">自适应高度</div>
+    </el-dialog>
 </template>
 
 <script>
@@ -318,9 +318,13 @@ Dialog 组件的内容可以是任意的，甚至可以是表格或表单，下�
 ```html
 <template>
   <el-button type="text" @click="dragVisible = true">可拖拽的dialog</el-button>
-  <el-dialog drag close-reset :visible.sync="dragVisible" title="标题">
+  <el-dialog drag v-if="dragVisible" close-reset :visible.sync="dragVisible" title="标题">
     <div style="width: 600px; height: 300px;">可拖拽的dialog</div>
     <div v-if="show" style="height: 300px;">可拖拽的dialog1</div>
+    <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+  </span>
   </el-dialog>
 </template>
 

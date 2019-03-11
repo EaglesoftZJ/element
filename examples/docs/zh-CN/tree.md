@@ -51,19 +51,19 @@
 
 <script>
   const data = [{
-    label: '一级 1',
+    label: '一级 11231231123',
     children: [{
-      label: '二级 1-1',
+      label: '二级 1-1123123123',
       children: [{
-        label: '三级 1-1-1'
+        label: '三级 1-1-1123'
       }]
     }]
   }, {
-    label: '一级 2',
+    label: '一级 1232',
     children: [{
-      label: '二级 2-1',
+      label: '二级 2-1   asfd',
       children: [{
-        label: '三级 2-1-1'
+        label: '三级 2-1-1sdfas'
       }]
     }, {
       label: '二级 2-2',
@@ -231,6 +231,25 @@
     },
 
     methods: {
+      test(el, data) {
+        this.$nextTick(() => {
+          var width = el['aaa'].offsetWidth;
+          console.log('test111', el['aaa'].offsetWidth)
+          var div = document.createElement('div');
+          div.innerText = data.label;
+          // div.style.dispaly = 'none';
+          div.style.float = 'left';
+          // $(div).text(text).css({'float': 'left', 'display': 'none'});
+          document.body.append(div);
+          console.log('test1112', div.offsetWidth);
+          if (div.offsetWidth > width && !data.show) {
+            data.children = [].concat(data.children)
+            data.show = data.label;
+            console.log('test1112', data.show)
+          }
+        });
+        return true;
+      },
       handleCheckChange(data, checked, indeterminate) {
         console.log(data, checked, indeterminate);
       },
@@ -393,7 +412,9 @@
 
 :::demo
 ```html
-<el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+<el-tree :data="data" highlight-current	 :props="defaultProps" @node-click="handleNodeClick">
+  <a ref="aaa" style="display: block; width: 100px; overflow: hidden;" :title="test($refs, data)&&data.children&&data.show" slot-scope="{node, data}">{{data.label}}</a>
+</el-tree>
 
 <script>
   export default {
@@ -571,6 +592,8 @@
 ```html
 <el-tree
   :data="data2"
+  :current-node-key="3"
+  highlight-current
   show-checkbox
   node-key="id"
   :default-expanded-keys="[2, 3]"

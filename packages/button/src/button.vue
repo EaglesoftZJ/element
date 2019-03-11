@@ -25,7 +25,6 @@
 <script>
   export default {
     name: 'ElButton',
-
     inject: {
       elForm: {
         default: ''
@@ -54,7 +53,12 @@
       plain: Boolean,
       autofocus: Boolean,
       round: Boolean,
-      circle: Boolean
+      circle: Boolean,
+      bindEnterByText: { // 文字内容为查询自动绑定enter 默认查询函数为select
+        type: Boolean,
+        default: true
+      },
+      bindEnterFn: Function
     },
 
     computed: {
@@ -72,7 +76,60 @@
     methods: {
       handleClick(evt) {
         this.$emit('click', evt);
+      },
+      getParent(componentName) {
+        var parent = this.$parent;
+        while (parent && parent.$options.componentName !== componentName) {
+          parent = parent.$parent;
+        }
+        return parent;
+      },
+      handleEnter(event) {
+        if (event.keyCode === 13) {
+          var hasFocusInput = false;
+          var parent = this.getParent('ElForm');
+          if (parent) {
+            checkChildren.call(this, parent);
+          }
+        }
+        function checkChildren(parent) {
+          if (!parent) return;
+          for (var i = 0; i < parent.$children.length; i++) {
+            if (hasFocusInput) return;
+            if (parent.$children[i].$options.componentName === 'ElInput' && parent.$children[i].focused) {
+              if (this.bindEnterFn) {
+                this.bindEnterFn();
+              } else {
+                this.$emit('click');
+              }
+              hasFocusInput = true;
+              return;
+            } else if (parent.$children[i].$children && parent.$children[i].$children.length > 0) {
+              checkChildren.call(this, parent.$children[i]);
+            }
+          }
+        }
+      },
+      bindEnter() {
+        if (this.bindEnterFn || this.bindEnterByText && this.$slots.default && this.$slots.default[0] && this.$slots.default[0].text === '查询') {
+          document.addEventListener('keyup', this.handleEnter);
+        }
+      },
+      unbindEnter() {
+        document.removeEventListener('keyup', this.handleEnter);
       }
+    },
+    activated() {
+      this.bindEnter();
+    },
+    mounted() {
+      this.bindEnter();
+    },
+    deactivated() {
+      this.unbindEnter();
+    },
+    destroyed() {
+      this.unbindEnter();
     }
   };
 </script>

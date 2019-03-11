@@ -6,7 +6,7 @@
     v-show="node.visible"
     :class="{
       'is-expanded': expanded,
-      'is-current': tree.store.currentNode === node,
+      'is-current': isCurrent(),
       'is-hidden': !node.visible,
       'is-focusable': !node.disabled,
       'is-checked': !node.disabled && node.checked
@@ -222,6 +222,13 @@
 
       handleDragEnd(event) {
         this.tree.$emit('tree-node-drag-end', event, this);
+      },
+      isCurrent() { 
+        var current = this.tree.store.currentNode === this.node;
+        if (!this.tree.store.currentNode && this.tree.nodeKey && (this.node.data[this.tree.nodeKey] || this.node.data[this.tree.nodeKey] === 0)) {
+          current = this.node.data[this.tree.nodeKey] === this.currentNodeKey;
+        }
+        return current;
       }
     },
 

@@ -1,9 +1,10 @@
 <template>
+  <!-- @focus="handleFocus" -->
   <el-input class="el-date-editor" :class="'el-date-editor--' + type" :readonly="!editable || readonly" :disabled="pickerDisabled" :size="pickerSize" :name="name" v-bind="firstInputId" v-if="!ranged" v-clickoutside="handleClose" :placeholder="placeholder"
-    @focus="handleFocus" @keydown.native="handleKeydown" :value="displayValue" @input="value => userInput = value" @change="handleChange" @mouseenter.native="handleMouseEnter" @mouseleave.native="showClose = false" :validateEvent="false" ref="reference">
-    <i slot="prefix" class="el-input__icon" :class="triggerClass" @click="handleFocus">
+     @keydown.native="handleKeydown" :value="displayValue" @input="value => userInput = value" @change="handleChange" @mouseenter.native="handleMouseEnter" @mouseleave.native="showClose = false" :validateEvent="false" ref="reference">
+    <i slot="suffix" @click="handleClickIcon" :class="[showClose ? '' + clearIcon : '']" v-if="haveTrigger">
       </i>
-    <i slot="suffix" class="el-input__icon" @click="handleClickIcon" :class="[showClose ? '' + clearIcon : '']" v-if="haveTrigger">
+    <i slot="suffix" class="el-input__icon" style="cursor: pointer;" :class="triggerClass" @click="handleFocus">
       </i>
   </el-input>
   <div class="el-date-editor el-range-editor el-input__inner" :class="[
@@ -12,14 +13,14 @@
         pickerDisabled ? 'is-disabled' : '',
         pickerVisible ? 'is-active' : ''
       ]" @click="handleRangeClick" @mouseenter="handleMouseEnter" @mouseleave="showClose = false" @keydown="handleKeydown" ref="reference" v-clickoutside="handleClose" v-else>
-    <i :class="['el-input__icon', 'el-range__icon', triggerClass]"></i>
-    <input :placeholder="startPlaceholder" :value="displayValue && displayValue[0]" :disabled="pickerDisabled" v-bind="firstInputId" :readonly="!editable || readonly" :name="name && name[0]" @input="handleStartInput" @change="handleStartChange" @focus="handleFocus"
+    <input :placeholder="startPlaceholder" :value="displayValue && displayValue[0]" :disabled="pickerDisabled" v-bind="firstInputId" :readonly="!editable || readonly" :name="name && name[0]" @input="handleStartInput" @change="handleStartChange"
       class="el-range-input">
     <span class="el-range-separator">{{ rangeSeparator }}</span>
-    <input :placeholder="endPlaceholder" :value="displayValue && displayValue[1]" :disabled="pickerDisabled" v-bind="secondInputId" :readonly="!editable || readonly" :name="name && name[1]" @input="handleEndInput" @change="handleEndChange" @focus="handleFocus"
+    <input :placeholder="endPlaceholder" :value="displayValue && displayValue[1]" :disabled="pickerDisabled" v-bind="secondInputId" :readonly="!editable || readonly" :name="name && name[1]" @input="handleEndInput" @change="handleEndChange"
       class="el-range-input">
     <i @click="handleClickIcon" v-if="haveTrigger" :class="[showClose ? '' + clearIcon : '']" class="el-input__icon el-range__close-icon">
       </i>
+    <i :class="['el-input__icon', 'el-range__icon', triggerClass]" style="cursor: pointer;"></i>
   </div>
 </template>
 

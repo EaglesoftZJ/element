@@ -125,7 +125,8 @@
       indent: {
         type: Number,
         default: 18
-      }
+      },
+      currentNodeKey: [String, Number]
     },
 
     computed: {
@@ -239,7 +240,9 @@
         if (!this.nodeKey) throw new Error('[Tree] nodeKey is required in setCurrentKey');
         this.store.setCurrentNodeKey(key);
       },
-
+      expandByKey(keys) {
+        return this.store.expandByKey(keys);
+      },
       getNode(data) {
         return this.store.getNode(data);
       },
@@ -316,6 +319,7 @@
         lazy: this.lazy,
         props: this.props,
         load: this.load,
+        accordion: this.accordion,
         currentNodeKey: this.currentNodeKey,
         checkStrictly: this.checkStrictly,
         checkDescendants: this.checkDescendants,

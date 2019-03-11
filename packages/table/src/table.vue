@@ -30,7 +30,7 @@
                   width: bodyWidth
                 }">
         <span class="el-table__empty-text">
-                  <slot name="empty">{{ emptyText || t('el.table.emptyText') }}</slot>
+                  <slot name="empty">{{ egLoading ? '数据加载中' : (emptyText || t('el.table.emptyText')) }}</slot>
                 </span>
       </div>
       <div v-if="$slots.append" class="el-table__append-wrapper" ref="appendWrapper">
@@ -82,7 +82,7 @@
                   }"></table-footer>
       </div>
     </div>
-    <div v-if="rightFixedColumns.length > 0" v-mousewheel="handleFixedMousewheel" class="el-table__fixed-right" ref="rightFixedWrapper" :style="[{
+    <div v-if="rightFixedColumns.length > 0" v-mousewheel="handleFixedMousewheel" :class="['el-table__fixed-right', isShowTotal && 'is-bottom-border-hide']" ref="rightFixedWrapper" :style="[{
                 width: layout.rightFixedWidth ? layout.rightFixedWidth + 'px' : '',
                 right: layout.scrollY ? (border ? layout.gutterWidth : (layout.gutterWidth || 0)) + 'px' : ''
               },
@@ -144,6 +144,10 @@
         default: function() {
           return [];
         }
+      },
+      actionShowTotal: {
+        type: Boolean,
+        default: true
       },
       size: String,
       width: [String, Number],
@@ -219,6 +223,17 @@
       showTotal: {
         type: Boolean,
         default: false
+      },
+      pageing: { // 非远程数据时生效
+        type: Boolean,
+        default: false
+      },
+      customPageSize: { // 自定义分页
+        type: String
+      },
+      refreshBindQuery: { // 刷新请求是否绑定queryData
+        type: Boolean,
+        default: true
       }
       /* end */
     },
@@ -233,13 +248,13 @@
       dataBind() {
         if (this.action !== '') {
           this.egLoading = true;
-          this.queryData['pageNum'] = this.pageNum * this.pageSize - this.deleteNum;
-          this.queryData['pageSize'] = this.pageSize;
-          this.queryData['orderBy'] = this.store.states.orderBy;
-          this.queryData['sortType'] = this.store.states.sortType;
+          this.nowQueryData['pageNum'] = this.start !== -1 ? this.start : (this.pageNum * this.pageSize - this.deleteNum);
+          this.nowQueryData['pageSize'] = this.pageSize;
+          this.nowQueryData['orderBy'] = this.store.states.orderBy;
+          this.nowQueryData['sortType'] = this.store.states.sortType;
           //   var options = {
           //       url: this.action,
-          //       data: this.queryData,
+          //       data: this.nowQueryData,
           //       jsontype: this.jsontype && 'json',
           //       type: 'post',
           //       success: function(res) {
@@ -257,25 +272,43 @@
           //           this.callback && this.callback(res);
           //       }
           //   };
-          this.$axios && this.$axios.DTO(this.action, this.queryData).then(res => {
+          this.$axios && this.$axios.DTO(this.action, this.nowQueryData).then(res => {
             res[0].data.forEach(row => {
               this.bindData.push(row);
             });
             this.recordTotal = res[0].total;
             this.loadedRecordTotal = this.bindData.length;
-            if (res[0].data.length === 0 || res[0].data.length < this.pageSize) {
+            if (res[0].data.length === 0 ||
+              (this.recordTotal || this.recordTotal === 0) && res[0].data.length < this.pageSize
+            ) {
               this.nodata = true;
             }
+            // 存在不知道总数的情况，这时候没有返回总数值，并且可能返回数不等于请求数，需要重定义当前加载数
+            if (!this.recordTotal && (res[0].pageNum || res[0].pageNum === 0)) {
+              this.start = res[0].pageNum;
+            }
             this.store.commit('setData', this.bindData);
-            this.doLayout();
+            this.$nextTick(() => {
+              this.doLayout();
+              this.setScrollPosition();
+            });
             this.egLoading = false;
             this.callback && this.callback(res);
           });
+        } else if (this.pageing) {
+          var index = this.pageNum * this.pageSize - this.deleteNum + this.pageSize;
+          this.bindData = this.data.slice(0, index);
+          this.recordTotal = this.data.length;
+          this.loadedRecordTotal = this.bindData.length;
+          this.store.commit('setData', this.bindData);
         }
+      },
+      getQueryData() {
+        this.nowQueryData = JSON.parse(JSON.stringify(this.queryData));
       },
       refresh(refdata) {
         if (refdata.statusCode === this.$const.code.DELETE_SUCCESS) {
-          this.delete(refdata);
+          this.delete(refdata, true);
           this.recordTotal--;
           this.loadedRecordTotal--;
           return;
@@ -283,47 +316,68 @@
         refdata['egGridviewGetRow'] = true;
         refdata['pageNum'] = 0;
         refdata['pageSize'] = 10;
+        var postData = refdata;
+        if (this.refreshBindQuery && window.$) {
+          postData = window.$.extend({}, this.nowQueryData, refdata);
+        }
         var options = {
           url: this.action,
-          data: refdata,
+          data: postData,
           jsontype: this.jsontype && 'json',
           type: 'post',
           success: function(result) {
-            if (refdata.statusCode === this.$const.code.INSERT_SUCCESS) {
+            if (refdata.statusCode === this.$const.code.INSERT_SUCCESS && result[0].data && result[0].data[0]) {
               this.bindData.unshift(result[0].data[0]);
               this.recordTotal++;
               this.loadedRecordTotal++;
-            } else if (refdata.statusCode === this.$const.code.UPDATE_SUCCESS) {
+            } else if (refdata.statusCode === this.$const.code.UPDATE_SUCCESS && result[0].data && result[0].data[0]) {
               var rowIndex = this.getRefreshRowIndex(
                 result[0].data[0][this.primaryKey]
               );
               this.bindData.splice(rowIndex, 1, result[0].data[0]);
+            } else {
+              this.delete(refdata);
             }
             this.store.commit('setData', this.bindData);
             this.callback && this.callback(result);
           }
         };
-        this.$axios && this.$axios.DTO(this.action, refdata).then(res => {
-          if (refdata.statusCode === this.$const.code.INSERT_SUCCESS) {
+        this.$axios && this.$axios.DTO(this.action, postData).then(res => {
+          if (refdata.statusCode === this.$const.code.INSERT_SUCCESS && res[0].data && res[0].data[0]) {
             this.bindData.unshift(res[0].data[0]);
+            if (!this.action) {
+              this.data.push(res[0].data[0]);
+            }
             this.recordTotal++;
             this.loadedRecordTotal++;
-          } else if (refdata.statusCode === this.$const.code.UPDATE_SUCCESS) {
+          } else if (refdata.statusCode === this.$const.code.UPDATE_SUCCESS && res[0].data && res[0].data[0]) {
             var rowIndex = this.getRefreshRowIndex(
               res[0].data[0][this.primaryKey]
             );
             this.bindData.splice(rowIndex, 1, res[0].data[0]);
+            if (!this.action) {
+              this.data.splice(rowIndex, 1, res[0].data[0]);
+            }
+          } else {
+            this.delete(refdata);
           }
           this.store.commit('setData', this.bindData);
-          this.doLayout();
+          this.$nextTick(() => {
+            this.doLayout();
+            this.setScrollPosition();
+          });
           this.callback && this.callback(res);
         });
       },
-      delete(result) {
+      delete(result, trueDelete) {
         var rowIndex = this.getRefreshRowIndex(result[this.primaryKey]);
+        if (!rowIndex && rowIndex !== 0) return;
         this.bindData.splice(rowIndex, 1);
         this.store.commit('setData', this.bindData);
-        this.deleteNum++;
+        if (!this.action) {
+          this.data.splice(rowIndex, 1);
+        }
+        trueDelete && this.deleteNum++;
       },
       getRefreshRowIndex(val) {
         for (var i = 0; i < this.bindData.length; i++) {
@@ -336,7 +390,7 @@
         return this.$refs.bodyWrapper ? this.$refs.bodyWrapper.scrollTop : -1;
       },
       tableScroll(ev) {
-        if (this.action) {
+        if (this.action || this.pageing) {
           // 绑定远程滚动加载的处理
           let nDivHight = this.$refs.bodyWrapper ? this.$refs.bodyWrapper.offsetHeight : 0;
           let nScrollHight = this.$refs.bodyWrapper ? this.$refs.bodyWrapper.scrollHeight : 0;
@@ -351,11 +405,11 @@
       },
       exportExcel() {
         if (this.exportAction !== '') {
-          this.queryData['pageNum'] = 0;
-          this.queryData['pageSize'] = 147483648;
-          this.queryData['orderBy'] = this.store.states.orderBy;
-          this.queryData['sortType'] = this.store.states.sortType;
-          let exportData = this.queryData;
+          this.nowQueryData['pageNum'] = 0;
+          this.nowQueryData['pageSize'] = 147483648;
+          this.nowQueryData['orderBy'] = this.store.states.orderBy;
+          this.nowQueryData['sortType'] = this.store.states.sortType;
+          let exportData = this.nowQueryData;
           exportData['columns'] = this.egColumns;
           // var options = {
           //     url: this.exportAction,
@@ -376,6 +430,9 @@
         // 重置数据
         this.nodata = false;
         this.bindData.splice(0, this.bindData.length);
+        this.getQueryData();
+        // 存储索引值初始化
+        this.start = -1;
         this.pageNum = 0;
         this.deleteNum = 0;
         if (this.getScrollTop() === 0) {
@@ -393,6 +450,8 @@
         this.nodata = false;
         this.bindData.splice(0, this.bindData.length);
         this.pageNum = 0;
+         // 存储索引值初始化
+        this.start = -1;
         this.store.states.orderBy = column.property;
         this.store.states.sortType = column.order === 'ascending' ? 'asc' : 'desc';
         if (this.getScrollTop() === 0) {
@@ -460,27 +519,36 @@
           this.bodyWrapper.scrollLeft += data.pixelX / 5;
         }
       },
-      bindEvents() {
+      setScrollPosition() {
         const {
           headerWrapper,
           footerWrapper
         } = this.$refs;
         const refs = this.$refs;
         let self = this;
+        if (!this.bodyWrapper) {
+          return;
+        }
+        const scrollYWidth = this.layout.scrollY ? this.layout.gutterWidth : 0;
+        if (headerWrapper) headerWrapper.scrollLeft = this.bodyWrapper.scrollLeft;
+        if (footerWrapper) footerWrapper.scrollLeft = this.bodyWrapper.scrollLeft;
+        if (refs.fixedBodyWrapper) refs.fixedBodyWrapper.scrollTop = this.bodyWrapper.scrollTop;
+        if (refs.rightFixedBodyWrapper) refs.rightFixedBodyWrapper.scrollTop = this.bodyWrapper.scrollTop;
+        const maxScrollLeftPosition = this.bodyWrapper.scrollWidth - this.bodyWrapper.offsetWidth + scrollYWidth;
+        const scrollLeft = this.bodyWrapper.scrollLeft;
+        // console.log('123', scrollLeft, maxScrollLeftPosition, this.bodyWrapper.scrollWidth, this.bodyWrapper.offsetWidth, scrollYWidth);
+        if (scrollLeft >= maxScrollLeftPosition) {
+          self.scrollPosition = 'right';
+        } else if (scrollLeft === 0) {
+          self.scrollPosition = 'left';
+        } else {
+          self.scrollPosition = 'middle';
+        }
+      },
+      bindEvents() {
+        var self = this;
         this.bodyWrapper.addEventListener('scroll', function() {
-          if (headerWrapper) headerWrapper.scrollLeft = this.scrollLeft;
-          if (footerWrapper) footerWrapper.scrollLeft = this.scrollLeft;
-          if (refs.fixedBodyWrapper) refs.fixedBodyWrapper.scrollTop = this.scrollTop;
-          if (refs.rightFixedBodyWrapper) refs.rightFixedBodyWrapper.scrollTop = this.scrollTop;
-          const maxScrollLeftPosition = this.scrollWidth - this.offsetWidth - 1;
-          const scrollLeft = this.scrollLeft;
-          if (scrollLeft >= maxScrollLeftPosition) {
-            self.scrollPosition = 'right';
-          } else if (scrollLeft === 0) {
-            self.scrollPosition = 'left';
-          } else {
-            self.scrollPosition = 'middle';
-          }
+          self.setScrollPosition();
         });
         if (this.fit) {
           addResizeListener(this.$el, this.resizeListener);
@@ -489,6 +557,7 @@
         }
       },
       resizeListener() {
+        console.log('123123123');
         if (!this.$ready) return;
         let shouldUpdateLayout = false;
         const el = this.$el;
@@ -510,12 +579,11 @@
           this.resizeState.height = height;
           this.doLayout();
         }
+        this.setScrollPosition();
       },
       doLayout() {
+        this.updateScrollY();
         this.layout.updateColumnsWidth();
-        this.$nextTick(() => {
-          this.updateScrollY();
-        });
         if (this.shouldUpdateHeight) {
           this.layout.updateElsHeight();
         }
@@ -530,6 +598,10 @@
     created() {
       this.tableId = 'el-table_' + tableIdSeed++;
       this.debouncedUpdateLayout = debounce(50, () => this.doLayout());
+      this.getQueryData();
+      if (this.pageing) {
+        this.store.commit('setData', []);
+      }
     },
     computed: {
       /* start */
@@ -561,7 +633,7 @@
         return style;
       },
       isShowTotal() {
-        return this.action || this.showTotal;
+        return this.action && this.actionShowTotal || this.showTotal;
       },
       /* end */
       tableSize() {
@@ -667,7 +739,7 @@
           this.layout.setHeight(value);
           /* start */
           // 根据设置的高度得到pageSize
-          if (value) {
+          if (value && !this.customPageSize) {
             this.pageSize = parseInt(value / 35, 10);
             this.pageSize = this.pageSize <= 1 ? 1 : this.pageSize;
             this.layout.setHeight(value);
@@ -691,11 +763,15 @@
           // if (!this.action) {
           //     this.store.commit('setData', value);
           // }
-          this.store.commit('setData', value);
+          if (!this.pageing) {
+            // 不分页直接赋值
+            this.store.commit('setData', value);
+          }
           /* end */
           if (this.$ready) {
             this.$nextTick(() => {
               this.doLayout();
+              this.setScrollPosition();
             });
           }
         }
@@ -707,6 +783,14 @@
             this.store.setExpandRowKeys(newVal);
           }
         }
+      },
+      bindData(val) {
+        // 当数据总长度小于pageSize自动请求
+        let nScrollTop = this.$refs.bodyWrapper ? this.$refs.bodyWrapper.scrollTop : -1;
+        if (!this.nodata && val.length && val.length < this.pageSize && !nScrollTop) {
+          this.pageNum += 1;
+          this.dataBind();
+        }
       }
     },
     destroyed() {
@@ -715,7 +799,7 @@
     mounted() {
       /* start */
       this.$parent && (this.$parent['eg_dataOld'] = this.bindData);
-      if (this.fitHeight) {
+      if (this.fitHeight && !this.customPageSize) {
         this.pageSize = parseInt(this.$refs.bodyWrapper.clientHeight / 35, 10);
         this.pageSize = this.pageSize <= 1 ? 1 : this.pageSize;
       }
@@ -814,14 +898,16 @@
         /* start */
         bindData: [], //  绑定的数据
         pageNum: 0, // 页码
-        pageSize: 50, //  每页数据大小
+        pageSize: this.customPageSize || 50, //  每页数据大小
         nodata: false, //  当前页已经没有数据，为true时说明数据已全部加载完成
         recordTotal: 0, // 记录总数
         loadedRecordTotal: 0, // 已加载记录数
         egColumns: [], // 获取列的集合，记录label和property,用于导出至excel
         egLoading: false, // 是否显示加载圈
         deleteNum: 0, // 删除的数据,
-        currentScroll: 0 // 记录当前的滚动位置
+        currentScroll: 0, // 记录当前的滚动位置
+        start: -1, // 用于记录客户端返回的当前加载条数
+        nowQueryData: null
         /* end */
       };
     }

@@ -45,7 +45,18 @@ export default {
     },
     disabled: Boolean,
     limit: Number,
-    onExceed: Function
+    onExceed: Function,
+    compressPic: { // 压缩图片
+      type: Boolean
+    },
+    limitPicMB: { // compressPic为true的情况生效 允许图片的大小 超过则压缩
+      type: Number,
+      default: 1
+    },
+    quality: { // 图片质量
+      type: Number,
+      default: 0.9
+    }
   },
 
   data() {
@@ -130,6 +141,9 @@ export default {
         data: this.data,
         filename: this.name,
         action: this.action,
+        compressPic: this.compressPic,
+        limitPicMB: this.limitPicMB,
+        quality: this.quality,
         onProgress: e => {
           this.onProgress(e, rawFile);
         },
@@ -142,11 +156,12 @@ export default {
           delete this.reqs[uid];
         }
       };
-      const req = this.httpRequest(options);
-      this.reqs[uid] = req;
-      if (req && req.then) {
-        req.then(options.onSuccess, options.onError);
-      }
+      this.httpRequest(options).then((req) => {
+        this.reqs[uid] = req;
+        if (req && req.then) {
+          req.then(options.onSuccess, options.onError);
+        }
+      });
     },
     handleClick() {
       if (!this.disabled) {

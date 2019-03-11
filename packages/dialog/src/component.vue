@@ -276,7 +276,7 @@
       }
     },
     updated() {
-      this.updateMaxHeight();
+      // this.updateMaxHeight();
     },
     created() {
       window.addEventListener('resize', this.updateMaxHeight);

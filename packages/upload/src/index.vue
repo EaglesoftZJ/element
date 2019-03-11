@@ -105,6 +105,19 @@ export default {
     onExceed: {
       type: Function,
       default: noop
+    },
+    compressPic: {
+      // 压缩图片
+      type: Boolean
+    },
+    limitPicMB: {
+      // compressPic为true的情况生效 允许图片的大小 超过则压缩
+      type: Number,
+      default: 1
+    },
+    quality: { // 图片质量
+      type: Number,
+      default: 0.9
     }
   },
 
@@ -128,7 +141,7 @@ export default {
       immediate: true,
       handler(fileList) {
         this.uploadFiles = fileList.map(item => {
-          item.uid = item.uid || (Date.now() + this.tempIndex++);
+          item.uid = item.uid || Date.now() + this.tempIndex++;
           item.status = item.status || 'success';
           return item;
         });
@@ -201,11 +214,14 @@ export default {
         if (this.onRemove) {
           var before = this.onRemove(file, fileList);
           if (before && before.then) {
-            before.then(() => {
-              removeData();
-            }, () => {
-            // do nothing
-            });
+            before.then(
+              () => {
+                removeData();
+              },
+              () => {
+                // do nothing
+              }
+            );
           } else if (before) {
             removeData();
           } else {
@@ -257,7 +273,8 @@ export default {
         props: {
           'default-file-list': 'default-file-list is renamed to file-list.',
           'show-upload-list': 'show-upload-list is renamed to show-file-list.',
-          'thumbnail-mode': 'thumbnail-mode has been deprecated, you can implement the same effect according to this case: http://element.eleme.io/#/zh-CN/component/upload#yong-hu-tou-xiang-shang-chuan'
+          'thumbnail-mode':
+            'thumbnail-mode has been deprecated, you can implement the same effect according to this case: http://element.eleme.io/#/zh-CN/component/upload#yong-hu-tou-xiang-shang-chuan'
         }
       };
     }
@@ -273,8 +290,11 @@ export default {
           listType={this.listType}
           files={this.uploadFiles}
           on-remove={this.handleRemove}
-          handlePreview={this.onPreview}>
-          {(props) => {return this.$scopedSlots.btn && this.$scopedSlots.btn(props);}}
+          handlePreview={this.onPreview}
+        >
+          {props => {
+            return this.$scopedSlots.btn && this.$scopedSlots.btn(props);
+          }}
         </UploadList>
       );
     }
@@ -296,6 +316,9 @@ export default {
         listType: this.listType,
         disabled: this.uploadDisabled,
         limit: this.limit,
+        compressPic: this.compressPic,
+        limitPicMB: this.limitPicMB,
+        quality: this.quality,
         'on-exceed': this.onExceed,
         'on-start': this.handleStart,
         'on-progress': this.handleProgress,
@@ -309,20 +332,21 @@ export default {
     };
 
     const trigger = this.$slots.trigger || this.$slots.default;
-    const uploadComponent = (typeof FormData !== 'undefined' || this.$isServer)
-      ? <upload {...uploadData}>{trigger}</upload>
-      : <iframeUpload {...uploadData}>{trigger}</iframeUpload>;
+    const uploadComponent =
+      typeof FormData !== 'undefined' || this.$isServer ? (
+        <upload {...uploadData}>{trigger}</upload>
+      ) : (
+        <iframeUpload {...uploadData}>{trigger}</iframeUpload>
+      );
 
     return (
       <div>
-        { this.listType === 'picture-card' ? uploadList : ''}
-        {
-          this.$slots.trigger
-            ? [uploadComponent, this.$slots.default]
-            : uploadComponent
-        }
+        {this.listType === 'picture-card' ? uploadList : ''}
+        {this.$slots.trigger
+          ? [uploadComponent, this.$slots.default]
+          : uploadComponent}
         {this.$slots.tip}
-        { this.listType !== 'picture-card' ? uploadList : ''}
+        {this.listType !== 'picture-card' ? uploadList : ''}
       </div>
     );
   }
