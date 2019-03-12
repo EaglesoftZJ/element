@@ -21,7 +21,7 @@
             <i class="el-dialog__close el-icon el-icon-close"></i>
           </button>
         </div>
-        <div class="el-dialog__body" :style="contentStyle" v-if="rendered"><slot></slot></div>
+        <div class="el-dialog__body" :style="contentStyle" v-if="rendered"><slot v-if="bodyShow"></slot></div>
         <div class="el-dialog__footer" ref="footer" v-if="$slots.footer">
           <slot name="footer"></slot>
         </div>
@@ -112,7 +112,8 @@
         dialogLeft: 0,
         dialogTop: 0,
         openAfterAnimate: false,
-        closeAfterAnimate: false
+        closeAfterAnimate: false,
+        bodyShow: false
       };
     },
 
@@ -128,9 +129,15 @@
           if (this.appendToBody) {
             document.body.appendChild(this.$el);
           }
+          this.$nextTick(() => {
+            setTimeout(() => {
+              this.bodyShow = true;
+            }, 10);
+          });
         } else {
           this.$el.removeEventListener('scroll', this.updatePopper);
           if (!this.closed) this.$emit('close');
+          this.bodyShow = false;
         }
       }
     },
@@ -289,6 +296,11 @@
         if (this.appendToBody) {
           document.body.appendChild(this.$el);
         }
+        this.$nextTick(() => {
+          setTimeout(() => {
+            this.bodyShow = true;
+          }, 10);
+        });
       }
       this.updateMaxHeight();
       this.bindEvent();
