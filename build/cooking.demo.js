@@ -31,7 +31,7 @@ cooking.set({
   hash: true,
   devServer: {
     hostname: '0.0.0.0',
-    port: 8086,
+    port: 8081,
     log: false,
     publicPath: '/'
   },

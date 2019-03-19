@@ -1210,7 +1210,6 @@ You can also select multiple rows.
     <el-button @click="toggleSelection()">Clear selection</el-button>
   </div>
 </template>
-
 <script>
   export default {
     data() {

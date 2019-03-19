@@ -168,6 +168,8 @@ export default {
     headerAlign: String,
     showTooltipWhenOverflow: Boolean,
     showOverflowTooltip: Boolean,
+    showOverflowPopover: Boolean,
+    popoverCustomClass: String, // 使用popover弹出部分自定义的类名
     fixed: [Boolean, String],
     formatter: Function,
     selectable: Function,
@@ -255,6 +257,8 @@ export default {
       sortBy: this.sortBy,
       resizable: this.resizable,
       showOverflowTooltip: this.showOverflowTooltip || this.showTooltipWhenOverflow,
+      showOverflowPopover: this.showOverflowPopover,
+      popoverCustomClass: this.popoverCustomClass,
       formatter: this.formatter,
       selectable: this.selectable,
       reserveSelection: this.reserveSelection,
@@ -299,7 +303,10 @@ export default {
         renderCell = DEFAULT_RENDER_CELL;
       }
 
-      return _self.showOverflowTooltip || _self.showTooltipWhenOverflow
+      let tooltip = _self.showOverflowTooltip || _self.showTooltipWhenOverflow;
+      let popover = _self.showOverflowPopover;
+
+      return tooltip || popover
         ? <div class="cell el-tooltip" style={ {width: (data.column.realWidth || data.column.width) - 1 + 'px'} }>{ renderCell(h, data) }</div>
         : <div class="cell">{ renderCell(h, data) }</div>;
     };

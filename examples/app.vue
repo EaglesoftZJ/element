@@ -16,6 +16,10 @@
     }
   }
 
+  .popover-test {
+    width: 500px;
+  }
+
   #app {
     height: 100%;
     
@@ -83,8 +87,8 @@
 
   .container,
   .page-container {
-    /* width: 1140px; */
-    width: 100%;
+    width: 1140px;
+    /* width: 100%; */
     padding: 0;
     margin: 0 auto;
   }

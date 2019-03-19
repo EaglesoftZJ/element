@@ -63,7 +63,7 @@
           name: '王小虎',
           province: '上海',
           city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
+          address: '上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄',
           detailAddress: '金沙江路 1518 弄',
           zip: 200333
         }, {
@@ -71,7 +71,7 @@
           name: '王小虎',
           province: '上海',
           city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
+          address: '上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄',
           detailAddress: '金沙江路 1518 弄',
           zip: 200333
         }, {
@@ -79,7 +79,7 @@
           name: '王小虎',
           province: '上海',
           city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
+          address: '上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄',
           detailAddress: '金沙江路 1518 弄',
           zip: 200333
         }, {
@@ -1355,7 +1355,7 @@
 
 选择多行数据时使用 Checkbox。
 
-:::demo 实现多选非常简单: 手动添加一个`el-table-column`，设`type`属性为`selection`即可；默认情况下若内容过多会折行显示，若需要单行显示可以使用`show-overflow-tooltip`属性，它接受一个`Boolean`，为`true`时多余的内容会在 hover 时以 tooltip 的形式显示出来。
+:::demo 实现多选非常简单: 手动添加一个`el-table-column`，设`type`属性为`selection`即可；默认情况下若内容过多会折行显示，若需要单行显示可以使用`show-overflow-tooltip`属性，它接受一个`Boolean`，为`true`时多余的内容会在 hover 时以 tooltip 的形式显示出来，可以使用`show-overflow-popover`属性，它接受一个`Boolean`，为`true`时多余的内容会在 hover 时以 popover 的形式显示出来, `popover-custom-class`属性可以添加popover弹层的class
 ```html
 <template>
   <el-table
@@ -1376,12 +1376,16 @@
     <el-table-column
       prop="name"
       label="姓名"
-      width="120">
+      width="120"
+      show-overflow-tooltip
+      >
     </el-table-column>
     <el-table-column
       prop="address"
       label="地址"
-      show-overflow-tooltip>
+      show-overflow-popover
+      popover-custom-class="popover-test"
+      >
     </el-table-column>
   </el-table>
   <div style="margin-top: 20px">
@@ -1389,7 +1393,11 @@
     <el-button @click="toggleSelection()">取消选择</el-button>
   </div>
 </template>
-
+<style>
+  .popover-test {
+    width: 500px;
+  }
+</style>
 <script>
   export default {
     data() {
@@ -1445,6 +1453,7 @@
 </script>
 ```
 :::
+
 
 ### 排序
 

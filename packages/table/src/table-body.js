@@ -67,8 +67,8 @@ export default {
                           <td
                             style={ this.getCellStyle($index, cellIndex, row, column) }
                             class={ this.getCellClass($index, cellIndex, row, column) }
-                            on-mouseenter={ ($event) => this.handleCellMouseEnter($event, row) }
-                            on-mouseleave={ this.handleCellMouseLeave }>
+                            on-mouseenter={ ($event) => this.handleCellMouseEnter($event, row, column) }
+                            on-mouseleave={ ($event) => this.handleCellMouseLeave($event, column) }>
                             {
                               column.renderCell.call(
                                 this._renderProxy,
@@ -92,8 +92,8 @@ export default {
                             class={ this.getCellClass($index, cellIndex, row, column) }
                             rowspan={ rowspan }
                             colspan={ colspan }
-                            on-mouseenter={ ($event) => this.handleCellMouseEnter($event, row) }
-                            on-mouseleave={ this.handleCellMouseLeave }>
+                            on-mouseenter={ ($event) => this.handleCellMouseEnter($event, row, column) }
+                            on-mouseleave={ ($event) => this.handleCellMouseLeave($event, column) }>
                             {
                               column.renderCell.call(
                                 this._renderProxy,
@@ -124,7 +124,10 @@ export default {
                 : ''
               ];
             }).concat(
-              <el-tooltip effect={ this.table.tooltipEffect } placement="top" ref="tooltip" content={ this.tooltipContent }></el-tooltip>
+              [
+                <el-tooltip effect={ this.table.tooltipEffect } placement="top" ref="tooltip" content={ this.tooltipContent }></el-tooltip>,
+                <el-popover popper-class={ this.customClass } ref="popover" content={ this.tooltipContent } placement="top" trigger="hover"><span slot="reference"></span></el-popover>
+              ]
             )
           }
         </tbody>
@@ -204,12 +207,14 @@ export default {
 
   data() {
     return {
-      tooltipContent: ''
+      tooltipContent: '',
+      customClass: ''
     };
   },
 
   created() {
     this.activateTooltip = debounce(50, tooltip => tooltip.handleShowPopper());
+    this.activatePopover = debounce(50, popover => popover.handleMouseEnter());
   },
 
   methods: {
@@ -328,7 +333,7 @@ export default {
       return classes.join(' ');
     },
 
-    handleCellMouseEnter(event, row) {
+    handleCellMouseEnter(event, row, column) {
       const table = this.table;
       const cell = getCell(event);
 
@@ -338,10 +343,15 @@ export default {
         table.$emit('cell-mouse-enter', hoverState.row, hoverState.column, hoverState.cell, event);
       }
 
-      // 判断是否text-overflow, 如果是就显示tooltip
+      // 判断是否text-overflow, 如果是就显示tooltip | popover
       const cellChild = event.target.querySelector('.cell');
 
-      if (hasClass(cellChild, 'el-tooltip') && cellChild.scrollWidth > cellChild.offsetWidth && this.$refs.tooltip) {
+      this.customClass = column.popoverCustomClass;
+
+      let tooltip = column.showOverflowTooltip || column.showTooltipWhenOverflow;
+      let popover = column.showOverflowPopover;
+
+      if (tooltip && cellChild.scrollWidth > cellChild.offsetWidth && this.$refs.tooltip) {
         const tooltip = this.$refs.tooltip;
         // TODO 会引起整个 Table 的重新渲染，需要优化
         this.tooltipContent = cell.textContent || cell.innerText;
@@ -350,14 +360,27 @@ export default {
         tooltip.doDestroy();
         tooltip.setExpectedState(true);
         this.activateTooltip(tooltip);
+      } else if (popover && cellChild.scrollWidth > cellChild.offsetWidth && this.$refs) {
+        const popover = this.$refs.popover;
+        this.tooltipContent = cell.textContent || cell.innerText;
+        popover.referenceElm = cell;
+        // popover.$refs.popper && (popover.$refs.popper.style.display = 'none');
+        popover.showPopper = false;
+        popover.doDestroy();
+        this.activatePopover(popover);
+
       }
     },
 
-    handleCellMouseLeave(event) {
-      const tooltip = this.$refs.tooltip;
+    handleCellMouseLeave(event, column) {
+      // const tooltip = this.$refs.tooltip;
+      let tooltip = column.showOverflowTooltip || column.showTooltipWhenOverflow;
+      let popover = column.showOverflowPopover;
       if (tooltip) {
-        tooltip.setExpectedState(false);
-        tooltip.handleClosePopper();
+        this.$refs.tooltip.setExpectedState(false);
+        this.$refs.tooltip.handleClosePopper();
+      } else if (popover) {
+        this.$refs.popover.handleMouseLeave();
       }
       const cell = getCell(event);
       if (!cell) return;
