@@ -420,7 +420,7 @@
           //     }
           // };
           // this.$eg.ajax(null, options);
-          this.$axios && this.$axios.DTO(this.action, exportData).then(res => {
+          this.$axios && this.$axios.DTO(this.exportAction, exportData).then(res => {
             window.location.href = '/rest/export/exportExcel?url=' + res.url + '&filename=' + res.fileName;
           });
         }
@@ -428,6 +428,8 @@
       // 对外接口
       resetGrid() {
         // 重置数据
+        if (this.egLoading) return;
+        this.egLoading = true;
         this.nodata = false;
         this.bindData.splice(0, this.bindData.length);
         this.getQueryData();
