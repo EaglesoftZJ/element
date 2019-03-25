@@ -246,6 +246,7 @@
     methods: {
       /* 自已加的方法开始 */
       dataBind() {
+        if (this.egLoading) return;
         if (this.action !== '') {
           this.egLoading = true;
           this.nowQueryData['pageNum'] = this.start !== -1 ? this.start : (this.pageNum * this.pageSize - this.deleteNum);
@@ -428,8 +429,6 @@
       // 对外接口
       resetGrid() {
         // 重置数据
-        if (this.egLoading) return;
-        this.egLoading = true;
         this.nodata = false;
         this.bindData.splice(0, this.bindData.length);
         this.getQueryData();
