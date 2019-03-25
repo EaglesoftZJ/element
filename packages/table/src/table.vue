@@ -288,12 +288,12 @@
               this.start = res[0].pageNum;
             }
             this.store.commit('setData', this.bindData);
+            this.egLoading = false;
+            this.callback && this.callback(res);
             this.$nextTick(() => {
               this.doLayout();
               this.setScrollPosition();
             });
-            this.egLoading = false;
-            this.callback && this.callback(res);
           });
         } else if (this.pageing) {
           var index = this.pageNum * this.pageSize - this.deleteNum + this.pageSize;
