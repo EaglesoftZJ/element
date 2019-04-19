@@ -13,14 +13,14 @@
     }
     ]"
     @mouseenter="hovering = true; handleMouseenter(arguments[0])"
-    @mouseleave="hovering = false; tlpShow = true"
+    @mouseleave="hovering = false; tlpShow = false"
   >
     <template v-if="type !== 'textarea'">
       <!-- 前置元素 -->
       <div class="el-input-group__prepend" v-if="$slots.prepend">
         <slot name="prepend"></slot>
       </div>
-      <el-tooltip v-model="tlpShow" effect="light" popper-class="tooltip-use-in-form" :disabled="tlpDisabled" :content="currentValue + ''" placement="top">
+      <el-tooltip v-model="tlpShow" popper-class="tooltip-use-in-form" :disabled="tlpDisabled" :content="currentValue + ''" placement="top-start">
           <input
             :tabindex="tabindex"
             v-if="type !== 'textarea'"
@@ -316,8 +316,8 @@
           this.tlpDisabled = false;
           this.tlpShow = true;
         } else {
-          this.tlpDisabled = false;
-          this.tlpShow = true;
+          this.tlpDisabled = true;
+          this.tlpShow = false;
         }
       }
     },

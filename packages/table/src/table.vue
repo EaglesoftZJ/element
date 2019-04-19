@@ -574,15 +574,16 @@
         if ((this.height || this.shouldUpdateHeight) && oldHeight !== height) {
           shouldUpdateLayout = true;
         }
+        if (this.fitHeight && !this.customPageSize) {
+          this.pageSize = parseInt(this.$refs.bodyWrapper.clientHeight / 35, 10);
+          this.pageSize = this.pageSize <= 1 ? 1 : this.pageSize;
+        }
         if (shouldUpdateLayout) {
           this.resizeState.width = width;
           this.resizeState.height = height;
           this.doLayout();
         }
-        if (this.fitHeight && !this.customPageSize) {
-          this.pageSize = parseInt(this.$refs.bodyWrapper.clientHeight / 35, 10);
-          this.pageSize = this.pageSize <= 1 ? 1 : this.pageSize;
-        }
+
         this.setScrollPosition();
       },
       doLayout() {
