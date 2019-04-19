@@ -40,7 +40,8 @@
     cloneDate.setHours(0, 0, 0, 0);
     return cloneDate.getTime();
   };
-
+  let oldMinDate = null;
+  let oldMaxDate = null;
   export default {
     mixins: [Locale],
 
@@ -76,7 +77,6 @@
       minDate: {},
 
       maxDate: {},
-
       rangeState: {
         default() {
           return {
@@ -428,7 +428,9 @@
 
         if (this.selectionMode === 'range') {
           if (this.minDate && this.maxDate) {
-            const minDate = new Date(newDate.getTime());
+            oldMinDate = new Date(this.minDate.getTime());
+            oldMaxDate = new Date(this.maxDate.getTime());
+            const minDate = getDateResult(this.minDate, newDate);
             const maxDate = null;
 
             this.$emit('pick', { minDate, maxDate }, false);
@@ -439,7 +441,7 @@
             });
           } else if (this.minDate && !this.maxDate) {
             if (newDate >= this.minDate) {
-              const maxDate = new Date(newDate.getTime());
+              const maxDate = getDateResult(oldMaxDate, newDate) || new Date(newDate.getTime());
               this.rangeState.selecting = false;
 
               this.$emit('pick', {
@@ -447,11 +449,14 @@
                 maxDate
               });
             } else {
-              const minDate = new Date(newDate.getTime());
+              const minDate = getDateResult(oldMinDate, newDate) || new Date(newDate.getTime());
+              const maxDate = getDateResult(oldMaxDate, this.minDate) || this.minDate;
               this.rangeState.selecting = false;
 
-              this.$emit('pick', { minDate, maxDate: this.minDate });
+              this.$emit('pick', { minDate, maxDate });
             }
+            oldMinDate = null;
+            oldMaxDate = null;
           } else if (!this.minDate) {
             const minDate = new Date(newDate.getTime());
 
@@ -471,6 +476,15 @@
             value: value,
             date: newDate
           });
+        }
+        function getDateResult(origin, newDate) {
+          if (!origin || !newDate) return;
+          let d = new Date(origin.getTime()); // 旧时间
+          // 更新日期
+          d.setFullYear(newDate.getFullYear());
+          d.setMonth(newDate.getMonth());
+          d.setDate(newDate.getDate());
+          return d;
         }
       }
     }

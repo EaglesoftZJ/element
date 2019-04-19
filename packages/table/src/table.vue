@@ -558,7 +558,6 @@
         }
       },
       resizeListener() {
-        console.log('123123123');
         if (!this.$ready) return;
         let shouldUpdateLayout = false;
         const el = this.$el;
@@ -579,6 +578,10 @@
           this.resizeState.width = width;
           this.resizeState.height = height;
           this.doLayout();
+        }
+        if (this.fitHeight && !this.customPageSize) {
+          this.pageSize = parseInt(this.$refs.bodyWrapper.clientHeight / 35, 10);
+          this.pageSize = this.pageSize <= 1 ? 1 : this.pageSize;
         }
         this.setScrollPosition();
       },

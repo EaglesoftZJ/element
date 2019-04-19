@@ -90,6 +90,8 @@
           return;
         }
 
+        let scrolled = false; // 记录是否已滚动的error
+
         let promise;
         // if no callback, return promise
         if (typeof callback !== 'function' && window.Promise) {
@@ -108,15 +110,19 @@
         }
         let invalidFields = {};
         this.fields.forEach(field => {
-          field.validate('', (message, field) => {
+          field.validate('', (message, field, el) => {
             if (message) {
               valid = false;
+            }
+            if (!scrolled && !valid && el) {
+              scrolled = true;
+              el.focus();
             }
             invalidFields = objectAssign({}, invalidFields, field);
             if (typeof callback === 'function' && ++count === this.fields.length) {
               callback(valid, invalidFields);
             }
-          });
+          }, true);
         });
 
         if (promise) {

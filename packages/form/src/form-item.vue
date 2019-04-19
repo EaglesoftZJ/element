@@ -171,6 +171,7 @@
     },
     methods: {
       validate(trigger, callback = noop) {
+        // isForm 从form的validte过来 不是单个校验
         this.validateDisabled = false;
         const rules = this.getFilteredRule(trigger);
         if ((!rules || rules.length === 0) && this.required === undefined) {
@@ -193,7 +194,8 @@
         }, (errors, invalidFields) => {
           this.validateState = !errors ? 'success' : 'error';
           this.validateMessage = errors ? errors[0].message : '';
-          callback(this.validateMessage, invalidFields);
+          const el = this.$el.querySelector('input') || this.$el.querySelector('textarea');
+          callback(this.validateMessage, invalidFields, el);
           this.elForm && this.elForm.$emit('validate', this.prop, !errors);
         });
       },

@@ -4,7 +4,7 @@
       return {
         restaurants: [],
         input: '',
-        input1: '',
+        input1: '123712937128731873891273891273981738912',
         input2: '',
         input21: '',
         input22: '',
@@ -28,6 +28,9 @@
       };
     },
     methods: {
+      test() {
+        console.log('listen change');
+      },
       loadAll() {
         return [
           { "value": "三全鲜食（北新泾店）", "address": "长宁区新渔路144号" },
@@ -188,7 +191,7 @@
 
 :::demo
 ```html
-<el-input v-model="input" placeholder="请输入内容"></el-input>
+<el-input v-model="input" placeholder="请输入内容" @change="test"></el-input>
 
 <script>
 export default {

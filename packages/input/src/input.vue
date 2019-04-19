@@ -1,5 +1,6 @@
 <template>
-  <div :class="[
+  <div 
+  :class="[
     type === 'textarea' ? 'el-textarea' : 'el-input',
     inputSize ? 'el-input--' + inputSize : '',
     {
@@ -11,33 +12,36 @@
       'el-input--suffix': $slots.suffix || suffixIcon
     }
     ]"
-    @mouseenter="hovering = true"
-    @mouseleave="hovering = false"
+    @mouseenter="hovering = true; handleMouseenter(arguments[0])"
+    @mouseleave="hovering = false; tlpShow = true"
   >
     <template v-if="type !== 'textarea'">
       <!-- 前置元素 -->
       <div class="el-input-group__prepend" v-if="$slots.prepend">
         <slot name="prepend"></slot>
       </div>
-      <input
-        :tabindex="tabindex"
-        v-if="type !== 'textarea'"
-        class="el-input__inner"
-        v-bind="$attrs"
-        :type="type"
-        :disabled="inputDisabled"
-        :autocomplete="autoComplete"
-        :value="currentValue"
-        ref="input"
-        @compositionstart="handleComposition"
-        @compositionupdate="handleComposition"
-        @compositionend="handleComposition"
-        @input="handleInput"
-        @focus="handleFocus"
-        @blur="handleBlur"
-        @change="handleChange"
-        :aria-label="label"
-      >
+      <el-tooltip v-model="tlpShow" effect="light" popper-class="tooltip-use-in-form" :disabled="tlpDisabled" :content="currentValue + ''" placement="top">
+          <input
+            :tabindex="tabindex"
+            v-if="type !== 'textarea'"
+            class="el-input__inner"
+            v-bind="$attrs"
+            :type="type"
+            :disabled="inputDisabled"
+            :autocomplete="autoComplete"
+            :value="currentValue"
+            ref="input"
+            @compositionstart="handleComposition"
+            @compositionupdate="handleComposition"
+            @compositionend="handleComposition"
+            @input="handleInput"
+            @focus="handleFocus"
+            @blur="handleBlur"
+            @change="handleChange"
+            @click="handleClick"
+            :aria-label="label"
+          >
+      </el-tooltip>
       <!-- 前置内容 -->
       <span class="el-input__prefix" v-if="$slots.prefix || prefixIcon" :style="prefixOffset">
         <slot name="prefix"></slot>
@@ -127,7 +131,9 @@
         suffixOffset: null,
         hovering: false,
         focused: false,
-        isOnComposition: false
+        isOnComposition: false,
+        tlpShow: false,
+        tlpDisabled: true
       };
     },
 
@@ -247,6 +253,8 @@
         this.textareaCalcStyle = calcTextareaHeight(this.$refs.textarea, minRows, maxRows);
       },
       handleFocus(event) {
+        this.tlpDisabled = true;
+        this.tlpShow = false;
         this.focused = true;
         this.$emit('focus', event);
       },
@@ -266,6 +274,10 @@
       },
       handleChange(event) {
         this.$emit('change', event.target.value);
+      },
+      handleClick() {
+        this.tlpShow = false;
+        this.tlpDisabled = true;
       },
       setCurrentValue(value) {
         if (value === this.currentValue) return;
@@ -295,6 +307,18 @@
         this.$emit('clear');
         this.setCurrentValue('');
         this.focus();
+      },
+      handleMouseenter(event) {
+        const target = event.currentTarget.querySelector('input');
+        if (!target) return;
+        //  && !this.focused
+        if (target.scrollWidth > target.clientWidth) {
+          this.tlpDisabled = false;
+          this.tlpShow = true;
+        } else {
+          this.tlpDisabled = false;
+          this.tlpShow = true;
+        }
       }
     },
 

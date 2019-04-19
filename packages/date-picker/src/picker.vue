@@ -539,6 +539,9 @@
         if (this.userInput) {
           const value = this.parseString(this.displayValue);
           if (value) {
+            if (!this.picker) {
+              this.mountPicker();
+            }
             this.picker.value = value;
             if (this.isValidValue(value)) {
               this.emitInput(value);
