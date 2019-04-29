@@ -1,5 +1,5 @@
 {
-  "name": "element-ui",
+  "name": "eg-element-ui",
   "version": "2.3.3",
   "description": "A Component Library for Vue.js.",
   "main": "lib/element-ui.common.js",
@@ -9,6 +9,9 @@
     "packages",
     "types"
   ],
+  "publishConfig": {
+    "registry": "http://220.189.207.21:9000/repository/eaglesoft/"
+  },
   "typings": "types/index.d.ts",
   "scripts": {
     "bootstrap": "yarn || npm i",
