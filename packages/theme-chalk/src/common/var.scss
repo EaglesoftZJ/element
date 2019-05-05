@@ -710,3 +710,11 @@ $--breakpoints-spec: (
   'lg-and-down': (max-width: $--xl - 1),
   'xl-only' : (min-width: $--xl),
 );
+
+/* Calendar
+--------------------------*/
+/// border||Other|4
+$--calendar-border: $--table-border !default;
+/// color||Other|4
+$--calendar-selected-background-color: #F2F8FE !default;
+$--calendar-cell-width: 85px !default;

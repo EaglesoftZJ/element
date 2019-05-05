@@ -61,6 +61,7 @@ import Scrollbar from '../packages/scrollbar/index.js';
 import CarouselItem from '../packages/carousel-item/index.js';
 import Collapse from '../packages/collapse/index.js';
 import CollapseItem from '../packages/collapse-item/index.js';
+import Calendar from '../packages/calendar/index.js';
 import Cascader from '../packages/cascader/index.js';
 import ColorPicker from '../packages/color-picker/index.js';
 import Transfer from '../packages/transfer/index.js';
@@ -130,6 +131,7 @@ const components = [
   CarouselItem,
   Collapse,
   CollapseItem,
+  Calendar,
   Cascader,
   ColorPicker,
   Transfer,
@@ -237,6 +239,7 @@ module.exports = {
   CarouselItem,
   Collapse,
   CollapseItem,
+  Calendar,
   Cascader,
   ColorPicker,
   Transfer,

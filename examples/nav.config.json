@@ -247,6 +247,10 @@
             {
               "path": "/collapse",
               "title": "Collapse 折叠面板"
+            },
+            {
+              "path": "/calendar",
+              "title": "Calendar 日历"
             }
           ]
         }
