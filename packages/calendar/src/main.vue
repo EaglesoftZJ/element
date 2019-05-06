@@ -98,6 +98,8 @@ export default {
   methods: {
     pickDay(day) {
       this.realSelectedDay = day;
+      console.log('pick', day);
+      this.$emit('pick', day);
     },
 
     selectDate(type) {
@@ -147,7 +149,7 @@ export default {
 
     i18nDate() {
       const year = this.formatedDate.slice(0, 4);
-      const month = this.formatedDate.slice(5, 7).replace('0', '');
+      const month = this.formatedDate.slice(5, 7).replace(/^0+(\d+)$/, '$1');
       return `${year} ${this.t('el.datepicker.year')} ${this.t('el.datepicker.month' + month)}`;
     },
 
