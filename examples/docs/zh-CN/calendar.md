@@ -63,3 +63,8 @@
 |-----------------|-------------- |---------- |------------ |-------- |
 | date            | 单元格代表的日期 | Date      | —           | —      |
 | data            | { type, isSelected, day}，`type` 表示该日期的所属月份，可选值有 prev-month，current-month，next-month；`isSelected` 标明该日期是否被选中；`day` 是格式化的日期，格式为 yyyy-MM-dd    | Object      | —           | —      |
+
+### Events
+| 事件名称             | 说明          | 回调参数   |
+|-----------------|-------------- |---------- |
+| pick | 日期选择事件         | yyyy-MM-dd格式的时间字符串 |
