@@ -246,72 +246,77 @@
     methods: {
       /* 自已加的方法开始 */
       dataBind() {
-        if (this.egLoading) return;
-        if (this.action !== '') {
-          this.egLoading = true;
-          this.nowQueryData['pageNum'] = this.start !== -1 ? this.start : (this.pageNum * this.pageSize - this.deleteNum);
-          this.nowQueryData['pageSize'] = this.pageSize;
-          this.nowQueryData['orderBy'] = this.store.states.orderBy;
-          this.nowQueryData['sortType'] = this.store.states.sortType;
-          //   var options = {
-          //       url: this.action,
-          //       data: this.nowQueryData,
-          //       jsontype: this.jsontype && 'json',
-          //       type: 'post',
-          //       success: function(res) {
-          //           res[0].data.forEach((row)=>{
-          //               this.bindData.push(row);
-          //           });
-          //           this.recordTotal = res[0].total;
-          //           this.loadedRecordTotal = this.bindData.length;
-          //           if ((res[0].data.length === 0) || (res[0].data.length < this.pageSize)) {
-          //             this.nodata = true;
-          //           }
-          //           this.store.commit('setData', this.bindData);
-          //           this.doLayout();
-          //           this.egLoading = false;
-          //           this.callback && this.callback(res);
-          //       }
-          //   };
-          this.$axios && this.$axios.DTO(this.action, this.nowQueryData).then(res => {
-            res[0].data.forEach(row => {
-              this.bindData.push(row);
+        return new Promise((resolve) => {
+          if (this.egLoading) return;
+          if (this.action !== '') {
+            this.egLoading = true;
+            this.nowQueryData['pageNum'] = this.start !== -1 ? this.start : (this.pageNum * this.pageSize - this.deleteNum);
+            this.nowQueryData['pageSize'] = this.pageSize;
+            this.nowQueryData['orderBy'] = this.store.states.orderBy;
+            this.nowQueryData['sortType'] = this.store.states.sortType;
+            //   var options = {
+            //       url: this.action,
+            //       data: this.nowQueryData,
+            //       jsontype: this.jsontype && 'json',
+            //       type: 'post',
+            //       success: function(res) {
+            //           res[0].data.forEach((row)=>{
+            //               this.bindData.push(row);
+            //           });
+            //           this.recordTotal = res[0].total;
+            //           this.loadedRecordTotal = this.bindData.length;
+            //           if ((res[0].data.length === 0) || (res[0].data.length < this.pageSize)) {
+            //             this.nodata = true;
+            //           }
+            //           this.store.commit('setData', this.bindData);
+            //           this.doLayout();
+            //           this.egLoading = false;
+            //           this.callback && this.callback(res);
+            //       }
+            //   };
+            this.$axios && this.$axios.DTO(this.action, this.nowQueryData).then(res => {
+              res[0].data.forEach(row => {
+                this.bindData.push(row);
+              });
+              this.recordTotal = res[0].total;
+              this.loadedRecordTotal = this.bindData.length;
+              if (res[0].data.length === 0 ||
+                (this.recordTotal || this.recordTotal === 0) && res[0].data.length < this.pageSize
+              ) {
+                this.nodata = true;
+              }
+              // 存在不知道总数的情况，这时候没有返回总数值，并且可能返回数不等于请求数，需要重定义当前加载数
+              if (!this.recordTotal && (res[0].pageNum || res[0].pageNum === 0)) {
+                this.start = res[0].pageNum;
+              }
+              this.store.commit('setData', this.bindData);
+              this.egLoading = false;
+              this.callback && this.callback(res);
+              this.$nextTick(() => {
+                this.doLayout();
+                this.setScrollPosition();
+              });
+              resolve();
             });
-            this.recordTotal = res[0].total;
+          } else if (this.pageing) {
+            var index = this.pageNum * this.pageSize - this.deleteNum + this.pageSize;
+            this.bindData = this.data.slice(0, index);
+            this.recordTotal = this.data.length;
             this.loadedRecordTotal = this.bindData.length;
-            if (res[0].data.length === 0 ||
-              (this.recordTotal || this.recordTotal === 0) && res[0].data.length < this.pageSize
-            ) {
-              this.nodata = true;
-            }
-            // 存在不知道总数的情况，这时候没有返回总数值，并且可能返回数不等于请求数，需要重定义当前加载数
-            if (!this.recordTotal && (res[0].pageNum || res[0].pageNum === 0)) {
-              this.start = res[0].pageNum;
-            }
             this.store.commit('setData', this.bindData);
-            this.egLoading = false;
-            this.callback && this.callback(res);
-            this.$nextTick(() => {
-              this.doLayout();
-              this.setScrollPosition();
-            });
-          });
-        } else if (this.pageing) {
-          var index = this.pageNum * this.pageSize - this.deleteNum + this.pageSize;
-          this.bindData = this.data.slice(0, index);
-          this.recordTotal = this.data.length;
-          this.loadedRecordTotal = this.bindData.length;
-          this.store.commit('setData', this.bindData);
-        }
+            resolve();
+          }
+        });
       },
       getQueryData() {
         this.nowQueryData = JSON.parse(JSON.stringify(this.queryData));
       },
-      refresh(refdata) {
+      refresh(refdata, callback) {
         if (refdata.statusCode === this.$const.code.DELETE_SUCCESS) {
           this.delete(refdata, true);
           this.recordTotal--;
           this.loadedRecordTotal--;
+         callback && callback(refdata.statusCode);
           return;
         }
         refdata['egGridviewGetRow'] = true;
@@ -327,10 +332,12 @@
           jsontype: this.jsontype && 'json',
           type: 'post',
           success: function(result) {
+            let res = refdata.statusCode;
             if (refdata.statusCode === this.$const.code.INSERT_SUCCESS && result[0].data && result[0].data[0]) {
               this.bindData.unshift(result[0].data[0]);
               this.recordTotal++;
               this.loadedRecordTotal++;
+              result[0].data.length === 0 && (res = '');
             } else if (refdata.statusCode === this.$const.code.UPDATE_SUCCESS && result[0].data && result[0].data[0]) {
               var rowIndex = this.getRefreshRowIndex(
                 result[0].data[0][this.primaryKey]
@@ -339,6 +346,7 @@
             } else {
               this.delete(refdata);
             }
+            callback && callback(res);
             this.store.commit('setData', this.bindData);
             this.callback && this.callback(result);
           }
@@ -446,6 +454,71 @@
         // 更新表格数据
         this.refresh(obj);
       },
+      // 改变位置
+      changeWzh(data, newIndex) {
+        let linq = this.$linq;
+        if (!linq) {
+          linq = require('linq');
+        }
+        const dataList = this.action ? this.bindData : this.data;
+        const keys = linq.from(dataList).select((item) => {
+          return item[this.primaryKey];
+        }).toArray();
+        let oldIndex = keys.indexOf(data[this.primaryKey]);
+        try {
+          $.extend(dataList[oldIndex], data);
+        } catch (error) {
+          
+        }
+        if (oldIndex !== -1 && newIndex >= 0 && newIndex < dataList.length) {
+          dataList.splice(newIndex, 0, dataList.splice(oldIndex, 1)[0]);
+          this.store.commit('setData', dataList);
+        }
+      },
+      // 交换位置
+      // exchangeWzh(data1, data2) {
+      //   // 获取数据的位置
+      //   Promise.all([getIndex.call(this, data1), getIndex.call(this, data2)]).then((results) => {
+      //     console.log(1, results);
+      //     results.sort((a, b) => {
+      //       return a - b;
+      //     });
+      //     let index1 = results[0];
+      //     let index2 = results[1];
+      //     if (index1 > -1 && index2 > -1) {
+      //       this.bindData.splice(index1, 1, this.bindData.splice(index2, 1, this.bindData[index1])[0]);
+      //       this.store.commit('setData', this.bindData);
+      //     }
+          
+      //   }).catch((results) => {
+      //     console.log(2, results);
+      //   })
+      //   function getIndex(data) {
+      //     return new Promise((resolve) => {
+      //       let linq = this.$linq;
+      //       if (!linq) {
+      //         linq = require('linq');
+      //       }
+      //       const keys = linq.from(this.bindData).select((item) => {
+      //         return item[this.primaryKey];
+      //       }).toArray();
+      //       let index = keys.indexOf(data[this.primaryKey]);
+      //       if (index === -1) {
+      //         // 不存在与当前数据中，请求新数据
+      //         let obj = $.extend({statusCode: this.$const.code.INSERT_SUCCESS}, data);
+      //         this.refresh(obj, (res) => {
+      //           if (res) {
+      //             resolve(0);
+      //           } else {
+      //             reject();
+      //           }
+      //         })
+      //       } else {
+      //         resolve(index);
+      //       }
+      //     });
+      //   }
+      // },
       orderGird(column) {
         // 排序
         this.nodata = false;

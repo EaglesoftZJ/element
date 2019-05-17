@@ -290,7 +290,17 @@
           // this.$nextTick(() => {
           //   this.$refs.aaa.setCurrentRow(obj);
           // })
-			},
+      },
+      moveUp(row, index) {
+        if (index - 1 >= 0) {
+          this.$refs.tableData111.changeWzh(row, index - 1);
+        }
+      },
+      moveDown(row, index) {
+         if (index + 1 < this.tableData.length) {
+          this.$refs.tableData111.changeWzh(row, index + 1)
+        }
+      },
       getSummaries(param) {
         const { columns, data } = param;
         const sums = [];
@@ -757,6 +767,7 @@
 <template>
   <el-table
     :data="tableData"
+    primary-key="date"
     border
     style="width: 100%">
     <el-table-column
@@ -1008,7 +1019,7 @@
           type="text"
           size="small">
           移除
-        </el-button>
+        </el-butto>
       </template>
     </el-table-column>
   </el-table>
@@ -1167,6 +1178,123 @@
 :::
 
 
+
+
+
+
+
+
+
+### 移动 <span style="color: red; font-size: 12px;">新增</span>
+
+向上向下移动数据
+
+:::demo。
+```html
+<template>
+  <el-table
+    :data="tableData"
+    ref="tableData111"
+    primary-key="date"
+    border
+    style="width: 100%">
+    <el-table-column
+      fixed
+      prop="date"
+      label="日期"
+      width="150">
+    </el-table-column>
+    <el-table-column
+      prop="name"
+      label="姓名"
+      width="120">
+    </el-table-column>
+    <el-table-column
+      prop="province"
+      label="省份"
+      width="120">
+    </el-table-column>
+    <el-table-column
+      prop="city"
+      label="市区"
+      width="120">
+    </el-table-column>
+    <el-table-column
+      prop="address"
+      label="地址"
+      width="300">
+    </el-table-column>
+    <el-table-column
+      prop="zip"
+      label="邮编"
+      width="120">
+    </el-table-column>
+    <el-table-column
+      fixed="right"
+      label="操作"
+      width="100">
+      <template slot-scope="scope">
+        <el-button @click="moveUp(scope.row, scope.$index)" type="text" size="small">上移</el-button>
+        <el-button @click="moveDown(scope.row, scope.$index)" type="text" size="small">下移</el-button>
+      </template>
+    </el-table-column>
+  </el-table>
+</template>
+
+<script>
+  export default {
+    methods: {
+      handleClick(row) {
+        console.log(row);
+      },
+      moveUp(row, index) {
+        if (index - 1 >= 0) {
+          this.$refs.tableData111.changeWzh(row, index - 1);
+        }
+      },
+      moveDown(row, index) {
+         if (index + 1 < this.tableData.length) {
+          this.$refs.tableData111.changeWzh(row, index + 1)
+        }
+      },
+    }
+    data() {
+      return {
+        tableData: [{
+          date: '2016-05-03',
+          name: '王小虎',
+          province: '上海',
+          city: '普陀区',
+          address: '上海市普陀区金沙江路 1518 弄',
+          zip: 200333
+        }, {
+          date: '2016-05-02',
+          name: '王小虎',
+          province: '上海',
+          city: '普陀区',
+          address: '上海市普陀区金沙江路 1518 弄',
+          zip: 200333
+        }, {
+          date: '2016-05-04',
+          name: '王小虎',
+          province: '上海',
+          city: '普陀区',
+          address: '上海市普陀区金沙江路 1518 弄',
+          zip: 200333
+        }, {
+          date: '2016-05-01',
+          name: '王小虎',
+          province: '上海',
+          city: '普陀区',
+          address: '上海市普陀区金沙江路 1518 弄',
+          zip: 200333
+        }]
+      }
+    }
+  }
+</script>
+```
+:::
 ### 多级表头
 
 数据结构比较复杂的时候，可使用多级表头来展现数据的层次关系。
