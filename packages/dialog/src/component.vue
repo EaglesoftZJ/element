@@ -121,7 +121,6 @@
       visible(val) {
         if (val) {
           this.closed = false;
-          this.$emit('open');
           this.$el.addEventListener('scroll', this.updatePopper);
           this.$nextTick(() => {
             this.$refs.dialog.scrollTop = 0;
@@ -132,6 +131,7 @@
           this.$nextTick(() => {
             setTimeout(() => {
               this.bodyShow = true;
+              this.$emit('open');
             }, 10);
           });
         } else {
@@ -292,13 +292,13 @@
     mounted() {
       if (this.visible) {
         this.rendered = true;
-        this.open();
         if (this.appendToBody) {
           document.body.appendChild(this.$el);
         }
         this.$nextTick(() => {
           setTimeout(() => {
             this.bodyShow = true;
+            this.open();
           }, 10);
         });
       }

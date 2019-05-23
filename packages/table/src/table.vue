@@ -843,6 +843,8 @@
           // }
           if (!this.pageing) {
             // 不分页直接赋值
+            this.recordTotal = value.length;
+            this.loadedRecordTotal = value.length;
             this.store.commit('setData', value);
           }
           /* end */
