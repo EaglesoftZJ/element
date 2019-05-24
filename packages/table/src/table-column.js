@@ -415,6 +415,14 @@ export default {
     } else {
       columnIndex = [].indexOf.call(parent.$el.children, this.$el);
     }
+    
+    if (this.$scopedSlots.header) {
+      if (this.type === 'selection') {
+        console.warn('[Element Warn][TableColumn]Selection column doesn\'t allow to set scoped-slot header.');
+      } else {
+        this.columnConfig.renderHeader = (h, scope) => this.$scopedSlots.header(scope);
+      }
+    }
 
     owner.store.commit('insertColumn', this.columnConfig, columnIndex, this.isSubColumn ? parent.columnConfig : null);
   }
