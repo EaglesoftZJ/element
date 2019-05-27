@@ -214,11 +214,13 @@
         this.isDraged = false;
         this.openAfterAnimate = false;
         this.closeAfterAnimate = true;
+        this.$emit('closed');
       },
       handleAfterEnter() {
         this.openAfterAnimate = true;
         this.closeAfterAnimate = false;
         this.updateMaxHeight();
+        this.$emit('opened');
       },
       updateMaxHeight() {
         var winHeight = document.body.clientHeight;
