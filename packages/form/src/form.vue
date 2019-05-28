@@ -134,6 +134,14 @@
         if (!field) { throw new Error('must call validateField with valid prop string!'); }
 
         field.validate('', cb);
+      },
+      /**
+       * 第一个表单元素获取焦点
+       */
+      toFocusFrist() {
+        if (this.fields[0] && this.fields[0].$el) {
+          this.fields[0].$el.querySelector('input') && this.fields[0].$el.querySelector('input').focus();
+        }
       }
     }
   };

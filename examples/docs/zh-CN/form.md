@@ -133,6 +133,9 @@
         }
       };
     },
+    mounted() {
+      this.$refs.ruleForm.toFocusFrist();
+    },
     methods: {
       onSubmit() {
         console.log('submit!');
