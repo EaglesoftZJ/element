@@ -138,7 +138,7 @@
       /**
        * 第一个表单元素获取焦点
        */
-      toFocusFrist() {
+      toFocusFirst() {
         if (this.fields[0] && this.fields[0].$el) {
           this.fields[0].$el.querySelector('input') && this.fields[0].$el.querySelector('input').focus();
         }

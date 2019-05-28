@@ -134,7 +134,7 @@
       };
     },
     mounted() {
-      this.$refs.ruleForm.toFocusFrist();
+      this.$refs.focusForm.toFocusFirst();
     },
     methods: {
       onSubmit() {
@@ -867,6 +867,7 @@ W3C 标准中有如下[规定](https://www.w3.org/MarkUp/html-spec/html-spec_8.h
 ```
 :::
 
+
 ### Form Attributes
 
 | 参数      | 说明          | 类型      | 可选值                           | 默认值  |
@@ -892,6 +893,7 @@ W3C 标准中有如下[规定](https://www.w3.org/MarkUp/html-spec/html-spec_8.h
 | validateField | 对部分表单字段进行校验的方法 | Function(prop: string, callback: Function(errorMessage: string))
 | resetFields | 对整个表单进行重置，将所有字段值重置为初始值并移除校验结果 | -
 | clearValidate | 移除整个表单的校验结果 | -
+| toFocusFirst | 表单第一个元素focus方法 | -
 
 ### Form Events
 | 事件名称 | 说明    | 回调参数  |
