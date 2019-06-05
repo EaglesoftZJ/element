@@ -22,7 +22,7 @@
       </table-header>
     </div>
     <div class="el-table__body-wrapper" ref="bodyWrapper" :class="[layout.scrollX ? `is-scrolling-${scrollPosition}` : 'is-scrolling-none']" @scroll="tableScroll" :style="fitHeight ? fitHeightBodyStyle  : [bodyHeight]">
-      <table-body :context="context" :store="store" :stripe="stripe" :row-class-name="rowClassName" :row-style="rowStyle" :highlight="highlightCurrentRow" :style="{
+      <table-body :drag="drag" :drag-handle="dragHandle" :context="context" :store="store" :stripe="stripe" :row-class-name="rowClassName" :row-style="rowStyle" :highlight="highlightCurrentRow" :style="{
                    width: bodyWidth
                 }">
       </table-body>
@@ -234,6 +234,14 @@
       refreshBindQuery: { // 刷新请求是否绑定queryData
         type: Boolean,
         default: true
+      },
+      drag: {
+        type: Boolean,
+        default: false
+      },
+      dragHandle: {
+        type: String,
+        default: '.drag-selector'
       }
       /* end */
     },

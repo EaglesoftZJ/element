@@ -414,6 +414,10 @@
 
       indexMethod(index) {
         return index * 2;
+      },
+      handleSort(data) {
+        // 监听
+        console.log('sort', data);
       }
     },
 
@@ -620,7 +624,7 @@
 :::demo 可以通过指定 Table 组件的 `row-class-name` 属性来为 Table 中的某一行添加 class，表明该行处于某种状态。
 ```html
 <template>
-  <el-table
+  <el-table 
     :data="tableData2"
     style="width: 100%"
     :row-class-name="tableRowClassName">
@@ -975,6 +979,9 @@
 ```html
 <template>
   <el-table
+    drag
+    @sort="handleSort"
+    :drag-handle="'.el-table__row'"
     :data="tableData4"
     style="width: 100%"
     max-height="250">
@@ -1030,6 +1037,10 @@
     methods: {
       deleteRow(index, rows) {
         rows.splice(index, 1);
+      },
+      handleSort(data) {
+        // 监听
+        console.log('sort', data);
       }
     },
     data() {
@@ -2389,6 +2400,8 @@ export default {
 | callback | 指定接口的回调函数，远程绑定数据时使用 <span style="color: red; font-size: 12px;">新增</span> | Function | - | - |
 | show-total | 是否在底部显示数据总条数和当前加载条数，远程绑定数据时使用 <span style="color: red; font-size: 12px;">新增</span> | Boolean | true/false | 指定了acion为true |
 | export-action | 导出excel的url <span style="color: red; font-size: 12px;">新增</span> | String | - | - |
+| drag | 可拖拽行 <span style="color: red; font-size: 12px;">新增</span> | Boolean | - | - |
+| drag-handle | 触发拖拽的选择器 <span style="color: red; font-size: 12px;">新增</span> | String | - | - |
 
 
 ### Table Events
@@ -2411,6 +2424,7 @@ export default {
 | current-change | 当表格的当前行发生变化的时候会触发该事件，如果要高亮当前行，请打开表格的 highlight-current-row 属性 | currentRow, oldCurrentRow |
 | header-dragend | 当拖动表头改变了列的宽度的时候会触发该事件 | newWidth, oldWidth, column, event |
 | expand-change | 当用户对某一行展开或者关闭的时候会触发该事件 | row, expandedRows |
+| sort | 拖拽排序后触发 | data |
 
 ### Table Methods
 | 方法名 | 说明 | 参数 |
