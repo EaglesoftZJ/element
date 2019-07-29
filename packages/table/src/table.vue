@@ -250,7 +250,7 @@
           if (this.egLoading) return;
           if (this.action !== '') {
             this.egLoading = true;
-            this.nowQueryData['pageNum'] = this.start !== -1 ? this.start : (this.pageNum * this.pageSize - this.deleteNum);
+            this.nowQueryData['pageNum'] = this.start !== -1 ? this.start : (this.bindData.length - this.deleteNum);
             this.nowQueryData['pageSize'] = this.pageSize;
             this.nowQueryData['orderBy'] = this.store.states.orderBy;
             this.nowQueryData['sortType'] = this.store.states.sortType;
