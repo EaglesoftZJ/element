@@ -248,9 +248,11 @@
       dataBind() {
         return new Promise((resolve) => {
           if (this.egLoading) return;
+          const pageNum = this.$linq.from(this.pageSizeStore).sum(); // 已经加载的条数
+          this.pageSizeStore.push(this.pageSize);
           if (this.action !== '') {
             this.egLoading = true;
-            this.nowQueryData['pageNum'] = this.start !== -1 ? this.start : (this.bindData.length - this.deleteNum);
+            this.nowQueryData['pageNum'] = this.start !== -1 ? this.start : (pageNum - this.deleteNum);
             this.nowQueryData['pageSize'] = this.pageSize;
             this.nowQueryData['orderBy'] = this.store.states.orderBy;
             this.nowQueryData['sortType'] = this.store.states.sortType;
@@ -299,7 +301,7 @@
               resolve();
             });
           } else if (this.pageing) {
-            var index = this.pageNum * this.pageSize - this.deleteNum + this.pageSize;
+            var index = pageNum - this.deleteNum + this.pageSize;
             this.bindData = this.data.slice(0, index);
             this.recordTotal = this.data.length;
             this.loadedRecordTotal = this.bindData.length;
@@ -444,6 +446,7 @@
         this.start = -1;
         this.pageNum = 0;
         this.deleteNum = 0;
+        this.pageSizeStore = [];
         if (this.getScrollTop() === 0) {
           this.dataBind();
         } else {
@@ -526,6 +529,7 @@
         this.pageNum = 0;
          // 存储索引值初始化
         this.start = -1;
+        this.pageSizeStore = [];
         this.store.states.orderBy = column.property;
         this.store.states.sortType = column.order === 'ascending' ? 'asc' : 'desc';
         if (this.getScrollTop() === 0) {
@@ -987,7 +991,8 @@
         deleteNum: 0, // 删除的数据,
         currentScroll: 0, // 记录当前的滚动位置
         start: -1, // 用于记录客户端返回的当前加载条数
-        nowQueryData: null
+        nowQueryData: null,
+        pageSizeStore: [] // 存储历史pageSize用于精确计算当前加载条数
         /* end */
       };
     }
