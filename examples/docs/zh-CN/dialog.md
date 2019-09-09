@@ -1,91 +1,3 @@
-<script>
-  module.exports = {
-    data() {
-      return {
-        gridData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }],
-        dialogVisible: false,
-        dialogTableVisible: false,
-        dialogFormVisible: false,
-        outerVisible: false,
-        innerVisible: false,
-        centerDialogVisible: false,
-        visible: false,
-        dragVisible: false,
-        show: false,
-        form: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: ''
-        },
-        formLabelWidth: '80px'
-      };
-    },
-    watch: {
-      dragVisible(val) {
-        if (val) {
-          setTimeout(() => {
-            this.show = true;
-          }, 1000);
-        } else {
-          this.show = false;
-        }
-      }
-    },
-    methods: {
-      handleClose(done) {
-        this.$confirm('确认关闭？')
-          .then(_ => {
-            done();
-          })
-          .catch(_ => {});
-      }
-    }
-  };
-</script>
-
-<style>
-  .demo-box.demo-dialog {
-    .dialog-footer button:first-child {
-      margin-right: 10px;
-    }
-    .full-image {
-      width: 100%;
-    }
-    .el-dialog__wrapper {
-      margin: 0;
-    }
-    .el-select {
-      width: 300px;
-    }
-    .el-input {
-      width: 300px;
-    }
-    .el-button--text {
-      margin-right: 15px;
-    }
-  }
-</style>
 ## Dialog 对话框
 在保留当前页面状态的情况下，告知用户并承载相关操作。
 
@@ -158,7 +70,7 @@ Dialog 组件的内容可以是任意的，甚至可以是表格或表单，下�
 <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
   <el-form :model="form">
     <el-form-item label="活动名称" :label-width="formLabelWidth">
-      <el-input v-model="form.name" auto-complete="off"></el-input>
+      <el-input v-model="form.name" autocomplete="off"></el-input>
     </el-form-item>
     <el-form-item label="活动区域" :label-width="formLabelWidth">
       <el-select v-model="form.region" placeholder="请选择活动区域">
@@ -252,7 +164,7 @@ Dialog 组件的内容可以是任意的，甚至可以是表格或表单，下�
 
 标题和底部可水平居中
 
-:::demo 将 `center` 设置为 `true` 即可使标题和底部居中。
+:::demo 将`center`设置为`true`即可使标题和底部居中。`center`仅影响标题和底部区域。Dialog 的内容是任意的，在一些情况下，内容并不适合居中布局。如果需要内容也水平居中，请自行为其添加 CSS。
 
 ```html
 <el-button type="text" @click="centerDialogVisible = true">点击打开 Dialog</el-button>
@@ -282,61 +194,11 @@ Dialog 组件的内容可以是任意的，甚至可以是表格或表单，下�
 :::
 
 :::tip
-`center` 仅影响标题和底部区域。Dialog 的内容是任意的，在一些情况下，内容并不适合居中布局。如果需要内容也水平居中，请自行为其添加 CSS。
+Dialog 的内容是懒渲染的，即在第一次被打开之前，传入的默认 slot 不会被渲染到 DOM 上。因此，如果需要执行 DOM 操作，或通过 `ref` 获取相应组件，请在 `open` 事件回调中进行。
 :::
 
 :::tip
 如果 `visible` 属性绑定的变量位于 Vuex 的 store 内，那么 `.sync` 不会正常工作。此时需要去除 `.sync` 修饰符，同时监听 Dialog 的 `open` 和 `close` 事件，在事件回调中执行 Vuex 中对应的 mutation 更新 `visible` 属性绑定的变量的值。
-:::
-
-### 自适应高度
-高度根据浏览器高度自适应到合适位置
-
-:::demo 使用属性fit-height
-```html
-<template>
-    <el-button type="text" @click="visible = true">自适应高度的dialog</el-button>
-    <el-dialog drag fit-height close-reset v-if="visible" :visible.sync="visible" title="标题">
-      <div style="width: 600px;">自适应高度</div>
-    </el-dialog>
-</template>
-
-<script>
-  export default {
-    data() {
-      visible: false
-    }
-  }
-</script>
-```
-:::
-
-### 可拖拽
-可拖拽的dialog
-
-:::demo 使用属性drag设置可拖拽 close-reset指定下次打开时dailog位置是否重置
-```html
-<template>
-  <el-button type="text" @click="dragVisible = true">可拖拽的dialog</el-button>
-  <el-dialog drag v-if="dragVisible" close-reset :visible.sync="dragVisible" title="标题">
-    <div style="width: 600px; height: 300px;">可拖拽的dialog</div>
-    <div v-if="show" style="height: 300px;">可拖拽的dialog1</div>
-    <span slot="footer" class="dialog-footer">
-    <el-button @click="dialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-  </span>
-  </el-dialog>
-</template>
-
-<script>
-  export default {
-    data() {
-      dragVisible: false,
-      show: false
-    }
-  }
-</script>
-```
 :::
 
 ### Attributes
@@ -345,9 +207,6 @@ Dialog 组件的内容可以是任意的，甚至可以是表格或表单，下�
 | visible   | 是否显示 Dialog，支持 .sync 修饰符 | boolean | — | false |
 | title     | Dialog 的标题，也可通过具名 slot （见下表）传入 | string    | — | — |
 | width     | Dialog 的宽度 | string    | — | 50% |
-| fit-height | Dialog的高度根据浏览器可视区自适应到合适位置 | boolean | - | false |
-| drag | Dialog可拖拽 | boolean | - | false |
-| close-reset | 拖拽后的Dialog重新打开后位置是否重置 | boolean | - | false |
 | fullscreen     | 是否为全屏 Dialog | boolean    | — | false |
 | top       | Dialog CSS 中的 margin-top 值 | string | — | 15vh |
 | modal     | 是否需要遮罩层   | boolean   | — | true |
@@ -360,6 +219,7 @@ Dialog 组件的内容可以是任意的，甚至可以是表格或表单，下�
 | show-close | 是否显示关闭按钮 | boolean    | — | true |
 | before-close | 关闭前的回调，会暂停 Dialog 的关闭 | function(done)，done 用于关闭 Dialog | — | — |
 | center | 是否对头部和底部采用居中布局 | boolean | — | false |
+| destroy-on-close | 关闭时销毁 Dialog 中的元素 | boolean | — | false |
 
 ### Slot
 | name | 说明 |
@@ -371,5 +231,7 @@ Dialog 组件的内容可以是任意的，甚至可以是表格或表单，下�
 ### Events
 | 事件名称      | 说明    | 回调参数      |
 |---------- |-------- |---------- |
-| close  | Dialog 关闭的回调 | — |
 | open  | Dialog 打开的回调 | — |
+| opened  | Dialog 打开动画结束时的回调 | — |
+| close  | Dialog 关闭的回调 | — |
+| closed | Dialog 关闭动画结束时的回调 | — |

@@ -4,16 +4,16 @@
       class="el-message-box__wrapper"
       tabindex="-1"
       v-show="visible"
-      @click.stop.self="handleWrapperClick"
+      @click.self="handleWrapperClick"
       role="dialog"
       aria-modal="true"
       :aria-label="title || 'dialog'">
-      <div class="el-message-box" @click.stop :class="[customClass, center && 'el-message-box--center']">
+      <div class="el-message-box" :class="[customClass, center && 'el-message-box--center']">
         <div class="el-message-box__header" v-if="title !== null">
           <div class="el-message-box__title">
             <div
-              :class="['el-message-box__status', typeClass]"
-              v-if="typeClass && center">
+              :class="['el-message-box__status', icon]"
+              v-if="icon && center">
             </div>
             <span>{{ title }}</span>
           </div>
@@ -22,15 +22,15 @@
             class="el-message-box__headerbtn"
             aria-label="Close"
             v-if="showClose"
-            @click="handleAction('cancel')"
-            @keydown.enter="handleAction('cancel')">
+            @click="handleAction(distinguishCancelAndClose ? 'close' : 'cancel')"
+            @keydown.enter="handleAction(distinguishCancelAndClose ? 'close' : 'cancel')">
             <i class="el-message-box__close el-icon-close"></i>
           </button>
         </div>
         <div class="el-message-box__content">
           <div
-            :class="['el-message-box__status', typeClass]"
-            v-if="typeClass && !center && message !== ''">
+            :class="['el-message-box__status', icon]"
+            v-if="icon && !center && message !== ''">
           </div>
           <div class="el-message-box__message" v-if="message !== ''">
             <slot>
@@ -92,8 +92,10 @@
     warning: 'warning',
     error: 'error'
   };
+
   export default {
     mixins: [Popup, Locale],
+
     props: {
       modal: {
         default: true
@@ -123,14 +125,18 @@
         type: Boolean
       }
     },
+
     components: {
       ElInput,
       ElButton
     },
+
     computed: {
-      typeClass() {
-        return this.type && typeMap[this.type] ? `el-icon-${ typeMap[this.type] }` : '';
+      icon() {
+        const { type, iconClass } = this;
+        return iconClass || (type && typeMap[type] ? `el-icon-${ typeMap[type] }` : '');
       },
+
       confirmButtonClasses() {
         return `el-button--primary ${ this.confirmButtonClass }`;
       },
@@ -138,6 +144,7 @@
         return `${ this.cancelButtonClass }`;
       }
     },
+
     methods: {
       getSafeClose() {
         const currentId = this.uid;
@@ -151,29 +158,22 @@
         if (!this.visible) return;
         this.visible = false;
         this._closing = true;
+
         this.onClose && this.onClose();
         messageBox.closeDialog(); // 解绑
         if (this.lockScroll) {
-          setTimeout(() => {
-            if (this.modal && this.bodyOverflow !== 'hidden') {
-              document.body.style.overflow = this.bodyOverflow;
-              document.body.style.paddingRight = this.bodyPaddingRight;
-            }
-            this.bodyOverflow = null;
-            this.bodyPaddingRight = null;
-          }, 200);
+          setTimeout(this.restoreBodyStyle, 200);
         }
         this.opened = false;
-        if (!this.transition) {
-          this.doAfterClose();
-        }
+        this.doAfterClose();
         setTimeout(() => {
           if (this.action) this.callback(this.action, this);
         });
       },
+
       handleWrapperClick() {
         if (this.closeOnClickModal) {
-          this.handleAction('cancel');
+          this.handleAction(this.distinguishCancelAndClose ? 'close' : 'cancel');
         }
       },
 
@@ -195,6 +195,7 @@
           this.doClose();
         }
       },
+
       validate() {
         if (this.$type === 'prompt') {
           const inputPattern = this.inputPattern;
@@ -213,6 +214,7 @@
             }
             if (typeof validateResult === 'string') {
               this.editorErrorMessage = validateResult;
+              addClass(this.getInputElement(), 'invalid');
               return false;
             }
           }
@@ -221,16 +223,20 @@
         removeClass(this.getInputElement(), 'invalid');
         return true;
       },
-      getFistFocus() {
-        const $btns = this.$el.querySelector('.el-message-box__btns .el-button');
-        const $title = this.$el.querySelector('.el-message-box__btns .el-message-box__title');
-        return $btns && $btns[0] || $title;
+      getFirstFocus() {
+        const btn = this.$el.querySelector('.el-message-box__btns .el-button');
+        const title = this.$el.querySelector('.el-message-box__btns .el-message-box__title');
+        return btn || title;
       },
       getInputElement() {
         const inputRefs = this.$refs.input.$refs;
         return inputRefs.input || inputRefs.textarea;
+      },
+      handleClose() {
+        this.handleAction('close');
       }
     },
+
     watch: {
       inputValue: {
         immediate: true,
@@ -242,6 +248,7 @@
           });
         }
       },
+
       visible(val) {
         if (val) {
           this.uid++;
@@ -251,7 +258,7 @@
             });
           }
           this.focusAfterClosed = document.activeElement;
-          messageBox = new Dialog(this.$el, this.focusAfterClosed, this.getFistFocus());
+          messageBox = new Dialog(this.$el, this.focusAfterClosed, this.getFirstFocus());
         }
 
         // prompt
@@ -270,9 +277,11 @@
     },
 
     mounted() {
-      if (this.closeOnHashChange) {
-        window.addEventListener('hashchange', this.close);
-      }
+      this.$nextTick(() => {
+        if (this.closeOnHashChange) {
+          window.addEventListener('hashchange', this.close);
+        }
+      });
     },
 
     beforeDestroy() {
@@ -290,6 +299,7 @@
         title: undefined,
         message: '',
         type: '',
+        iconClass: '',
         customClass: '',
         showInput: false,
         inputValue: null,
@@ -310,10 +320,10 @@
         cancelButtonClass: '',
         editorErrorMessage: null,
         callback: null,
-        exist: true,
         dangerouslyUseHTMLString: false,
         focusAfterClosed: null,
-        isOnComposition: false
+        isOnComposition: false,
+        distinguishCancelAndClose: false
       };
     }
   };

@@ -101,6 +101,16 @@ describe('Pagination', () => {
     expect(vm.$el.querySelectorAll('li.number')).to.length(4);
   });
 
+  it('pagerCount', () => {
+    const vm = createTest(Pagination, {
+      pageSize: 25,
+      total: 1000,
+      pagerCount: 21
+    });
+
+    expect(vm.$el.querySelectorAll('li.number')).to.length(21);
+  });
+
   it('will work without total & page-count', (done) => {
     const vm = createTest(Pagination, {
       pageSize: 25,
@@ -239,7 +249,6 @@ describe('Pagination', () => {
     const input = vm.inputer;
     const changeValue = (value) => {
       input.$emit('input', value);
-      input.setCurrentValue(value);
       input.$emit('change', value);
     };
 
@@ -296,6 +305,38 @@ describe('Pagination', () => {
     }, 50);
   });
 
+  it('event:current-change after current page is manually updated', (done) => {
+    vm = createVue({
+      template: `
+        <el-pagination
+          :total="15"
+          :current-page.sync="currentPage"
+          @current-change="emitCount++" />
+      `,
+
+      data() {
+        return {
+          emitCount: 0,
+          currentPage: 1
+        };
+      }
+    });
+    const next = vm.$el.querySelector('button.btn-next');
+    next.click();
+    setTimeout(() => {
+      expect(vm.emitCount).to.equal(1);
+      vm.currentPage = 1;
+      setTimeout(() => {
+        expect(vm.emitCount).to.equal(1);
+        next.click();
+        setTimeout(() => {
+          expect(vm.emitCount).to.equal(2);
+          done();
+        }, 50);
+      }, 50);
+    }, 50);
+  });
+
   it('event:size-change', done => {
     vm = createVue({
       template: `
@@ -315,6 +356,34 @@ describe('Pagination', () => {
 
     setTimeout(_ => {
       vm.$el.querySelectorAll('li.el-select-dropdown__item')[1].click();
+      setTimeout(_ => {
+        expect(vm.trigger).to.true;
+        done();
+      }, 50);
+    }, 50);
+  });
+
+  it('event: prev and next click', done => {
+    vm = createVue({
+      template: `
+        <el-pagination
+          :total="100"
+          layout="sizes, prev, pager, next"
+          @prev-click="trigger = true"
+          @next-click="trigger = true"
+          :pageSize="10" />
+      `,
+
+      data() {
+        return { trigger: false };
+      }
+    }, true);
+    const prev = vm.$el.querySelector('.btn-prev');
+    const next = vm.$el.querySelector('.btn-next');
+    prev.click();
+    setTimeout(_ => {
+      expect(vm.trigger).to.false;
+      next.click();
       setTimeout(_ => {
         expect(vm.trigger).to.true;
         done();
@@ -350,6 +419,17 @@ describe('Pagination', () => {
     input.value = '我好帅';
     triggerEvent(input, 'change');
     expect(vm.page).to.equal(1);
+  });
+
+  it('hideOnSinglePage', () => {
+    vm = createVue({
+      template: `
+        <el-pagination
+          hide-on-single-page
+          :total="1" />
+      `
+    });
+    expect(vm.$el.nodeType).to.be.equal(window.Node.COMMENT_NODE);
   });
 
   describe('click pager', () => {
