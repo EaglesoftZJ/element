@@ -1,111 +1,10 @@
-<style>
-  .demo-transfer {
-    .transfer-footer {
-      margin-left: 15px;
-      padding: 6px 5px;
-    }
-  }
-</style>
-
-<script>
-  export default {
-    data() {
-      const generateData = _ => {
-        const data = [];
-        for (let i = 1; i <= 15; i++) {
-          data.push({
-            key: i,
-            label: `备选项 ${ i }`,
-            disabled: i % 4 === 0
-          });
-        }
-        return data;
-      };
-      const generateData2 = _ => {
-        const data = [];
-        const cities = ['上海', '北京', '广州', '深圳', '南京', '西安', '成都'];
-        const pinyin = ['shanghai', 'beijing', 'guangzhou', 'shenzhen', 'nanjing', 'xian', 'chengdu'];
-        cities.forEach((city, index) => {
-          data.push({
-            label: city,
-            key: index,
-            pinyin: pinyin[index]
-          });
-        });
-        return data;
-      };
-      const generateData3 = _ => {
-        const data = [];
-        for (let i = 1; i <= 15; i++) {
-          data.push({
-            value: i,
-            desc: `备选项 ${ i }`,
-            disabled: i % 4 === 0
-          });
-        }
-        return data;
-      };
-      const generateData1 = _ => {
-        const data = [];
-        for (let i = 1; i <= 5; i++) {
-          data.push({
-            key: i,
-            label: `备选项 ${ i }`
-          });
-        }
-        return data;
-      }
-      const generateData4 = _ => {
-        const data = [];
-        for (let i = 1; i <= 5; i++) {
-          data.push({
-            key: i,
-            label: `拖拽 ${ i }`
-          });
-        }
-        return data;
-      }
-      return {
-        data: generateData(),
-        data2: generateData2(),
-        data3: generateData3(),
-        data_px: generateData1(),
-        data_tz: generateData4(),
-        data_a:  generateData1(),
-        value1: [1, 4],
-        value2: [],
-        value3: [1],
-        value4: [1],
-        value5: [],
-        value_px: [1, 2],
-        value_tz: [1, 2],
-        value_a: [1, 2],
-        buttons: [],
-        functions: [],
-        filterMethod(query, item) {
-          return item.pinyin.indexOf(query) > -1;
-        },
-        renderFunc(h, option) {
-          return <span>{ option.key } - { option.label }</span>;
-        }
-      };
-    },
-
-    methods: {
-      handleChange(value, direction, movedKeys) {
-        console.log(value, direction, movedKeys);
-      }
-    }
-  };
-</script>
-
 ## Transfer 穿梭框
 
 ### 基础用法
 :::demo Transfer 的数据通过 `data` 属性传入。数据需要是一个对象数组，每个对象有以下属性：`key` 为数据的唯一性标识，`label` 为显示文本，`disabled` 表示该项数据是否禁止转移。目标列表中的数据项会同步到绑定至 `v-model` 的变量，值为数据项的 `key` 所组成的数组。当然，如果希望在初始状态时目标列表不为空，可以像本例一样为 `v-model` 绑定的变量赋予一个初始值。
 ```html
 <template>
-  <el-transfer v-model="value1" :data="data"></el-transfer>
+  <el-transfer v-model="value" :data="data"></el-transfer>
 </template>
 
 <script>
@@ -124,67 +23,7 @@
       };
       return {
         data: generateData(),
-        value1: [1, 4]
-      };
-    }
-  };
-</script>
-```
-:::
-
-### 左侧框根据操作顺序排序 <span style="color: red; font-size: 12px;">新增</span>
-:::demo 通过`sort`属性设置
-```html
-<template>
-  <el-transfer v-model="value_px" :data="data_px" sort></el-transfer>
-</template>
-
-<script>
-  export default {
-    data() {
-      const generateData1 = _ => {
-        const data = [];
-        for (let i = 1; i <= 5; i++) {
-          data.push({
-            key: i,
-            label: `备选项 ${ i }`
-          });
-        }
-        return data;
-      }
-      return {
-        data_px: generateData1(),
-        value_px: [1, 2]
-      };
-    }
-  };
-</script>
-```
-:::
-
-### 拖拽 <span style="color: red; font-size: 12px;">新增</span>
-:::demo 通过`drag`属性设置
-```html
-<template>
-  <el-transfer v-model="value_tz" :data="data_tz" sort drag></el-transfer>
-</template>
-
-<script>
-  export default {
-    data() {
-      const generateData4 = _ => {
-        const data = [];
-        for (let i = 1; i <= 5; i++) {
-          data.push({
-            key: i,
-            label: `拖拽 ${ i }`
-          });
-        }
-        return data;
-      }
-      return {
-        data_tz: generateData4(),
-        value_tz: [1, 2]
+        value: [1, 4]
       };
     }
   };
@@ -203,15 +42,15 @@
     filterable
     :filter-method="filterMethod"
     filter-placeholder="请输入城市拼音"
-    v-model="value2"
-    :data="data2">
+    v-model="value"
+    :data="data">
   </el-transfer>
 </template>
 
 <script>
   export default {
     data() {
-      const generateData2 = _ => {
+      const generateData = _ => {
         const data = [];
         const cities = ['上海', '北京', '广州', '深圳', '南京', '西安', '成都'];
         const pinyin = ['shanghai', 'beijing', 'guangzhou', 'shenzhen', 'nanjing', 'xian', 'chengdu'];
@@ -225,8 +64,8 @@
         return data;
       };
       return {
-        data2: generateData2(),
-        value2: [],
+        data: generateData(),
+        value: [],
         filterMethod(query, item) {
           return item.pinyin.indexOf(query) > -1;
         }
@@ -248,7 +87,7 @@
   <div style="text-align: center">
     <el-transfer
       style="text-align: left; display: inline-block"
-      v-model="value3"
+      v-model="value"
       filterable
       :left-default-checked="[2, 3]"
       :right-default-checked="[1]"
@@ -311,7 +150,7 @@
       };
       return {
         data: generateData(),
-        value3: [1],
+        value: [1],
         value4: [1],
         renderFunc(h, option) {
           return <span>{ option.key } - { option.label }</span>;
@@ -336,19 +175,19 @@
 ```html
 <template>
   <el-transfer
-    v-model="value5"
+    v-model="value"
     :props="{
       key: 'value',
       label: 'desc'
     }"
-    :data="data3">
+    :data="data">
   </el-transfer>
 </template>
 
 <script>
   export default {
     data() {
-      const generateData3 = _ => {
+      const generateData = _ => {
         const data = [];
         for (let i = 1; i <= 15; i++) {
           data.push({
@@ -360,8 +199,8 @@
         return data;
       };
       return {
-        data3: generateData3(),
-        value5: []
+        data: generateData(),
+        value: []
       };
     }
   };
@@ -372,6 +211,7 @@
 ### Attributes
 | 参数      | 说明    | 类型      | 可选值       | 默认值   |
 |---------- |-------- |---------- |-------------  |-------- |
+| value / v-model | 绑定值 | array | — | — |
 | data | Transfer 的数据源 | array[{ key, label, disabled }] | — | [ ] |
 | filterable | 是否可搜索 | boolean | — | false |
 | filter-placeholder | 搜索框占位符 | string | — | 请输入搜索内容 |
@@ -384,8 +224,6 @@
 | props | 数据源的字段别名 | object{key, label, disabled} | — | — |
 | left-default-checked | 初始状态下左侧列表的已勾选项的 key 数组 | array | — | [ ] |
 | right-default-checked | 初始状态下右侧列表的已勾选项的 key 数组 | array | — | [ ] |
-| sort | 穿梭框左侧是否也根据操作顺序排序 <span style="color: red; font-size: 12px;">新增</span>| boolean | true/false | false |
-| drag | 是否支持拖拽 <span style="color: red; font-size: 12px;">新增</span>| boolean | true/false | false |
 
 ### Slot
 | name | 说明 |
