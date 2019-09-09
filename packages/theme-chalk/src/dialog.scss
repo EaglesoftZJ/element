@@ -5,17 +5,12 @@
 
 @include b(dialog) {
   position: relative;
-  display: inline-block;
-  // margin: 0 auto 50px;
-  background: $--color-white;
+  margin: 0 auto 50px;
+  background: $--dialog-background-color;
   border-radius: $--border-radius-small;
   box-shadow: $--dialog-box-shadow;
   box-sizing: border-box;
-  max-width: calc(100% - 20px);
-  overflow: hidden;
-  // width: 50%;
-  text-align: left;
-  vertical-align: middle;
+  width: 50%;
 
   @include when(fullscreen) {
     width: 100%;
@@ -27,30 +22,17 @@
 
   @include e(wrapper) {
     position: fixed;
-    // display: flex;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
     overflow: auto;
     margin: 0;
-    // justify-content: center;
-    // align-items: center;
-    text-align: center;
-    &::after {
-      display: inline-block;
-      content: '';
-      height: 100%;
-      vertical-align: middle;
-    }
   }
 
   @include e(header) {
-    position: relative;
-    z-index: 2;
     padding: $--dialog-padding-primary;
     padding-bottom: 10px;
-    text-align: left;
   }
 
   @include e(headerbtn) {
@@ -76,19 +58,16 @@
   }
 
   @include e(title) {
-    line-height: $--dialog-line-height;
+    line-height: $--dialog-font-line-height;
     font-size: $--dialog-title-font-size;
     color: $--color-text-primary;
   }
 
   @include e(body) {
-    height: 100%;
-    padding: 30px 20px;
+    padding: ($--dialog-padding-primary + 10px) $--dialog-padding-primary;
     color: $--color-text-regular;
-    line-height: $--dialog-line-height;
-    font-size: $--dialog-font-size;
-    box-sizing: border-box;
-    overflow: auto;
+    font-size: $--dialog-content-font-size;
+    word-break: break-all;
   }
 
   @include e(footer) {
