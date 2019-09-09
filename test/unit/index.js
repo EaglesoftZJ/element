@@ -1,4 +1,6 @@
-require('babel-regenerator-runtime'); // add regenerator support for async await
+// Polyfill fn.bind() for PhantomJS
+/* eslint-disable no-extend-native */
+Function.prototype.bind = require('function-bind');
 require('packages/theme-chalk/lib/index.css');
 
 // require all test files (files that ends with .spec.js)

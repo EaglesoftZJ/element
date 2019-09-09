@@ -2,10 +2,6 @@
 
 This part walks you through the process of using Element in a webpack project.
 
-### Use vue-cli@3
-
-We provide an [Element plugin](https://github.com/ElementUI/vue-cli-plugin-element) for vue-cli@3, which you can use to quickly build an Element-based project.
-
 ### Use Starter Kit
 
 We provide a general [project template](https://github.com/ElementUI/element-starter) for you. For Laravel users, we also have a [template](https://github.com/ElementUI/element-in-laravel-starter). You can download and use them directly.
@@ -134,7 +130,6 @@ import {
   Col,
   Upload,
   Progress,
-  Spinner,
   Badge,
   Card,
   Rate,
@@ -152,15 +147,6 @@ import {
   Aside,
   Main,
   Footer,
-  Timeline,
-  TimelineItem,
-  Link,
-  Divider,
-  Image,
-  Calendar,
-  Backtop,
-  PageHeader,
-  CascaderPanel,
   Loading,
   MessageBox,
   Message,
@@ -213,7 +199,6 @@ Vue.use(Row);
 Vue.use(Col);
 Vue.use(Upload);
 Vue.use(Progress);
-Vue.use(Spinner);
 Vue.use(Badge);
 Vue.use(Card);
 Vue.use(Rate);
@@ -231,15 +216,6 @@ Vue.use(Header);
 Vue.use(Aside);
 Vue.use(Main);
 Vue.use(Footer);
-Vue.use(Timeline);
-Vue.use(TimelineItem);
-Vue.use(Link);
-Vue.use(Divider);
-Vue.use(Image);
-Vue.use(Calendar);
-Vue.use(Backtop);
-Vue.use(PageHeader);
-Vue.use(CascaderPanel);
 
 Vue.use(Loading.directive);
 
@@ -254,14 +230,14 @@ Vue.prototype.$message = Message;
 
 ### Global config
 
-When importing Element, you can define a global config object. For now this object has two properties: `size` and `zIndex`. The property `size` sets the default size for all components and the property `zIndex` sets the initial z-index (default: 2000) for modal boxes:
+When importing Element, you can define a global config object. For now this object has only one property: `size`, which sets the default size for all components:
 
 Fully import Element：
 
 ```js
 import Vue from 'vue';
 import Element from 'element-ui';
-Vue.use(Element, { size: 'small', zIndex: 3000 });
+Vue.use(Element, { size: 'small' });
 ```
 
 Partial import Element：
@@ -270,11 +246,11 @@ Partial import Element：
 import Vue from 'vue';
 import { Button } from 'element-ui';
 
-Vue.prototype.$ELEMENT = { size: 'small', zIndex: 3000 };
+Vue.prototype.$ELEMENT = { size: 'small' };
 Vue.use(Button);
 ```
 
-With the above config, the default size of all components that have size attribute will be 'small', and the initial z-index of modal boxes is 3000.
+With the above config, the default size of all components that have size attribute will be 'small'.
 
 ### Start coding
 
@@ -282,8 +258,8 @@ Now you have implemented Vue and Element to your project, and it's time to write
 
 ### Use Nuxt.js
 
-We can also start a project using [Nuxt.js](https://nuxtjs.org/):
+We can also start a project using [Nuxt.js](nuxtjs.org):
 
 <div class="glitch-embed-wrap" style="height: 420px; width: 100%;">
-  <iframe src="https://glitch.com/embed/#!/embed/nuxt-with-element?path=nuxt.config.js&previewSize=0&attributionHidden=true" alt="nuxt-with-element on glitch" style="height: 100%; width: 100%; border: 0;"></iframe>
+  <iframe src="https://glitch.com/embed/#!/embed/nuxt-with-element-ui?path=nuxt.config.js&previewSize=0&attributionHidden=true" alt="nuxt-with-element-ui on glitch" style="height: 100%; width: 100%; border: 0;"></iframe>
 </div>

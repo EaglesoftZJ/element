@@ -33,7 +33,7 @@ export default {
       month10: 'Жовтень',
       month11: 'Листопад',
       month12: 'Грудень',
-      week: 'тиждень',
+      // week: 'week',
       weeks: {
         sun: 'Нд',
         mon: 'Пн',
@@ -67,8 +67,7 @@ export default {
     cascader: {
       noMatch: 'Співпадінь не знайдено',
       loading: 'Завантаження',
-      placeholder: 'Обрати',
-      noData: 'Немає даних'
+      placeholder: 'Обрати'
     },
     pagination: {
       goto: 'Перейти',
@@ -105,12 +104,6 @@ export default {
       filterPlaceholder: 'Введіть ключове слово',
       noCheckedFormat: '{total} пунктів',
       hasCheckedFormat: '{checked}/{total} вибрано'
-    },
-    image: {
-      error: 'FAILED' // to be translated
-    },
-    pageHeader: {
-      title: 'Back' // to be translated
     }
   }
 };

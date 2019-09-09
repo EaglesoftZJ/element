@@ -1,4 +1,3 @@
-import { VNode } from 'vue';
 import { ElementUIComponent } from './component'
 
 export interface SliderTooltipFormat {
@@ -60,9 +59,4 @@ export declare class ElSlider extends ElementUIComponent {
 
   /** Custom class name for the tooltip */
   tooltipClass: string
-
-  /** Custom marks */
-  marks: {
-    [key: number]: string | { style: object; label: string | VNode }
-  }
 }

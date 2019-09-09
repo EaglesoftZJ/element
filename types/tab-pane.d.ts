@@ -13,7 +13,4 @@ export declare class ElTabPane extends ElementUIComponent {
 
   /** Whether Tab is closable */
   closable: boolean
-
-  /** Whether Tab is lazily rendered */
-  lazy: boolean
 }

@@ -28,8 +28,7 @@
     </span>
     <el-input
       ref="input"
-      :value="displayValue"
-      :placeholder="placeholder"
+      :value="currentValue"
       :disabled="inputNumberDisabled"
       :size="inputNumberSize"
       :max="max"
@@ -40,8 +39,13 @@
       @keydown.down.native.prevent="decrease"
       @blur="handleBlur"
       @focus="handleFocus"
-      @input="handleInput"
       @change="handleInputChange">
+      <template slot="prepend" v-if="$slots.prepend">
+        <slot name="prepend"></slot>
+      </template>
+      <template slot="append" v-if="$slots.append">
+        <slot name="append"></slot>
+      </template>
     </el-input>
   </div>
 </template>
@@ -72,10 +76,6 @@
         type: Number,
         default: 1
       },
-      stepStrictly: {
-        type: Boolean,
-        default: false
-      },
       max: {
         type: Number,
         default: Infinity
@@ -96,19 +96,11 @@
         default: ''
       },
       name: String,
-      label: String,
-      placeholder: String,
-      precision: {
-        type: Number,
-        validator(val) {
-          return val >= 0 && val === parseInt(val, 10);
-        }
-      }
+      label: String
     },
     data() {
       return {
-        currentValue: 0,
-        userInput: null
+        currentValue: 0
       };
     },
     watch: {
@@ -116,25 +108,10 @@
         immediate: true,
         handler(value) {
           let newVal = value === undefined ? value : Number(value);
-          if (newVal !== undefined) {
-            if (isNaN(newVal)) {
-              return;
-            }
-
-            if (this.stepStrictly) {
-              const stepPrecision = this.getPrecision(this.step);
-              const precisionFactor = Math.pow(10, stepPrecision);
-              newVal = Math.round(newVal / this.step) * precisionFactor * this.step / precisionFactor;
-            }
-
-            if (this.precision !== undefined) {
-              newVal = this.toPrecision(newVal, this.precision);
-            }
-          }
+          if (newVal !== undefined && isNaN(newVal)) return;
           if (newVal >= this.max) newVal = this.max;
           if (newVal <= this.min) newVal = this.min;
           this.currentValue = newVal;
-          this.userInput = null;
           this.$emit('input', newVal);
         }
       }
@@ -146,20 +123,12 @@
       maxDisabled() {
         return this._increase(this.value, this.step) > this.max;
       },
-      numPrecision() {
-        const { value, step, getPrecision, precision } = this;
-        const stepPrecision = getPrecision(step);
-        if (precision !== undefined) {
-          if (stepPrecision > precision) {
-            console.warn('[Element Warn][InputNumber]precision should not be less than the decimal places of step');
-          }
-          return precision;
-        } else {
-          return Math.max(getPrecision(value), stepPrecision);
-        }
+      precision() {
+        const { value, step, getPrecision } = this;
+        return Math.max(getPrecision(value), getPrecision(step));
       },
       controlsAtRight() {
-        return this.controls && this.controlsPosition === 'right';
+        return this.controlsPosition === 'right';
       },
       _elFormItemSize() {
         return (this.elFormItem || {}).elFormItemSize;
@@ -169,33 +138,12 @@
       },
       inputNumberDisabled() {
         return this.disabled || (this.elForm || {}).disabled;
-      },
-      displayValue() {
-        if (this.userInput !== null) {
-          return this.userInput;
-        }
-
-        let currentValue = this.currentValue;
-
-        if (typeof currentValue === 'number') {
-          if (this.stepStrictly) {
-            const stepPrecision = this.getPrecision(this.step);
-            const precisionFactor = Math.pow(10, stepPrecision);
-            currentValue = Math.round(currentValue / this.step) * precisionFactor * this.step / precisionFactor;
-          }
-
-          if (this.precision !== undefined) {
-            currentValue = currentValue.toFixed(this.precision);
-          }
-        }
-
-        return currentValue;
       }
     },
     methods: {
       toPrecision(num, precision) {
-        if (precision === undefined) precision = this.numPrecision;
-        return parseFloat(Math.round(num * Math.pow(10, precision)) / Math.pow(10, precision));
+        if (precision === undefined) precision = this.precision;
+        return parseFloat(parseFloat(Number(num).toFixed(precision)));
       },
       getPrecision(value) {
         if (value === undefined) return 0;
@@ -210,14 +158,14 @@
       _increase(val, step) {
         if (typeof val !== 'number' && val !== undefined) return this.currentValue;
 
-        const precisionFactor = Math.pow(10, this.numPrecision);
+        const precisionFactor = Math.pow(10, this.precision);
         // Solve the accuracy problem of JS decimal calculation by converting the value to integer.
         return this.toPrecision((precisionFactor * val + precisionFactor * step) / precisionFactor);
       },
       _decrease(val, step) {
         if (typeof val !== 'number' && val !== undefined) return this.currentValue;
 
-        const precisionFactor = Math.pow(10, this.numPrecision);
+        const precisionFactor = Math.pow(10, this.precision);
 
         return this.toPrecision((precisionFactor * val - precisionFactor * step) / precisionFactor);
       },
@@ -235,35 +183,28 @@
       },
       handleBlur(event) {
         this.$emit('blur', event);
+        this.$refs.input.setCurrentValue(this.currentValue);
       },
       handleFocus(event) {
         this.$emit('focus', event);
       },
       setCurrentValue(newVal) {
         const oldVal = this.currentValue;
-        if (typeof newVal === 'number' && this.precision !== undefined) {
-          newVal = this.toPrecision(newVal, this.precision);
-        }
         if (newVal >= this.max) newVal = this.max;
         if (newVal <= this.min) newVal = this.min;
-        if (oldVal === newVal) return;
-        this.userInput = null;
+        if (oldVal === newVal) {
+          this.$refs.input.setCurrentValue(this.currentValue);
+          return;
+        }
         this.$emit('input', newVal);
         this.$emit('change', newVal, oldVal);
         this.currentValue = newVal;
-      },
-      handleInput(value) {
-        this.userInput = value;
       },
       handleInputChange(value) {
         const newVal = value === '' ? undefined : Number(value);
         if (!isNaN(newVal) || value === '') {
           this.setCurrentValue(newVal);
         }
-        this.userInput = null;
-      },
-      select() {
-        this.$refs.input.select();
       }
     },
     mounted() {
@@ -275,8 +216,7 @@
       innerInput.setAttribute('aria-disabled', this.inputNumberDisabled);
     },
     updated() {
-      if (!this.$refs || !this.$refs.input) return;
-      const innerInput = this.$refs.input.$refs.input;
+      let innerInput = this.$refs.input.$refs.input;
       innerInput.setAttribute('aria-valuenow', this.currentValue);
     }
   };

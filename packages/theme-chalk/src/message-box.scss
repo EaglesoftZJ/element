@@ -12,7 +12,7 @@
   background-color: $--color-white;
   border-radius: $--msgbox-border-radius;
   border: 1px solid $--border-color-lighter;
-  font-size: $--messagebox-font-size;
+  font-size: $--msgbox-font-size;
   box-shadow: $--box-shadow-light;
   text-align: left;
   overflow: hidden;
@@ -44,9 +44,9 @@
   @include e(title) {
     padding-left: 0;
     margin-bottom: 0;
-    font-size: $--messagebox-font-size;
+    font-size: $--msgbox-font-size;
     line-height: 1;
-    color: $--messagebox-title-color;
+    color: $--color-text-primary;
   }
 
   @include e(headerbtn) {
@@ -75,8 +75,8 @@
   @include e(content) {
     position: relative;
     padding: 10px $--msgbox-padding-primary;
-    color: $--messagebox-content-color;
-    font-size: $--messagebox-content-font-size;
+    color: $--msgbox-content-color;
+    font-size: $--msgbox-content-font-size;
   }
 
   @include e(input) {
@@ -107,19 +107,19 @@
     }
 
     &.el-icon-success {
-      color: $--messagebox-success-color;
+      color: $--msgbox-success-color;
     }
 
     &.el-icon-info {
-      color: $--messagebox-info-color;
+      color: $--msgbox-info-color;
     }
 
     &.el-icon-warning {
-      color: $--messagebox-warning-color;
+      color: $--msgbox-warning-color;
     }
 
     &.el-icon-error {
-      color: $--messagebox-danger-color;
+      color: $--msgbox-danger-color;
     }
   }
 
@@ -134,7 +134,7 @@
 
   @include e(errormsg) {
     color: $--color-danger;
-    font-size: $--messagebox-error-font-size;
+    font-size: $--msgbox-error-font-size;
     min-height: 18px;
     margin-top: 2px;
   }

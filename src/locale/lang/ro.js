@@ -67,8 +67,7 @@ export default {
     cascader: {
       noMatch: 'Nu există date potrivite',
       loading: 'Se încarcă',
-      placeholder: 'Selectează',
-      noData: 'Nu există date'
+      placeholder: 'Selectează'
     },
     pagination: {
       goto: 'Go to',
@@ -105,12 +104,6 @@ export default {
       filterPlaceholder: 'Introduceți cuvântul cheie',
       noCheckedFormat: '{total} elemente',
       hasCheckedFormat: '{checked}/{total} verificate'
-    },
-    image: {
-      error: 'FAILED' // to be translated
-    },
-    pageHeader: {
-      title: 'Back' // to be translated
     }
   }
 };

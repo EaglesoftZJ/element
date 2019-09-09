@@ -11,7 +11,6 @@
           v-for="item in items"
           :class="{ selected: value === item.value, disabled: item.disabled, default: item.value === defaultValue }"
           :disabled="item.disabled"
-          :key="item.value"
           @click="handleClick(item)">{{ item.value }}</div>
       </el-scrollbar>
     </div>

@@ -1,6 +1,7 @@
 import Popper from 'element-ui/src/utils/vue-popper';
 import debounce from 'throttle-debounce/debounce';
 import { addClass, removeClass, on, off } from 'element-ui/src/utils/dom';
+import { getFirstComponentChild } from 'element-ui/src/utils/vdom';
 import { generateId } from 'element-ui/src/utils/util';
 import Vue from 'vue';
 
@@ -48,19 +49,19 @@ export default {
     hideAfter: {
       type: Number,
       default: 0
-    },
-    tabindex: {
-      type: Number,
-      default: 0
     }
   },
 
   data() {
     return {
-      tooltipId: `el-tooltip-${generateId()}`,
       timeoutPending: null,
       focusing: false
     };
+  },
+  computed: {
+    tooltipId() {
+      return `el-tooltip-${generateId()}`;
+    }
   },
   beforeCreate() {
     if (this.$isServer) return;
@@ -97,20 +98,23 @@ export default {
         </transition>);
     }
 
-    const firstElement = this.getFirstElement();
-    if (!firstElement) return null;
+    if (!this.$slots.default || !this.$slots.default.length) return this.$slots.default;
 
-    const data = firstElement.data = firstElement.data || {};
-    data.staticClass = this.addTooltipClass(data.staticClass);
+    const vnode = getFirstComponentChild(this.$slots.default);
 
-    return firstElement;
+    if (!vnode) return vnode;
+
+    const data = vnode.data = vnode.data || {};
+    data.staticClass = this.concatClass(data.staticClass, 'el-tooltip');
+
+    return vnode;
   },
 
   mounted() {
     this.referenceElm = this.$el;
     if (this.$el.nodeType === 1) {
       this.$el.setAttribute('aria-describedby', this.tooltipId);
-      this.$el.setAttribute('tabindex', this.tabindex);
+      this.$el.setAttribute('tabindex', 0);
       on(this.referenceElm, 'mouseenter', this.show);
       on(this.referenceElm, 'mouseleave', this.hide);
       on(this.referenceElm, 'focus', () => {
@@ -127,14 +131,6 @@ export default {
       });
       on(this.referenceElm, 'blur', this.handleBlur);
       on(this.referenceElm, 'click', this.removeFocusing);
-    }
-    // fix issue https://github.com/ElemeFE/element/issues/14424
-    if (this.value && this.popperVM) {
-      this.popperVM.$nextTick(() => {
-        if (this.value) {
-          this.updatePopper();
-        }
-      });
     }
   },
   watch: {
@@ -168,12 +164,9 @@ export default {
       this.focusing = false;
     },
 
-    addTooltipClass(prev) {
-      if (!prev) {
-        return 'el-tooltip';
-      } else {
-        return 'el-tooltip ' + prev.replace('el-tooltip', '');
-      }
+    concatClass(a, b) {
+      if (a && a.indexOf(b) > -1) return a;
+      return a ? b ? (a + ' ' + b) : a : (b || '');
     },
 
     handleShowPopper() {
@@ -209,33 +202,15 @@ export default {
         clearTimeout(this.timeoutPending);
       }
       this.expectedState = expectedState;
-    },
-
-    getFirstElement() {
-      const slots = this.$slots.default;
-      if (!Array.isArray(slots)) return null;
-      let element = null;
-      for (let index = 0; index < slots.length; index++) {
-        if (slots[index] && slots[index].tag) {
-          element = slots[index];
-        };
-      }
-      return element;
     }
-  },
-
-  beforeDestroy() {
-    this.popperVM && this.popperVM.$destroy();
   },
 
   destroyed() {
     const reference = this.referenceElm;
-    if (reference.nodeType === 1) {
-      off(reference, 'mouseenter', this.show);
-      off(reference, 'mouseleave', this.hide);
-      off(reference, 'focus', this.handleFocus);
-      off(reference, 'blur', this.handleBlur);
-      off(reference, 'click', this.removeFocusing);
-    }
+    off(reference, 'mouseenter', this.show);
+    off(reference, 'mouseleave', this.hide);
+    off(reference, 'focus', this.handleFocus);
+    off(reference, 'blur', this.handleBlur);
+    off(reference, 'click', this.removeFocusing);
   }
 };

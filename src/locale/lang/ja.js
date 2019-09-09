@@ -16,10 +16,10 @@ export default {
       startTime: '開始時間',
       endDate: '終了日',
       endTime: '終了時間',
-      prevYear: '前年',
-      nextYear: '翌年',
-      prevMonth: '前月',
-      nextMonth: '翌月',
+      prevYear: 'Previous Year', // to be translated
+      nextYear: 'Next Year', // to be translated
+      prevMonth: 'Previous Month', // to be translated
+      nextMonth: 'Next Month', // to be translated
       year: '年',
       month1: '1月',
       month2: '2月',
@@ -67,8 +67,7 @@ export default {
     cascader: {
       noMatch: 'データなし',
       loading: 'ロード中',
-      placeholder: '選択してください',
-      noData: 'データなし'
+      placeholder: '選択してください'
     },
     pagination: {
       goto: '',
@@ -83,7 +82,7 @@ export default {
       error: '正しくない入力'
     },
     upload: {
-      deleteTip: 'Delキーを押して削除する',
+      deleteTip: 'press delete to remove', // to be translated
       delete: '削除する',
       preview: 'プレビュー',
       continue: '続行する'
@@ -93,7 +92,7 @@ export default {
       confirmFilter: '確認',
       resetFilter: '初期化',
       clearFilter: 'すべて',
-      sumText: '合計'
+      sumText: 'Sum' // to be translated
     },
     tree: {
       emptyText: 'データなし'
@@ -101,16 +100,10 @@ export default {
     transfer: {
       noMatch: 'データなし',
       noData: 'データなし',
-      titles: ['リスト 1', 'リスト 2'],
-      filterPlaceholder: 'キーワードを入力',
-      noCheckedFormat: '総計 {total} 件',
-      hasCheckedFormat: '{checked}/{total} を選択した'
-    },
-    image: {
-      error: 'FAILED' // to be translated
-    },
-    pageHeader: {
-      title: 'Back' // to be translated
+      titles: ['List 1', 'List 2'], // to be translated
+      filterPlaceholder: 'Enter keyword', // to be translated
+      noCheckedFormat: '{total} items', // to be translated
+      hasCheckedFormat: '{checked}/{total} checked' // to be translated
     }
   }
 };

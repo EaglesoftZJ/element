@@ -1,7 +1,10 @@
 {
+  "env": {
+    "mocha": true
+  },
   "globals": {
-    "ga": true,
-    "chrome": true
+    "expect": true,
+    "sinon": true
   },
   "plugins": ["html", "json"],
   "extends": "elemefe",
@@ -9,8 +12,8 @@
     "no-restricted-globals": ["error", "event", "fdescribe"]
   },
   "parserOptions": {
-    "ecmaVersion": 6,
     "ecmaFeatures": {
+      "experimentalObjectRestSpread": true,
       "jsx": true
     }
   }

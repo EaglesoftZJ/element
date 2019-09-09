@@ -48,11 +48,8 @@ export declare class ElInput extends ElementUIComponent {
   /** Whether textarea has an adaptive height, only works when type is 'textarea' */
   autosize: boolean | AutoSize
 
-  /** @Deprecated in next major version */
+  /** Same as auto-complete in native input */
   autoComplete: string
-
-  /** Same as autocomplete in native input */
-  autocomplete: string
 
   /** Same as name in native input */
   name: string
@@ -77,18 +74,6 @@ export declare class ElInput extends ElementUIComponent {
 
   /** Same as form in native input */
   form: string
-
-  /** Whether to trigger form validatio */
-  validateEvent: boolean
-
-  /** Whether the input is clearable */
-  clearable: boolean
-
-  /** Whether to show password */
-  showPassword: boolean
-
-  /** Whether to show wordCount when setting maxLength */
-  showWordLimit: boolean
 
   /**
    * Focus the Input component

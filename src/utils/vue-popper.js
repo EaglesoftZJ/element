@@ -39,6 +39,7 @@ export default {
       type: Number,
       default: 35
     },
+    transition: String,
     appendToBody: {
       type: Boolean,
       default: true
@@ -70,7 +71,6 @@ export default {
     },
 
     showPopper(val) {
-      if (this.disabled) return;
       val ? this.updatePopper() : this.destroyPopper();
       this.$emit('input', val);
     }

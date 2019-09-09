@@ -1,3 +1,76 @@
+<style>
+  .demo-transfer {
+    .transfer-footer {
+      margin-left: 15px;
+      padding: 6px 5px;
+    }
+  }
+</style>
+
+<script>
+  export default {
+    data() {
+      const generateData = _ => {
+        const data = [];
+        for (let i = 1; i <= 15; i++) {
+          data.push({
+            key: i,
+            label: `Option ${ i }`,
+            disabled: i % 4 === 0
+          });
+        }
+        return data;
+      };
+      const generateData2 = _ => {
+        const data = [];
+        const states = ['California', 'Illinois', 'Maryland', 'Texas', 'Florida', 'Colorado', 'Connecticut '];
+        const initials = ['CA', 'IL', 'MD', 'TX', 'FL', 'CO', 'CT'];
+        states.forEach((city, index) => {
+          data.push({
+            label: city,
+            key: index,
+            initial: initials[index]
+          });
+        });
+        return data;
+      };
+      const generateData3 = _ => {
+        const data = [];
+        for (let i = 1; i <= 15; i++) {
+          data.push({
+            value: i,
+            desc: `Option ${ i }`,
+            disabled: i % 4 === 0
+          });
+        }
+        return data;
+      };
+      return {
+        data: generateData(),
+        data2: generateData2(),
+        data3: generateData3(),
+        value1: [1, 4],
+        value2: [],
+        value3: [1],
+        value4: [1],
+        value5: [],
+        filterMethod(query, item) {
+          return item.initial.toLowerCase().indexOf(query.toLowerCase()) > -1;
+        },
+        renderFunc(h, option) {
+          return <span>{ option.key } - { option.label }</span>;
+        }
+      };
+    },
+
+    methods: {
+      handleChange(value, direction, movedKeys) {
+        console.log(value, direction, movedKeys);
+      }
+    }
+  };
+</script>
+
 ## Transfer
 
 ### Basic usage
@@ -5,7 +78,7 @@
 ```html
 <template>
   <el-transfer
-    v-model="value"
+    v-model="value1"
     :data="data">
   </el-transfer>
 </template>
@@ -26,7 +99,7 @@
       };
       return {
         data: generateData(),
-        value: [1, 4]
+        value1: [1, 4]
       };
     }
   };
@@ -45,15 +118,15 @@ You can search and filter data items.
     filterable
     :filter-method="filterMethod"
     filter-placeholder="State Abbreviations"
-    v-model="value"
-    :data="data">
+    v-model="value2"
+    :data="data2">
   </el-transfer>
 </template>
 
 <script>
   export default {
     data() {
-      const generateData = _ => {
+      const generateData2 = _ => {
         const data = [];
         const states = ['California', 'Illinois', 'Maryland', 'Texas', 'Florida', 'Colorado', 'Connecticut '];
         const initials = ['CA', 'IL', 'MD', 'TX', 'FL', 'CO', 'CT'];
@@ -67,8 +140,8 @@ You can search and filter data items.
         return data;
       };
       return {
-        data: generateData(),
-        value: [],
+        data2: generateData2(),
+        value2: [],
         filterMethod(query, item) {
           return item.initial.toLowerCase().indexOf(query.toLowerCase()) > -1;
         }
@@ -90,7 +163,7 @@ You can customize list titles, button texts, render function for data items, che
   <div style="text-align: center">
     <el-transfer
       style="text-align: left; display: inline-block"
-      v-model="value"
+      v-model="value3"
       filterable
       :left-default-checked="[2, 3]"
       :right-default-checked="[1]"
@@ -153,7 +226,7 @@ You can customize list titles, button texts, render function for data items, che
       };
       return {
         data: generateData(),
-        value: [1],
+        value3: [1],
         value4: [1],
         renderFunc(h, option) {
           return <span>{ option.key } - { option.label }</span>;
@@ -178,19 +251,19 @@ By default, Transfer looks for `key`, `label` and `disabled` in a data item. If 
 ```html
 <template>
   <el-transfer
-    v-model="value"
+    v-model="value5"
     :props="{
       key: 'value',
       label: 'desc'
     }"
-    :data="data">
+    :data="data3">
   </el-transfer>
 </template>
 
 <script>
   export default {
     data() {
-      const generateData = _ => {
+      const generateData3 = _ => {
         const data = [];
         for (let i = 1; i <= 15; i++) {
           data.push({
@@ -202,8 +275,8 @@ By default, Transfer looks for `key`, `label` and `disabled` in a data item. If 
         return data;
       };
       return {
-        data: generateData(),
-        value: []
+        data3: generateData3(),
+        value5: []
       };
     }
   };
@@ -214,7 +287,6 @@ By default, Transfer looks for `key`, `label` and `disabled` in a data item. If 
 ### Attributes
 | Attribute | Description | Type  | Accepted Values | Default |
 |---------- |-------- |---------- |-------------  |-------- |
-| value / v-model | binding value | array | — | — |
 | data | data source | array[{ key, label, disabled }] | — | [ ] |
 | filterable | whether Transfer is filterable | boolean | — | false |
 | filter-placeholder | placeholder for the filter input | string | — | Enter keyword |

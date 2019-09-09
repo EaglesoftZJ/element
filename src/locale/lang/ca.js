@@ -16,11 +16,11 @@ export default {
       startTime: 'Hora Inici',
       endDate: 'Data Final',
       endTime: 'Hora Final',
-      prevYear: 'Any anterior',
-      nextYear: 'Pròxim Any',
-      prevMonth: 'Mes anterior',
-      nextMonth: 'Pròxim Mes',
-      year: '',
+      prevYear: 'Previous Year', // to be translated
+      nextYear: 'Next Year', // to be translated
+      prevMonth: 'Previous Month', // to be translated
+      nextMonth: 'Next Month', // to be translated
+      year: 'Any',
       month1: 'Gener',
       month2: 'Febrer',
       month3: 'Març',
@@ -67,8 +67,7 @@ export default {
     cascader: {
       noMatch: 'No hi ha dades que coincideixin',
       loading: 'Carregant',
-      placeholder: 'Seleccionar',
-      noData: 'Sense Dades'
+      placeholder: 'Seleccionar'
     },
     pagination: {
       goto: 'Anar a',
@@ -82,7 +81,7 @@ export default {
       error: 'Entrada invàlida'
     },
     upload: {
-      deleteTip: 'premi eliminar per descartar',
+      deleteTip: 'press delete to remove', // to be translated
       delete: 'Eliminar',
       preview: 'Vista Prèvia',
       continue: 'Continuar'
@@ -104,12 +103,6 @@ export default {
       filterPlaceholder: 'Introdueix la paraula clau',
       noCheckedFormat: '{total} ítems',
       hasCheckedFormat: '{checked}/{total} seleccionats'
-    },
-    image: {
-      error: 'FAILED' // to be translated
-    },
-    pageHeader: {
-      title: 'Back' // to be translated
     }
   }
 };

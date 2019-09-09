@@ -67,8 +67,7 @@ export default {
     cascader: {
       noMatch: '無匹配資料',
       loading: '加載中',
-      placeholder: '請選擇',
-      noData: '無資料'
+      placeholder: '請選擇'
     },
     pagination: {
       goto: '前往',
@@ -105,12 +104,6 @@ export default {
       filterPlaceholder: 'Enter keyword', // to be translated
       noCheckedFormat: '{total} items', // to be translated
       hasCheckedFormat: '{checked}/{total} checked' // to be translated
-    },
-    image: {
-      error: '加載失敗'
-    },
-    pageHeader: {
-      title: '返回'
     }
   }
 };

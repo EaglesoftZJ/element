@@ -1,11 +1,10 @@
 import { ElementUIComponent, ElementUIComponentSize } from './component'
 
 export type TagType = 'primary' | 'gray' | 'success' | 'warning' | 'danger'
-export type TagTheme = 'dark' | 'light' | 'plain'
 
 /** Tag Component */
 export declare class ElTag extends ElementUIComponent {
-  /** Tag type */
+  /** Theme */
   type: TagType
 
   /** Whether Tab can be removed */
@@ -22,7 +21,4 @@ export declare class ElTag extends ElementUIComponent {
 
   /** Tag size */
   size: ElementUIComponentSize
-
-  /** Tag theme */
-  effect: TagTheme
 }

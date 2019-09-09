@@ -66,8 +66,7 @@ export default {
     cascader: {
       noMatch: 'பொருத்தமான தரவு கிடைக்கவில்லை',
       loading: 'தயாராகிக்கொண்டிருக்கிறது',
-      placeholder: 'தேர்வு செய்',
-      noData: 'தரவு இல்லை'
+      placeholder: 'தேர்வு செய்'
     },
     pagination: {
       goto: 'தேவையான் பகுதிக்கு செல்',
@@ -104,12 +103,6 @@ export default {
       filterPlaceholder: 'சொல்லை உள்ளீடு செய்',
       noCheckedFormat: '{total} items', // to be translated
       hasCheckedFormat: '{checked}/{total} தேர்வு செய்யப்பட்டவைகள்'
-    },
-    image: {
-      error: 'FAILED' // to be translated
-    },
-    pageHeader: {
-      title: 'Back' // to be translated
     }
   }
 };

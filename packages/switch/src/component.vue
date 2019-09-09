@@ -5,14 +5,13 @@
     role="switch"
     :aria-checked="checked"
     :aria-disabled="switchDisabled"
-    @click.prevent="switchValue"
+    @click="switchValue"
   >
     <input
       class="el-switch__input"
       type="checkbox"
       @change="handleChange"
       ref="input"
-      :id="id"
       :name="name"
       :true-value="activeValue"
       :false-value="inactiveValue"
@@ -26,6 +25,7 @@
       <span v-if="!inactiveIconClass && inactiveText" :aria-hidden="checked">{{ inactiveText }}</span>
     </span>
     <span class="el-switch__core" ref="core" :style="{ 'width': coreWidth + 'px' }">
+      <span class="el-switch__button" :style="{ transform }"></span>
     </span>
     <span
       :class="['el-switch__label', 'el-switch__label--right', checked ? 'is-active' : '']"
@@ -36,13 +36,12 @@
   </div>
 </template>
 <script>
-  import emitter from 'element-ui/src/mixins/emitter';
   import Focus from 'element-ui/src/mixins/focus';
   import Migrating from 'element-ui/src/mixins/migrating';
 
   export default {
     name: 'ElSwitch',
-    mixins: [Focus('input'), Migrating, emitter],
+    mixins: [Focus('input'), Migrating],
     inject: {
       elForm: {
         default: ''
@@ -90,12 +89,7 @@
       name: {
         type: String,
         default: ''
-      },
-      validateEvent: {
-        type: Boolean,
-        default: true
-      },
-      id: String
+      }
     },
     data() {
       return {
@@ -111,6 +105,9 @@
       checked() {
         return this.value === this.activeValue;
       },
+      transform() {
+        return this.checked ? `translate3d(${ this.coreWidth - 20 }px, 0, 0)` : '';
+      },
       switchDisabled() {
         return this.disabled || (this.elForm || {}).disabled;
       }
@@ -121,16 +118,12 @@
         if (this.activeColor || this.inactiveColor) {
           this.setBackgroundColor();
         }
-        if (this.validateEvent) {
-          this.dispatch('ElFormItem', 'el.form.change', [this.value]);
-        }
       }
     },
     methods: {
       handleChange(event) {
-        const val = this.checked ? this.inactiveValue : this.activeValue;
-        this.$emit('input', val);
-        this.$emit('change', val);
+        this.$emit('input', !this.checked ? this.activeValue : this.inactiveValue);
+        this.$emit('change', !this.checked ? this.activeValue : this.inactiveValue);
         this.$nextTick(() => {
           // set input's checked property
           // in case parent refuses to change component's value

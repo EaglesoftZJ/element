@@ -44,8 +44,8 @@
 
     props: {
       index: {
-        default: null,
-        validator: val => typeof val === 'string' || val === null
+        type: String,
+        required: true
       },
       route: [String, Object],
       disabled: Boolean
@@ -97,10 +97,10 @@
         if (!this.disabled) {
           this.dispatch('ElMenu', 'item-click', this);
           this.$emit('click', this);
-        }
+        };
       }
     },
-    mounted() {
+    created() {
       this.parentMenu.addItem(this);
       this.rootMenu.addItem(this);
     },

@@ -12,11 +12,6 @@
   display: inline-block;
   position: relative;
 
-  .el-select__tags
-    >span {
-      display: contents;
-    }
-
   &:hover {
     .el-input__inner {
       border-color: $--select-border-color-hover;
@@ -28,7 +23,7 @@
     padding-right: 35px;
 
     &:focus {
-      border-color: $--select-input-focus-border-color;
+      border-color: $--select-input-focus-background;
     }
   }
 
@@ -38,6 +33,7 @@
       font-size: $--select-input-font-size;
       transition: transform .3s;
       transform: rotateZ(180deg);
+      line-height: 16px;
       cursor: pointer;
 
       @include when(reverse) {
@@ -69,7 +65,7 @@
     }
 
     &.is-focus .el-input__inner {
-      border-color: $--select-input-focus-border-color;
+      border-color: $--select-input-focus-background;
     }
   }
 
@@ -117,6 +113,11 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+
+    > span {
+      display: inline-block;
+      width: 100%;
+    }
   }
 
   .el-tag__close {

@@ -1,3 +1,27 @@
+<style>
+  .demo-box.demo-button {
+    .el-row {
+      margin-bottom: 20px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+    .el-button + .el-button {
+      margin-left: 10px;
+    }
+    .el-button-group {
+      .el-button + .el-button {
+        margin-left: 0;
+      }
+    
+      & + .el-button-group {
+        margin-left: 10px;
+      }
+    }
+  }
+</style>
+
 ## Button
 
 Botones comúnmente usados.
@@ -87,7 +111,7 @@ Botones sin borde ni fondo.
 
 Use iconos para darle mayor significado a Button. Se puede usar simplemente un icono o un icono con texto.
 
-:::demo Use el atributo `icon` para agregar un icono. Puede encontrar el listado de iconos en el componente de iconos. Agregar iconos a la derecha del texto se puede conseguir con un tag `<i>`. También se pueden usar iconos personalizados.
+:::demo Use el atributo `icon` para agregar un icono. Puede encontrar el listado de iconos en el componente de iconos. Agregar iconos a la derecha del texto se puede conseguir con un tag `<i>`. También se pueden usar iconos custom.
 
 ```html
 <el-button type="primary" icon="el-icon-edit"></el-button>
@@ -132,7 +156,7 @@ Cuando se hace clic en un botón para descargar datos, el botón muestra un esta
 
 Además del tamaño por defecto, el componente Button provee tres tamaños adicionales para utilizar en diferentes escenarios.
 
-:::demo Use el atributo `size` para setear tamaños adicionales con `medium`, `small` o `mini`.
+:::demo Use el atributo `size` para setear tamaños adicionales con `medium`, `small` or `mini`.
 
 ```html
 <el-row>
@@ -157,10 +181,9 @@ Además del tamaño por defecto, el componente Button provee tres tamaños adici
 | type        | tipo de botón                                 | string  | primary / success / warning / danger / info / text | —           |
 | plain       | determinar si es o no un botón plano          | boolean | —                                                  | false       |
 | round       | determinar si es o no un botón redondo        | boolean | —                                                  | false       |
-| circle      | determina si es un botón circular             | boolean | —                                                  | false       |
+| circle      | determina si es un boton circular             | boolean | —                                                  | false       |
 | loading     | determinar si es o no un botón de descarga    | boolean | —                                                  | false       |
 | disabled    | deshabilitar el botón                         | boolean | —                                                  | false       |
 | icon        | nombre de la clase del icono                  | string  | —                                                  | —           |
 | autofocus   | misma funcionalidad que la nativa `autofocus` | boolean | —                                                  | false       |
 | native-type | misma funcionalidad que la nativa `type`      | string  | button / submit / reset                            | button      |
-

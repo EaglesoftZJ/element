@@ -67,8 +67,7 @@ export default {
     cascader: {
       noMatch: 'Tidak ada data yg cocok',
       loading: 'Memuat',
-      placeholder: 'Pilih',
-      noData: 'Tidak ada data'
+      placeholder: 'Pilih'
     },
     pagination: {
       goto: 'Pergi ke',
@@ -105,12 +104,6 @@ export default {
       filterPlaceholder: 'Masukan kata kunci',
       noCheckedFormat: '{total} butir',
       hasCheckedFormat: '{checked}/{total} terpilih'
-    },
-    image: {
-      error: 'FAILED' // to be translated
-    },
-    pageHeader: {
-      title: 'Back' // to be translated
     }
   }
 };

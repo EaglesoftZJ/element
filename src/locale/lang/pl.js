@@ -67,8 +67,7 @@ export default {
     cascader: {
       noMatch: 'Brak dopasowań',
       loading: 'Ładowanie',
-      placeholder: 'Wybierz',
-      noData: 'Brak danych'
+      placeholder: 'Wybierz'
     },
     pagination: {
       goto: 'Idź do',
@@ -105,12 +104,6 @@ export default {
       filterPlaceholder: 'Wpisz szukaną frazę',
       noCheckedFormat: 'razem: {total}',
       hasCheckedFormat: 'wybranych: {checked}/{total}'
-    },
-    image: {
-      error: 'FAILED' // to be translated
-    },
-    pageHeader: {
-      title: 'Back' // to be translated
     }
   }
 };

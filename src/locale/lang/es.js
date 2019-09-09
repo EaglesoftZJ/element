@@ -20,7 +20,7 @@ export default {
       nextYear: 'Próximo Año',
       prevMonth: 'Mes Anterior',
       nextMonth: 'Próximo Mes',
-      year: '',
+      year: 'Año',
       month1: 'enero',
       month2: 'febrero',
       month3: 'marzo',
@@ -67,8 +67,7 @@ export default {
     cascader: {
       noMatch: 'No hay datos que coincidan',
       loading: 'Cargando',
-      placeholder: 'Seleccionar',
-      noData: 'Sin datos'
+      placeholder: 'Seleccionar'
     },
     pagination: {
       goto: 'Ir a',
@@ -82,7 +81,7 @@ export default {
       error: 'Entrada inválida'
     },
     upload: {
-      deleteTip: 'Pulse Eliminar para retirar',
+      deleteTip: 'press delete to remove', // to be translated
       delete: 'Eliminar',
       preview: 'Vista Previa',
       continue: 'Continuar'
@@ -104,12 +103,6 @@ export default {
       filterPlaceholder: 'Ingresar palabra clave',
       noCheckedFormat: '{total} artículos',
       hasCheckedFormat: '{checked}/{total} revisados'
-    },
-    image: {
-      error: 'FAILED' // to be translated
-    },
-    pageHeader: {
-      title: 'Back' // to be translated
     }
   }
 };

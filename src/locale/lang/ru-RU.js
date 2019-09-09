@@ -33,7 +33,7 @@ export default {
       month10: 'Октябрь',
       month11: 'Ноябрь',
       month12: 'Декабрь',
-      week: 'неделя',
+      // week: 'week',
       weeks: {
         sun: 'Вс',
         mon: 'Пн',
@@ -67,12 +67,11 @@ export default {
     cascader: {
       noMatch: 'Совпадений не найдено',
       loading: 'Загрузка',
-      placeholder: 'Выбрать',
-      noData: 'Нет данных'
+      placeholder: 'Выбрать'
     },
     pagination: {
       goto: 'Перейти',
-      pagesize: ' на странице',
+      pagesize: 'на странице',
       total: 'Всего {total}',
       pageClassifier: ''
     },
@@ -105,12 +104,6 @@ export default {
       filterPlaceholder: 'Введите ключевое слово',
       noCheckedFormat: '{total} пунктов',
       hasCheckedFormat: '{checked}/{total} выбрано'
-    },
-    image: {
-      error: 'FAILED' // to be translated
-    },
-    pageHeader: {
-      title: 'Back' // to be translated
     }
   }
 };

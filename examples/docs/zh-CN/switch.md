@@ -1,3 +1,27 @@
+<style>
+  .demo-box.demo-switch {
+    .el-switch {
+      margin: 20px 20px 20px 0;
+    }
+  }
+</style>
+
+<script>
+  export default {
+    data() {
+      return {
+        value1: true,
+        value2: true,
+        value3: true,
+        value4: true,
+        value5: '100',
+        value6: true,
+        value7: false
+      }
+    }
+  };
+</script>
+
 ## Switch 开关
 
 表示两种相互对立的状态间的切换，多用于触发「开/关」。
@@ -8,40 +32,9 @@
 
 ```html
 <el-switch
-  v-model="value"
-  active-color="#13ce66"
-  inactive-color="#ff4949">
-</el-switch>
-
-<script>
-  export default {
-    data() {
-      return {
-        value: true
-      }
-    }
-  };
-</script>
-```
-:::
-
-### 文字描述
-
-:::demo 使用`active-text`属性与`inactive-text`属性来设置开关的文字描述。
-
-```html
-<el-switch
-  v-model="value1"
-  active-text="按月付费"
-  inactive-text="按年付费">
-</el-switch>
-<el-switch
-  style="display: block"
   v-model="value2"
   active-color="#13ce66"
-  inactive-color="#ff4949"
-  active-text="按月付费"
-  inactive-text="按年付费">
+  inactive-color="#ff4949">
 </el-switch>
 
 <script>
@@ -57,14 +50,46 @@
 ```
 :::
 
+### 文字描述
+
+:::demo 使用`active-text`属性与`inactive-text`属性来设置开关的文字描述。
+
+```html
+<el-switch
+  v-model="value3"
+  active-text="按月付费"
+  inactive-text="按年付费">
+</el-switch>
+<el-switch
+  style="display: block"
+  v-model="value4"
+  active-color="#13ce66"
+  inactive-color="#ff4949"
+  active-text="按月付费"
+  inactive-text="按年付费">
+</el-switch>
+
+<script>
+  export default {
+    data() {
+      return {
+        value3: true,
+        value4: true
+      }
+    }
+  };
+</script>
+```
+:::
+
 ### 扩展的 value 类型
 
 :::demo 设置`active-value`和`inactive-value`属性，接受`Boolean`, `String`或`Number`类型的值。
 
 ```html
-<el-tooltip :content="'Switch value: ' + value" placement="top">
+<el-tooltip :content="'Switch value: ' + value5" placement="top">
   <el-switch
-    v-model="value"
+    v-model="value5"
     active-color="#13ce66"
     inactive-color="#ff4949"
     active-value="100"
@@ -76,7 +101,7 @@
   export default {
     data() {
       return {
-        value: '100'
+        value5: '100'
       }
     }
   };
@@ -92,19 +117,19 @@
 
 ```html
 <el-switch
-  v-model="value1"
+  v-model="value6"
   disabled>
 </el-switch>
 <el-switch
-  v-model="value2"
+  v-model="value7"
   disabled>
 </el-switch>
 <script>
   export default {
     data() {
       return {
-        value1: true,
-        value2: false
+        value6: true,
+        value7: false
       }
     }
   };
@@ -117,7 +142,6 @@
 
 | 参数      | 说明    | 类型      | 可选值       | 默认值   |
 |---------- |-------- |---------- |-------------  |-------- |
-| value / v-model | 绑定值 | boolean / string / number | — | — |
 | disabled  | 是否禁用    | boolean   | — | false   |
 | width  | switch 的宽度（像素）    | number   | — | 40 |
 | active-icon-class  | switch 打开时所显示图标的类名，设置此项会忽略 `active-text`    | string   | — | — |
@@ -128,8 +152,7 @@
 | inactive-value  | switch 关闭时的值    | boolean / string / number | — | false |
 | active-color  | switch 打开时的背景色    | string   | — | #409EFF |
 | inactive-color  | switch 关闭时的背景色    | string   | — | #C0CCDA |
-| name            | switch 对应的 name 属性    | string   | — | — |
-| validate-event  | 改变 switch 状态时是否触发表单的校验     | boolean   | - | true |
+| name  | switch 对应的 name 属性    | string   | — | — |
 
 ### Events
 | 事件名称      | 说明    | 回调参数      |

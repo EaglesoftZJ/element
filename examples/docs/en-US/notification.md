@@ -1,3 +1,115 @@
+<script>
+  module.exports = {
+    methods: {
+      open() {
+        const h = this.$createElement;
+
+        this.$notify({
+          title: 'Title',
+          message: h('i', { style: 'color: teal' }, 'This is a reminder')
+        });
+      },
+
+      open2() {
+        this.$notify({
+          title: 'Prompt',
+          message: 'This is a message that does not automatically close',
+          duration: 0
+        });
+      },
+
+      open3() {
+        this.$notify({
+          title: 'Success',
+          message: 'This is a success message',
+          type: 'success'
+        });
+      },
+
+      open4() {
+        this.$notify({
+          title: 'Warning',
+          message: 'This is a warning message',
+          type: 'warning'
+        });
+      },
+
+      open5() {
+        this.$notify.info({
+          title: 'Info',
+          message: 'This is an info message'
+        });
+      },
+
+      open6() {
+        this.$notify.error({
+          title: 'Error',
+          message: 'This is an error message'
+        });
+      },
+
+      open7() {
+        this.$notify({
+          title: 'Custom Position',
+          message: 'I\'m at the top right corner'
+        });
+      },
+
+      open8() {
+        this.$notify({
+          title: 'Custom Position',
+          message: 'I\'m at the bottom right corner',
+          position: 'bottom-right'
+        });
+      },
+
+      open9() {
+        this.$notify({
+          title: 'Custom Position',
+          message: 'I\'m at the bottom left corner',
+          position: 'bottom-left'
+        });
+      },
+
+      open10() {
+        this.$notify({
+          title: 'Custom Position',
+          message: 'I\'m at the top left corner',
+          position: 'top-left'
+        });
+      },
+
+      open11() {
+        this.$notify.success({
+          title: 'Success',
+          message: 'This is a success message',
+          offset: 100
+        });
+      },
+
+      open12() {
+        this.$notify({
+          title: 'HTML String',
+          dangerouslyUseHTMLString: true,
+          message: '<strong>This is <i>HTML</i> string</strong>'
+        });
+      },
+      
+      open13() {
+        this.$notify.success({
+          title: 'Info',
+          message: 'This is a message without close button',
+          showClose: false
+        });
+      },
+
+      onClose() {
+        console.log('Notification is closed');
+      }
+    }
+  };
+</script>
+
 ## Notification
 
 Displays a global notification message at a corner of the page.
@@ -10,7 +122,7 @@ Displays a global notification message at a corner of the page.
 <template>
   <el-button
     plain
-    @click="open1">
+    @click="open">
     Closes automatically
   </el-button>
   <el-button
@@ -23,7 +135,7 @@ Displays a global notification message at a corner of the page.
 <script>
   export default {
     methods: {
-      open1() {
+      open() {
         const h = this.$createElement;
 
         this.$notify({
@@ -49,27 +161,27 @@ Displays a global notification message at a corner of the page.
 
 We provide four types: success, warning, info and error.
 
-:::demo Element provides four notification types: `success`, `warning`, `info` and `error`. They are set by the `type` field, and other values will be ignored. We also registered methods for these types that can be invoked directly like `open3` and `open4` without passing a `type` field.
+:::demo Element provides four notification types: `success`, `warning`, `info` and `error`. They are set by the `type` field, and other values will be ignored. We also registered methods for these types that can be invoked directly like `open5` and `open6` without passing a `type` field.
 ```html
 <template>
   <el-button
     plain
-    @click="open1">
+    @click="open3">
     Success
   </el-button>
   <el-button
     plain
-    @click="open2">
+    @click="open4">
     Warning
   </el-button>
   <el-button
     plain
-    @click="open3">
+    @click="open5">
     Info
   </el-button>
   <el-button
     plain
-    @click="open4">
+    @click="open6">
     Error
   </el-button>
 </template>
@@ -77,7 +189,7 @@ We provide four types: success, warning, info and error.
 <script>
   export default {
     methods: {
-      open1() {
+      open3() {
         this.$notify({
           title: 'Success',
           message: 'This is a success message',
@@ -85,7 +197,7 @@ We provide four types: success, warning, info and error.
         });
       },
 
-      open2() {
+      open4() {
         this.$notify({
           title: 'Warning',
           message: 'This is a warning message',
@@ -93,14 +205,14 @@ We provide four types: success, warning, info and error.
         });
       },
 
-      open3() {
+      open5() {
         this.$notify.info({
           title: 'Info',
           message: 'This is an info message'
         });
       },
 
-      open4() {
+      open6() {
         this.$notify.error({
           title: 'Error',
           message: 'This is an error message'
@@ -121,22 +233,22 @@ Notification can emerge from any corner you like.
 <template>
   <el-button
     plain
-    @click="open1">
+    @click="open7">
     Top Right
   </el-button>
   <el-button
     plain
-    @click="open2">
+    @click="open8">
     Bottom Right
   </el-button>
   <el-button
     plain
-    @click="open3">
+    @click="open9">
     Bottom Left
   </el-button>
   <el-button
     plain
-    @click="open4">
+    @click="open10">
     Top Left
   </el-button>
 </template>
@@ -144,14 +256,14 @@ Notification can emerge from any corner you like.
 <script>
   export default {
     methods: {
-      open1() {
+      open7() {
         this.$notify({
           title: 'Custom Position',
           message: 'I\'m at the top right corner'
         });
       },
 
-      open2() {
+      open8() {
         this.$notify({
           title: 'Custom Position',
           message: 'I\'m at the bottom right corner',
@@ -159,7 +271,7 @@ Notification can emerge from any corner you like.
         });
       },
 
-      open3() {
+      open9() {
         this.$notify({
           title: 'Custom Position',
           message: 'I\'m at the bottom left corner',
@@ -167,7 +279,7 @@ Notification can emerge from any corner you like.
         });
       },
 
-      open4() {
+      open10() {
         this.$notify({
           title: 'Custom Position',
           message: 'I\'m at the top left corner',
@@ -189,7 +301,7 @@ Customize Notification's offset from the edge of the screen.
 <template>
   <el-button
     plain
-    @click="open">
+    @click="open11">
     Notification with offset
   </el-button>
 </template>
@@ -197,7 +309,7 @@ Customize Notification's offset from the edge of the screen.
 <script>
   export default {
     methods: {
-      open() {
+      open11() {
         this.$notify.success({
           title: 'Success',
           message: 'This is a success message',
@@ -218,7 +330,7 @@ Customize Notification's offset from the edge of the screen.
 <template>
   <el-button
     plain
-    @click="open">
+    @click="open12">
     Use HTML String
   </el-button>
 </template>
@@ -226,7 +338,7 @@ Customize Notification's offset from the edge of the screen.
 <script>
   export default {
     methods: {
-      open() {
+      open12() {
         this.$notify({
           title: 'HTML String',
           dangerouslyUseHTMLString: true,
@@ -252,7 +364,7 @@ It is possible to hide the close button
 <template>
   <el-button
     plain
-    @click="open">
+    @click="open13">
     Hide close button
     </el-button>
 </template>
@@ -260,7 +372,7 @@ It is possible to hide the close button
 <script>
   export default {
     methods: {
-      open() {
+      open13() {
         this.$notify.success({
           title: 'Info',
           message: 'This is a message without close button',

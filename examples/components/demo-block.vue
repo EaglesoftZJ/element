@@ -4,16 +4,12 @@
     :class="[blockClass, { 'hover': hovering }]"
     @mouseenter="hovering = true"
     @mouseleave="hovering = false">
-    <div class="source">
-      <slot name="source"></slot>
-    </div>
+    <slot name="source"></slot>
     <div class="meta" ref="meta">
       <div class="description" v-if="$slots.default">
         <slot></slot>
       </div>
-      <div class="highlight">
-        <slot name="highlight"></slot>
-      </div>
+      <slot name="highlight"></slot>
     </div>
     <div
       class="demo-block-control"
@@ -33,7 +29,7 @@
             size="small"
             type="text"
             class="control-button"
-            @click.stop="goCodepen">
+            @click.stop="goJsfiddle">
             {{ langConfig['button-text'] }}
           </el-button>
         </transition>
@@ -42,7 +38,7 @@
   </div>
 </template>
 
-<style lang="scss">
+<style>
   .demo-block {
     border: solid 1px #ebebeb;
     border-radius: 3px;
@@ -182,18 +178,11 @@
 
 <script type="text/babel">
   import compoLang from '../i18n/component.json';
-  import Element from 'main/index.js';
-  import { stripScript, stripStyle, stripTemplate } from '../util';
-  const { version } = Element;
+  import { version } from 'main/index.js';
 
   export default {
     data() {
       return {
-        codepen: {
-          script: '',
-          html: '',
-          style: ''
-        },
         hovering: false,
         isExpanded: false,
         fixedControl: false,
@@ -201,10 +190,16 @@
       };
     },
 
+    props: {
+      jsfiddle: Object,
+      default() {
+        return {};
+      }
+    },
+
     methods: {
-      goCodepen() {
-        // since 2.6.2 use code rather than jsfiddle https://blog.codepen.io/documentation/api/prefill/
-        const { script, html, style } = this.codepen;
+      goJsfiddle() {
+        const { script, html, style } = this.jsfiddle;
         const resourcesTpl = '<scr' + 'ipt src="//unpkg.com/vue/dist/vue.js"></scr' + 'ipt>' +
         '\n<scr' + `ipt src="//unpkg.com/element-ui@${ version }/lib/index.js"></scr` + 'ipt>';
         let jsTpl = (script || '').replace(/export default/, 'var Main =').trim();
@@ -216,23 +211,25 @@
         const data = {
           js: jsTpl,
           css: cssTpl,
-          html: htmlTpl
+          html: htmlTpl,
+          panel_js: 3,
+          panel_css: 1
         };
         const form = document.getElementById('fiddle-form') || document.createElement('form');
-        while (form.firstChild) {
-          form.removeChild(form.firstChild);
-        }
-        form.method = 'POST';
-        form.action = 'https://codepen.io/pen/define/';
+        form.innerHTML = '';
+        const node = document.createElement('textarea');
+
+        form.method = 'post';
+        form.action = 'https://jsfiddle.net/api/post/library/pure/';
         form.target = '_blank';
+
+        for (let name in data) {
+          node.name = name;
+          node.value = data[name].toString();
+          form.appendChild(node.cloneNode());
+        }
+        form.setAttribute('id', 'fiddle-form');
         form.style.display = 'none';
-
-        const input = document.createElement('input');
-        input.setAttribute('name', 'data');
-        input.setAttribute('type', 'hidden');
-        input.setAttribute('value', JSON.stringify(data));
-
-        form.appendChild(input);
         document.body.appendChild(form);
 
         form.submit();
@@ -298,25 +295,6 @@
           this.scrollParent && this.scrollParent.addEventListener('scroll', this.scrollHandler);
           this.scrollHandler();
         }, 200);
-      }
-    },
-
-    created() {
-      const highlight = this.$slots.highlight;
-      if (highlight && highlight[0]) {
-        let code = '';
-        let cur = highlight[0];
-        if (cur.tag === 'pre' && (cur.children && cur.children[0])) {
-          cur = cur.children[0];
-          if (cur.tag === 'code') {
-            code = cur.children[0].text;
-          }
-        }
-        if (code) {
-          this.codepen.html = stripTemplate(code);
-          this.codepen.script = stripScript(code);
-          this.codepen.style = stripStyle(code);
-        }
       }
     },
 

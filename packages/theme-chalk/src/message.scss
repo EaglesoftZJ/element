@@ -13,7 +13,7 @@
   top: 20px;
   transform: translateX(-50%);
   background-color: $--message-background-color;
-  transition: opacity 0.3s, transform .4s, top 0.4s;
+  transition: opacity 0.3s, transform .4s;
   overflow: hidden;
   padding: $--message-padding;
   display: flex;
@@ -35,7 +35,7 @@
 
   @include m(info) {
     .el-message__content {
-      color: $--message-info-font-color;
+      color: $--message-info-color;
     }
   }
 
@@ -44,7 +44,7 @@
     border-color: $--color-success-light;
 
     .el-message__content {
-      color: $--message-success-font-color;
+      color: $--message-success-color;
     }
   }
 
@@ -53,7 +53,7 @@
     border-color: $--color-warning-light;
 
     .el-message__content {
-      color: $--message-warning-font-color;
+      color: $--message-warning-color;
     }
   }
 
@@ -62,7 +62,7 @@
     border-color: $--color-danger-light;
 
     .el-message__content {
-      color: $--message-danger-font-color;
+      color: $--message-danger-color;
     }
   }
 
@@ -85,7 +85,7 @@
     right: 15px;
     transform: translateY(-50%);
     cursor: pointer;
-    color: $--message-close-icon-color;
+    color: $--message-close-color;
     font-size: $--message-close-size;
 
     &:focus {
@@ -97,19 +97,19 @@
   }
 
   & .el-icon-success {
-    color: $--message-success-font-color;
+    color: $--message-success-color;
   }
 
   & .el-icon-error {
-    color: $--message-danger-font-color;
+    color: $--message-danger-color;
   }
 
   & .el-icon-info {
-    color: $--message-info-font-color;
+    color: $--message-info-color;
   }
 
   & .el-icon-warning {
-    color: $--message-warning-font-color;
+    color: $--message-warning-color;
   }
 }
 

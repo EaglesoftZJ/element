@@ -6,14 +6,12 @@
       v-clickoutside="handleOutsideClick"
       v-show="showPopper">
       <div class="el-table-filter__content">
-        <el-scrollbar wrap-class="el-table-filter__wrap">
-          <el-checkbox-group class="el-table-filter__checkbox-group" v-model="filteredValue">
-            <el-checkbox
-              v-for="filter in filters"
-              :key="filter.value"
-              :label="filter.value">{{ filter.text }}</el-checkbox>
-          </el-checkbox-group>
-        </el-scrollbar>
+        <el-checkbox-group class="el-table-filter__checkbox-group" v-model="filteredValue">
+          <el-checkbox
+            v-for="filter in filters"
+            :key="filter.value"
+            :label="filter.value">{{ filter.text }}</el-checkbox>
+        </el-checkbox-group>
       </div>
       <div class="el-table-filter__bottom">
         <button @click="handleConfirm"
@@ -50,7 +48,6 @@
   import Dropdown from './dropdown';
   import ElCheckbox from 'element-ui/packages/checkbox';
   import ElCheckboxGroup from 'element-ui/packages/checkbox-group';
-  import ElScrollbar from 'element-ui/packages/scrollbar';
 
   export default {
     name: 'ElTableFilterPanel',
@@ -63,8 +60,7 @@
 
     components: {
       ElCheckbox,
-      ElCheckboxGroup,
-      ElScrollbar
+      ElCheckboxGroup
     },
 
     props: {
@@ -72,6 +68,17 @@
         type: String,
         default: 'bottom-end'
       }
+    },
+
+    customRender(h) {
+      return (<div class="el-table-filter">
+        <div class="el-table-filter__content">
+        </div>
+        <div class="el-table-filter__bottom">
+          <button on-click={ this.handleConfirm }>{ this.t('el.table.confirmFilter') }</button>
+          <button on-click={ this.handleReset }>{ this.t('el.table.resetFilter') }</button>
+        </div>
+      </div>);
     },
 
     methods: {

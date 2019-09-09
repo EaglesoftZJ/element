@@ -16,11 +16,11 @@ export default {
       startTime: 'Starttidspunkt',
       endDate: 'Slutdato',
       endTime: 'Sluttidspunkt',
-      prevYear: 'Forrige år',
-      nextYear: 'Næste år',
-      prevMonth: 'Forrige måned',
-      nextMonth: 'Næste måned',
-      year: '',
+      prevYear: 'Previous Year', // to be translated
+      nextYear: 'Next Year', // to be translated
+      prevMonth: 'Previous Month', // to be translated
+      nextMonth: 'Next Month', // to be translated
+      year: 'År',
       month1: 'Januar',
       month2: 'Februar',
       month3: 'Marts',
@@ -67,8 +67,7 @@ export default {
     cascader: {
       noMatch: 'Ingen matchende data',
       loading: 'Henter',
-      placeholder: 'Vælg',
-      noData: 'Ingen data'
+      placeholder: 'Vælg'
     },
     pagination: {
       goto: 'Gå til',
@@ -82,7 +81,7 @@ export default {
       error: 'Ugyldig input'
     },
     upload: {
-      deleteTip: 'tryk slet for at fjerne',
+      deleteTip: 'press delete to remove', // to be translated
       delete: 'Slet',
       preview: 'Forhåndsvisning',
       continue: 'Fortsæt'
@@ -92,7 +91,7 @@ export default {
       confirmFilter: 'Bekræft',
       resetFilter: 'Nulstil',
       clearFilter: 'Alle',
-      sumText: 'Sum'
+      sumText: 'Sum' // to be translated
     },
     tree: {
       emptyText: 'Ingen data'
@@ -100,16 +99,10 @@ export default {
     transfer: {
       noMatch: 'Ingen matchende data',
       noData: 'Ingen data',
-      titles: ['Liste 1', 'Liste 2'],
-      filterPlaceholder: 'Indtast søgeord',
-      noCheckedFormat: '{total} emner',
-      hasCheckedFormat: '{checked}/{total} valgt'
-    },
-    image: {
-      error: 'FAILED' // to be translated
-    },
-    pageHeader: {
-      title: 'Back' // to be translated
+      titles: ['List 1', 'List 2'], // to be translated
+      filterPlaceholder: 'Enter keyword', // to be translated
+      noCheckedFormat: '{total} items', // to be translated
+      hasCheckedFormat: '{checked}/{total} checked' // to be translated
     }
   }
 };

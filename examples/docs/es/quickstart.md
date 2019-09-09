@@ -2,10 +2,6 @@
 
 Esta sección te guía en el proceso de usar Element con webpack en un proyecto.
 
-### Use vue-cli@3
-
-Proporcionamos un [plugin de Element](https://github.com/ElementUI/vue-cli-plugin-element) para vue-cli@3, que puede utilizar para construir rápidamente un proyecto basado en Element.
-
 ### Usa la plantilla de Kit de inicio
 
 Proveemos una plantilla general [project template](https://github.com/ElementUI/element-starter). Para los usuarios de Laravel, también tenemos [template](https://github.com/ElementUI/element-in-laravel-starter). Puedes descargarlas y agregarlas directamente también.
@@ -18,7 +14,7 @@ Puede importar Element completamente o solamente importar lo que necesite. Comen
 
 #### Importando todo
 
-En main.js:
+In main.js:
 
 ```javascript
 import Vue from 'vue';
@@ -134,7 +130,6 @@ import {
   Col,
   Upload,
   Progress,
-  Spinner,
   Badge,
   Card,
   Rate,
@@ -152,15 +147,6 @@ import {
   Aside,
   Main,
   Footer,
-  Timeline,
-  TimelineItem,
-  Link,
-  Divider,
-  Image,
-  Calendar,
-  Backtop,
-  PageHeader,
-  CascaderPanel,
   Loading,
   MessageBox,
   Message,
@@ -183,7 +169,6 @@ Vue.use(Radio);
 Vue.use(RadioGroup);
 Vue.use(RadioButton);
 Vue.use(Checkbox);
-Vue.use(CheckboxButton);
 Vue.use(CheckboxGroup);
 Vue.use(Switch);
 Vue.use(Select);
@@ -213,7 +198,6 @@ Vue.use(Row);
 Vue.use(Col);
 Vue.use(Upload);
 Vue.use(Progress);
-Vue.use(Spinner);
 Vue.use(Badge);
 Vue.use(Card);
 Vue.use(Rate);
@@ -225,21 +209,11 @@ Vue.use(Collapse);
 Vue.use(CollapseItem);
 Vue.use(Cascader);
 Vue.use(ColorPicker);
-Vue.use(Transfer);
 Vue.use(Container);
 Vue.use(Header);
 Vue.use(Aside);
 Vue.use(Main);
 Vue.use(Footer);
-Vue.use(Timeline);
-Vue.use(TimelineItem);
-Vue.use(Link);
-Vue.use(Divider);
-Vue.use(Image);
-Vue.use(Calendar);
-Vue.use(Backtop);
-Vue.use(PageHeader);
-Vue.use(CascaderPanel);
 
 Vue.use(Loading.directive);
 
@@ -254,16 +228,14 @@ Vue.prototype.$message = Message;
 
 ### Configuración global
 
-Cuando importa Element, puede definir un objeto global de configuración. Por ahora este elemento solo contiene dos propiedades: `size`, `zIndex`. `size` define el tamaño por defecto de todos los componentes.
-
-La propiedad `zIndex` indica el z-index inicial (por defecto: 2000) para los modal:
+Cuando importa Element, puede definir un objeto global de configuración. Por ahora este elemento solo contiene una propiedad: `size`, que define el tamaño por defecto de todos los componentes:
 
 Importando Element completamente：
 
 ```js
 import Vue from 'vue';
 import Element from 'element-ui';
-Vue.use(Element, { size: 'small', zIndex: 3000 });
+Vue.use(Element, { size: 'small' });
 ```
 
 Importando Element parcialmente：
@@ -272,11 +244,11 @@ Importando Element parcialmente：
 import Vue from 'vue';
 import { Button } from 'element-ui';
 
-Vue.prototype.$ELEMENT = { size: 'small', zIndex: 3000 };
+Vue.prototype.$ELEMENT = { size: 'small' };
 Vue.use(Button);
 ```
 
-Con la anterior configuración, el tamaño por defecto de todos los componentes que tienen el atributo `size` será `small`. El valor inicial de z-index para los modals se ha establecido a 3000.
+Con la anterior configuración, el tamaño por defecto de todos los componentes que tienen el atributo `size` será `small`.
 
 ### Empiece ya!
 
@@ -284,8 +256,8 @@ Ahora ha incorporado Vue y Element a su proyecto y es el momento para comenzar a
 
 ### Use Nuxt.js
 
-También podemos comenzar un proyecto usando [Nuxt.js](nuxtjs.org):
+We can also start a project using [Nuxt.js](nuxtjs.org):
 
 <div class="glitch-embed-wrap" style="height: 420px; width: 100%;">
-  <iframe src="https://glitch.com/embed/#!/embed/nuxt-with-element?path=nuxt.config.js&previewSize=0&attributionHidden=true" alt="nuxt-with-element on glitch" style="height: 100%; width: 100%; border: 0;"></iframe>
+  <iframe src="https://glitch.com/embed/#!/embed/nuxt-with-element-ui?path=nuxt.config.js&previewSize=0&attributionHidden=true" alt="nuxt-with-element-ui on glitch" style="height: 100%; width: 100%; border: 0;"></iframe>
 </div>

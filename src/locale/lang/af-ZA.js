@@ -67,8 +67,7 @@ export default {
     cascader: {
       noMatch: 'Geen toepaslike data',
       loading: 'Laai',
-      placeholder: 'Kies',
-      noData: 'Geen data'
+      placeholder: 'Kies'
     },
     pagination: {
       goto: 'Gaan na',
@@ -105,12 +104,6 @@ export default {
       filterPlaceholder: 'Voer sleutelwoord in',
       noCheckedFormat: '{total} items',
       hasCheckedFormat: '{checked}/{total} gekies'
-    },
-    image: {
-      error: 'FAILED' // to be translated
-    },
-    pageHeader: {
-      title: 'Back' // to be translated
     }
   }
 };

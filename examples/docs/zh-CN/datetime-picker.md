@@ -1,3 +1,92 @@
+<script>
+  module.exports = {
+    data() {
+      return {
+        pickerOptions1: {
+          shortcuts: [{
+            text: '今天',
+            onClick(picker) {
+              picker.$emit('pick', new Date());
+            }
+          }, {
+            text: '昨天',
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24);
+              picker.$emit('pick', date);
+            }
+          }, {
+            text: '一周前',
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', date);
+            }
+          }]
+        },
+        pickerOptions2: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
+        },
+        value1: 1526175722927,
+        value2: '',
+        value3: '',
+        value4: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
+        value5: '',
+        value6: '',
+        value7: ''
+      };
+    }
+  };
+</script>
+
+<style>
+.demo-block.demo-datetime-picker .source {
+    padding: 0;
+    display: flex;
+  }
+
+  .demo-datetime-picker .block {
+    padding: 30px 0;
+    text-align: center;
+    border-right: solid 1px #EFF2F6;
+    flex: 1;
+    &:last-child {
+      border-right: none;
+    }
+  }
+
+  .demo-datetime-picker .demonstration {
+    display: block;
+    color: #8492a6;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+</style>
+
 ## DateTimePicker 日期时间选择器
 
 在同一个选择器里选择日期和时间
@@ -26,7 +115,7 @@ DateTimePicker 由 DatePicker 和 TimePicker 派生，`Picker Options` 或者其
       type="datetime"
       placeholder="选择日期时间"
       align="right"
-      :picker-options="pickerOptions">
+      :picker-options="pickerOptions1">
     </el-date-picker>
   </div>
   <div class="block">
@@ -44,7 +133,7 @@ DateTimePicker 由 DatePicker 和 TimePicker 派生，`Picker Options` 或者其
   export default {
     data() {
       return {
-        pickerOptions: {
+        pickerOptions1: {
           shortcuts: [{
             text: '今天',
             onClick(picker) {
@@ -84,7 +173,7 @@ DateTimePicker 由 DatePicker 和 TimePicker 派生，`Picker Options` 或者其
   <div class="block">
     <span class="demonstration">默认</span>
     <el-date-picker
-      v-model="value1"
+      v-model="value4"
       type="datetimerange"
       range-separator="至"
       start-placeholder="开始日期"
@@ -94,9 +183,9 @@ DateTimePicker 由 DatePicker 和 TimePicker 派生，`Picker Options` 或者其
   <div class="block">
     <span class="demonstration">带快捷选项</span>
     <el-date-picker
-      v-model="value2"
+      v-model="value5"
       type="datetimerange"
-      :picker-options="pickerOptions"
+      :picker-options="pickerOptions2"
       range-separator="至"
       start-placeholder="开始日期"
       end-placeholder="结束日期"
@@ -109,7 +198,7 @@ DateTimePicker 由 DatePicker 和 TimePicker 派生，`Picker Options` 或者其
   export default {
     data() {
       return {
-        pickerOptions: {
+        pickerOptions2: {
           shortcuts: [{
             text: '最近一周',
             onClick(picker) {
@@ -136,8 +225,8 @@ DateTimePicker 由 DatePicker 和 TimePicker 派生，`Picker Options` 或者其
             }
           }]
         },
-        value1: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
-        value2: ''
+        value4: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
+        value5: ''
       };
     }
   };
@@ -153,7 +242,7 @@ DateTimePicker 由 DatePicker 和 TimePicker 派生，`Picker Options` 或者其
   <div class="block">
     <span class="demonstration">起始日期时刻为 12:00:00</span>
     <el-date-picker
-      v-model="value1"
+      v-model="value6"
       type="datetimerange"
       start-placeholder="开始日期"
       end-placeholder="结束日期"
@@ -163,7 +252,7 @@ DateTimePicker 由 DatePicker 和 TimePicker 派生，`Picker Options` 或者其
   <div class="block">
     <span class="demonstration">起始日期时刻为 12:00:00，结束日期时刻为 08:00:00</span>
     <el-date-picker
-      v-model="value2"
+      v-model="value7"
       type="datetimerange"
       align="right"
       start-placeholder="开始日期"
@@ -177,8 +266,8 @@ DateTimePicker 由 DatePicker 和 TimePicker 派生，`Picker Options` 或者其
   export default {
     data() {
       return {
-        value1: '',
-        value2: ''
+        value6: '',
+        value7: ''
       };
     }
   };
@@ -189,7 +278,6 @@ DateTimePicker 由 DatePicker 和 TimePicker 派生，`Picker Options` 或者其
 ### Attributes
 | 参数      | 说明          | 类型      | 可选值                           | 默认值  |
 |---------- |-------------- |---------- |--------------------------------  |-------- |
-| value / v-model | 绑定值 | date(DateTimePicker) / array(DateTimeRangePicker) | — | — |
 | readonly | 完全只读 | boolean | — | false |
 | disabled | 禁用 | boolean | — | false |
 | editable | 文本框可输入 | boolean | — | true |
@@ -200,7 +288,7 @@ DateTimePicker 由 DatePicker 和 TimePicker 派生，`Picker Options` 或者其
 | end-placeholder | 范围选择时结束日期的占位内容 | string | — | — |
 | time-arrow-control | 是否使用箭头进行时间选择 | boolean | — | false |
 | type | 显示类型 | string | year/month/date/week/ datetime/datetimerange/daterange | date |
-| format | 显示在输入框中的格式 | string | 见[日期格式](#/zh-CN/component/date-picker#ri-qi-ge-shi) | yyyy-MM-dd HH:mm:ss |
+| format | 显示在输入框中的格式 | string | 见[日期格式](#/zh-CN/component/date-picker#ri-qi-ge-shi) | yyyy-MM-dd |
 | align | 对齐方式 | string | left, center, right | left |
 | popper-class | DateTimePicker 下拉框的类名 | string | — | — |
 | picker-options | 当前时间日期选择器特有的选项参考下表 | object |  — | {} |
@@ -218,7 +306,6 @@ DateTimePicker 由 DatePicker 和 TimePicker 派生，`Picker Options` 或者其
 |---------- |-------------- |---------- |--------------------------------  |-------- |
 | shortcuts | 设置快捷选项，需要传入 { text, onClick } 对象用法参考 demo 或下表 | Object[] | — | — |
 | disabledDate | 设置禁用状态，参数为当前日期，要求返回 Boolean | Function | — | — |
-| cellClassName | 设置日期的 className | Function(Date) | — | — |
 | firstDayOfWeek | 周起始日 | Number | 1 到 7 | 7 |
 
 ### Shortcuts
@@ -238,8 +325,3 @@ DateTimePicker 由 DatePicker 和 TimePicker 派生，`Picker Options` 或者其
 | 方法名 | 说明 | 参数 |
 | ---- | ---- | ---- |
 | focus | 使 input 获取焦点 | — |
-
-### Slots
-| Name    | 说明         |
-|---------|-------------|
-| range-separator  | 自定义分隔符 |

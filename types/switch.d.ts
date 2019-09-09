@@ -37,7 +37,4 @@ export declare class ElSwitch extends ElementUIComponent {
 
   /** Input name of Switch */
   name: string
-
-  /** Whether to trigger form validation */
-  validateEvent: boolean
 }

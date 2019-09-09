@@ -1,5 +1,4 @@
 import LayoutObserver from './layout-observer';
-import { mapStates } from './store/helper';
 
 export default {
   name: 'ElTableFooter',
@@ -7,40 +6,36 @@ export default {
   mixins: [LayoutObserver],
 
   render(h) {
-    let sums = [];
-    if (this.summaryMethod) {
-      sums = this.summaryMethod({ columns: this.columns, data: this.store.states.data });
-    } else {
-      this.columns.forEach((column, index) => {
-        if (index === 0) {
-          sums[index] = this.sumText;
-          return;
-        }
-        const values = this.store.states.data.map(item => Number(item[column.property]));
-        const precisions = [];
-        let notNumber = true;
-        values.forEach(value => {
-          if (!isNaN(value)) {
-            notNumber = false;
-            let decimal = ('' + value).split('.')[1];
-            precisions.push(decimal ? decimal.length : 0);
-          }
-        });
-        const precision = Math.max.apply(null, precisions);
-        if (!notNumber) {
-          sums[index] = values.reduce((prev, curr) => {
-            const value = Number(curr);
-            if (!isNaN(value)) {
-              return parseFloat((prev + curr).toFixed(Math.min(precision, 20)));
-            } else {
-              return prev;
-            }
-          }, 0);
-        } else {
-          sums[index] = '';
+    const sums = [];
+    this.columns.forEach((column, index) => {
+      if (index === 0) {
+        sums[index] = this.sumText;
+        return;
+      }
+      const values = this.store.states.data.map(item => Number(item[column.property]));
+      const precisions = [];
+      let notNumber = true;
+      values.forEach(value => {
+        if (!isNaN(value)) {
+          notNumber = false;
+          let decimal = ('' + value).split('.')[1];
+          precisions.push(decimal ? decimal.length : 0);
         }
       });
-    }
+      const precision = Math.max.apply(null, precisions);
+      if (!notNumber) {
+        sums[index] = values.reduce((prev, curr) => {
+          const value = Number(curr);
+          if (!isNaN(value)) {
+            return parseFloat((prev + curr).toFixed(Math.min(precision, 20)));
+          } else {
+            return prev;
+          }
+        }, 0);
+      } else {
+        sums[index] = '';
+      }
+    });
 
     return (
       <table
@@ -50,7 +45,7 @@ export default {
         border="0">
         <colgroup>
           {
-            this.columns.map(column => <col name={ column.id } key={column.id} />)
+            this._l(this.columns, column => <col name={ column.id } />)
           }
           {
             this.hasGutter ? <col name="gutter" /> : ''
@@ -59,17 +54,18 @@ export default {
         <tbody class={ [{ 'has-gutter': this.hasGutter }] }>
           <tr>
             {
-              this.columns.map((column, cellIndex) => <td
-                key={cellIndex}
-                colspan={ column.colSpan }
-                rowspan={ column.rowSpan }
-                class={ this.getRowClasses(column, cellIndex) }>
-                <div class={ ['cell', column.labelClassName] }>
-                  {
-                    sums[cellIndex]
-                  }
-                </div>
-              </td>)
+              this._l(this.columns, (column, cellIndex) =>
+                <td
+                  colspan={ column.colSpan }
+                  rowspan={ column.rowSpan }
+                  class={ [column.id, column.headerAlign, column.className || '', this.isCellHidden(cellIndex, this.columns) ? 'is-hidden' : '', !column.children ? 'is-leaf' : '', column.labelClassName] }>
+                  <div class={ ['cell', column.labelClassName] }>
+                    {
+                      this.summaryMethod ? this.summaryMethod({ columns: this.columns, data: this.store.states.data })[cellIndex] : sums[cellIndex]
+                    }
+                  </div>
+                </td>
+              )
             }
             {
               this.hasGutter ? <th class="gutter"></th> : ''
@@ -104,50 +100,44 @@ export default {
       return this.$parent;
     },
 
-    hasGutter() {
-      return !this.fixed && this.tableLayout.gutterWidth;
+    isAllSelected() {
+      return this.store.states.isAllSelected;
     },
 
-    ...mapStates({
-      columns: 'columns',
-      isAllSelected: 'isAllSelected',
-      leftFixedLeafCount: 'fixedLeafColumnsLength',
-      rightFixedLeafCount: 'rightFixedLeafColumnsLength',
-      columnsCount: states => states.columns.length,
-      leftFixedCount: states => states.fixedColumns.length,
-      rightFixedCount: states => states.rightFixedColumns.length
-    })
+    columnsCount() {
+      return this.store.states.columns.length;
+    },
+
+    leftFixedCount() {
+      return this.store.states.fixedColumns.length;
+    },
+
+    rightFixedCount() {
+      return this.store.states.rightFixedColumns.length;
+    },
+
+    columns() {
+      return this.store.states.columns;
+    },
+
+    hasGutter() {
+      return !this.fixed && this.tableLayout.gutterWidth;
+    }
   },
 
   methods: {
-    isCellHidden(index, columns, column) {
+    isCellHidden(index, columns) {
       if (this.fixed === true || this.fixed === 'left') {
-        return index >= this.leftFixedLeafCount;
+        return index >= this.leftFixedCount;
       } else if (this.fixed === 'right') {
         let before = 0;
         for (let i = 0; i < index; i++) {
           before += columns[i].colSpan;
         }
-        return before < this.columnsCount - this.rightFixedLeafCount;
-      } else if (!this.fixed && column.fixed) { // hide cell when footer instance is not fixed and column is fixed
-        return true;
+        return before < this.columnsCount - this.rightFixedCount;
       } else {
         return (index < this.leftFixedCount) || (index >= this.columnsCount - this.rightFixedCount);
       }
-    },
-
-    getRowClasses(column, cellIndex) {
-      const classes = [column.id, column.align, column.labelClassName];
-      if (column.className) {
-        classes.push(column.className);
-      }
-      if (this.isCellHidden(cellIndex, this.columns, column)) {
-        classes.push('is-hidden');
-      }
-      if (!column.children) {
-        classes.push('is-leaf');
-      }
-      return classes;
     }
   }
 };

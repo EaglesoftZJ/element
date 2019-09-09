@@ -1,4 +1,4 @@
-import { createVue, destroyVM, waitImmediate, wait } from '../util';
+import { createVue, destroyVM } from '../util';
 
 const DELAY = 10;
 
@@ -177,36 +177,29 @@ describe('Tree', () => {
     const firstNode = document.querySelector('.el-tree-node');
     firstNode.click();
     vm.$nextTick(() => {
-      expect(firstNode.className.indexOf('is-current')).to.not.equal(-1);
+      expect(firstNode.className.indexOf('is-current') !== -1);
       done();
     });
   });
 
   it('expandOnNodeClick', done => {
-    vm = getTreeVm(':props="defaultProps" :expand-on-click-node="false"');
+    vm = getTreeVm(':props="defaultProps" :expand-on-node-click="false"');
     const firstNode = document.querySelector('.el-tree-node');
     firstNode.click();
     vm.$nextTick(() => {
-      expect(firstNode.className.indexOf('is-expanded')).to.equal(-1);
+      expect(firstNode.className.indexOf('is-expanded') === -1);
       done();
     });
   });
 
-  it('checkOnNodeClick', done => {
-    vm = getTreeVm(':props="defaultProps" show-checkbox check-on-click-node');
+  it('current-node-key', done => {
+    vm = getTreeVm(':props="defaultProps" :current-node-key="1"');
     const firstNode = document.querySelector('.el-tree-node');
     firstNode.click();
     vm.$nextTick(() => {
-      expect(firstNode.querySelector('input').checked).to.true;
+      expect(firstNode.classList.contains('is-current')).to.true;
       done();
     });
-  });
-
-  it('current-node-key', () => {
-    vm = getTreeVm(':props="defaultProps" default-expand-all highlight-current node-key="id" :current-node-key="11"');
-    const currentNodeLabel = document.querySelector('.is-current .el-tree-node__label').textContent;
-
-    expect(currentNodeLabel).to.be.equal('二级 1-1');
   });
 
   it('defaultExpandAll', () => {
@@ -323,10 +316,12 @@ describe('Tree', () => {
   });
 
   it('check', done => {
-    const spy = sinon.spy();
     vm = getTreeVm(':props="defaultProps" show-checkbox @check="handleCheck"', {
       methods: {
-        handleCheck: spy
+        handleCheck(data, args) {
+          this.data = data;
+          this.args = args;
+        }
       }
     });
     const secondNode = document.querySelectorAll('.el-tree-node__content')[1];
@@ -334,10 +329,8 @@ describe('Tree', () => {
     expect(nodeCheckbox).to.be.exist;
     nodeCheckbox.click();
     setTimeout(() => {
-      expect(spy.calledOnce).to.be.true;
-      const [data, args] = spy.args[0];
-      expect(data.id).to.equal(2);
-      expect(args.checkedNodes.length).to.equal(3);
+      expect(vm.args.checkedNodes.length).to.equal(3);
+      expect(vm.data.id).to.equal(2);
       done();
     }, 10);
   });
@@ -359,31 +352,31 @@ describe('Tree', () => {
     }, 10);
   });
 
-  it('setCheckedKeys', async() => {
+  it('setCheckedKeys', () => {
     vm = getTreeVm(':props="defaultProps" show-checkbox node-key="id"');
     const tree = vm.$children[0];
     tree.setCheckedKeys([111]);
-    await waitImmediate();
     expect(tree.getCheckedNodes().length).to.equal(3);
     expect(tree.getCheckedKeys().length).to.equal(3);
 
     tree.setCheckedKeys([1]);
-    await waitImmediate();
-    expect(tree.getCheckedNodes().length).to.equal(3);
-    expect(tree.getCheckedKeys().length).to.equal(3);
+    setTimeout(function() {
+      expect(tree.getCheckedNodes().length).to.equal(3);
+      expect(tree.getCheckedKeys().length).to.equal(3);
+    }, 0);
 
     tree.setCheckedKeys([2]);
-    await waitImmediate();
-    expect(tree.getCheckedNodes().length).to.equal(3);
-    expect(tree.getCheckedKeys().length).to.equal(3);
+    setTimeout(function() {
+      expect(tree.getCheckedNodes().length).to.equal(3);
+      expect(tree.getCheckedKeys().length).to.equal(3);
+    }, 0);
 
     tree.setCheckedKeys([21]);
-    await waitImmediate();
     expect(tree.getCheckedNodes().length).to.equal(1);
     expect(tree.getCheckedKeys().length).to.equal(1);
   });
 
-  it('setCheckedKeys with checkStrictly', async() => {
+  it('setCheckedKeys with checkStrictly', () => {
     vm = getTreeVm(':props="defaultProps" checkStrictly show-checkbox node-key="id"');
     const tree = vm.$children[0];
     tree.setCheckedKeys([111]);
@@ -391,17 +384,18 @@ describe('Tree', () => {
     expect(tree.getCheckedKeys().length).to.equal(1);
 
     tree.setCheckedKeys([1]);
-    await waitImmediate();
-    expect(tree.getCheckedNodes().length).to.equal(1);
-    expect(tree.getCheckedKeys().length).to.equal(1);
+    setTimeout(function() {
+      expect(tree.getCheckedNodes().length).to.equal(1);
+      expect(tree.getCheckedKeys().length).to.equal(1);
+    }, 0);
 
     tree.setCheckedKeys([2]);
-    await waitImmediate();
-    expect(tree.getCheckedNodes().length).to.equal(1);
-    expect(tree.getCheckedKeys().length).to.equal(1);
+    setTimeout(function() {
+      expect(tree.getCheckedNodes().length).to.equal(1);
+      expect(tree.getCheckedKeys().length).to.equal(1);
+    }, 0);
 
     tree.setCheckedKeys([21, 22]);
-    await waitImmediate();
     expect(tree.getCheckedNodes().length).to.equal(2);
     expect(tree.getCheckedKeys().length).to.equal(2);
   });
@@ -418,22 +412,24 @@ describe('Tree', () => {
     expect(tree.getCheckedKeys().length).to.equal(0);
   });
 
-  it('setCheckedKeys with leafOnly=false', async() => {
+  it('setCheckedKeys with leafOnly=false', () => {
     vm = getTreeVm(':props="defaultProps" show-checkbox node-key="id"');
     const tree = vm.$children[0];
     tree.setCheckedKeys([1, 11, 111, 2], false);
-    await waitImmediate();
-    expect(tree.getCheckedNodes().length).to.equal(6);
-    expect(tree.getCheckedKeys().length).to.equal(6);
+    setTimeout(function() {
+      expect(tree.getCheckedNodes().length).to.equal(6);
+      expect(tree.getCheckedKeys().length).to.equal(6);
+    }, 0);
   });
 
-  it('setCheckedKeys with leafOnly=true', async() => {
+  it('setCheckedKeys with leafOnly=true', () => {
     vm = getTreeVm(':props="defaultProps" show-checkbox node-key="id"');
     const tree = vm.$children[0];
     tree.setCheckedKeys([2], true);
-    await waitImmediate();
-    expect(tree.getCheckedNodes().length).to.equal(2);
-    expect(tree.getCheckedKeys().length).to.equal(2);
+    setTimeout(function() {
+      expect(tree.getCheckedNodes().length).to.equal(2);
+      expect(tree.getCheckedKeys().length).to.equal(2);
+    }, 0);
   });
 
   it('setCurrentKey', (done) => {
@@ -442,12 +438,7 @@ describe('Tree', () => {
     tree.setCurrentKey(111);
     vm.$nextTick(() => {
       expect(tree.store.currentNode.data.id).to.equal(111);
-      // cancel highlight
-      tree.setCurrentKey(null);
-      vm.$nextTick(() => {
-        expect(tree.store.currentNode).to.equal(null);
-        done();
-      });
+      done();
     });
   });
 
@@ -494,13 +485,10 @@ describe('Tree', () => {
   it('remove', (done) => {
     vm = getTreeVm(':props="defaultProps" node-key="id"');
     const tree = vm.$children[0];
-    tree.setCurrentKey(1);
-    expect(tree.getCurrentNode().id).to.equal(1);
     tree.remove(1);
     vm.$nextTick(() => {
       expect(vm.data[0].id).to.equal(2);
       expect(tree.getNode(1)).to.equal(null);
-      expect(tree.getCurrentNode()).to.equal(null);
       done();
     });
   });
@@ -578,7 +566,7 @@ describe('Tree', () => {
     expect(firstNode.querySelector('.custom-content')).to.exist;
     const button = firstNode.querySelector('.custom-content .el-button');
     expect(button).to.exist;
-    expect(button.querySelector('span').textContent).to.equal('一级 1');
+    expect(button.textContent).to.equal('一级 1');
   });
 
   it('scoped slot', () => {
@@ -830,64 +818,5 @@ describe('Tree', () => {
       expect(label.textContent).to.equal('三级 1-1');
       done();
     });
-  });
-
-  it('update multi tree data', async() => {
-    const vm = createVue({
-      template: `
-        <div>
-          <el-tree ref="tree1" :data="data" node-key="id" :props="defaultProps"></el-tree>
-          <el-tree ref="tree2" :data="data" node-key="id" :props="defaultProps"></el-tree>
-        </div>
-        `,
-
-      data() {
-        return {
-          data: [{
-            id: 1,
-            label: '一级 1',
-            children: [{
-              id: 11,
-              label: '二级 1-1',
-              children: [{
-                id: 111,
-                label: '三级 1-1'
-              }]
-            }]
-          }, {
-            id: 2,
-            label: '一级 2',
-            children: [{
-              id: 21,
-              label: '二级 2-1'
-            }, {
-              id: 22,
-              label: '二级 2-2'
-            }]
-          }, {
-            id: 3,
-            label: '一级 3',
-            children: [{
-              id: 31,
-              label: '二级 3-1'
-            }, {
-              id: 32,
-              label: '二级 3-2'
-            }]
-          }],
-          defaultProps: {
-            children: 'children',
-            label: 'label'
-          }
-        };
-      }
-    }, true);
-    const nodeData = { label: '新增 1', id: 4 };
-    vm.data.push(nodeData);
-    await wait();
-    const tree1 = vm.$refs.tree1;
-    expect(tree1.getNode(4).data).to.equal(nodeData);
-    const tree2 = vm.$refs.tree2;
-    expect(tree2.getNode(4).data).to.equal(nodeData);
   });
 });

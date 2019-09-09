@@ -1,7 +1,7 @@
 <template>
   <div
     class="el-rate"
-    @keydown="handleKey"
+    @keydown="handelKey"
     role="slider"
     :aria-valuenow="currentValue"
     :aria-valuetext="text"
@@ -9,13 +9,12 @@
     :aria-valuemax="max"
     tabindex="0">
     <span
-      v-for="(item, key) in max"
+      v-for="item in max"
       class="el-rate__item"
       @mousemove="setCurrentValue(item, $event)"
       @mouseleave="resetCurrentValue"
       @click="selectValue(item)"
-      :style="{ cursor: rateDisabled ? 'auto' : 'pointer' }"
-      :key="key">
+      :style="{ cursor: rateDisabled ? 'auto' : 'pointer' }">
       <i
         :class="[classes[item - 1], { 'hover': hoverIndex === item }]"
         class="el-rate__icon"
@@ -34,7 +33,6 @@
 
 <script>
   import { hasClass } from 'element-ui/src/utils/dom';
-  import { isObject } from 'element-ui/src/utils/types';
   import Migrating from 'element-ui/src/mixins/migrating';
 
   export default {
@@ -74,7 +72,7 @@
         default: 5
       },
       colors: {
-        type: [Array, Object],
+        type: Array,
         default() {
           return ['#F7BA2A', '#F7BA2A', '#F7BA2A'];
         }
@@ -88,7 +86,7 @@
         default: '#EFF2F7'
       },
       iconClasses: {
-        type: [Array, Object],
+        type: Array,
         default() {
           return ['el-icon-star-on', 'el-icon-star-on', 'el-icon-star-on'];
         }
@@ -149,8 +147,9 @@
       decimalStyle() {
         let width = '';
         if (this.rateDisabled) {
-          width = `${ this.valueDecimal }%`;
-        } else if (this.allowHalf) {
+          width = `${ this.valueDecimal < 50 ? 0 : 50 }%`;
+        }
+        if (this.allowHalf) {
           width = '50%';
         }
         return {
@@ -163,21 +162,12 @@
         return this.value * 100 - Math.floor(this.value) * 100;
       },
 
-      classMap() {
-        return Array.isArray(this.iconClasses)
-          ? {
-            [this.lowThreshold]: this.iconClasses[0],
-            [this.highThreshold]: { value: this.iconClasses[1], excluded: true },
-            [this.max]: this.iconClasses[2]
-          } : this.iconClasses;
-      },
-
       decimalIconClass() {
         return this.getValueFromMap(this.value, this.classMap);
       },
 
       voidClass() {
-        return this.rateDisabled ? this.disabledVoidIconClass : this.voidIconClass;
+        return this.rateDisabled ? this.classMap.disabledVoidClass : this.classMap.voidClass;
       },
 
       activeClass() {
@@ -185,12 +175,13 @@
       },
 
       colorMap() {
-        return Array.isArray(this.colors)
-          ? {
-            [this.lowThreshold]: this.colors[0],
-            [this.highThreshold]: { value: this.colors[1], excluded: true },
-            [this.max]: this.colors[2]
-          } : this.colors;
+        return {
+          lowColor: this.colors[0],
+          mediumColor: this.colors[1],
+          highColor: this.colors[2],
+          voidColor: this.voidColor,
+          disabledVoidColor: this.disabledVoidColor
+        };
       },
 
       activeColor() {
@@ -211,6 +202,16 @@
           result.push(this.voidClass);
         }
         return result;
+      },
+
+      classMap() {
+        return {
+          lowClass: this.iconClasses[0],
+          mediumClass: this.iconClasses[1],
+          highClass: this.iconClasses[2],
+          voidClass: this.voidIconClass,
+          disabledVoidClass: this.disabledVoidIconClass
+        };
       },
 
       rateDisabled() {
@@ -235,15 +236,15 @@
       },
 
       getValueFromMap(value, map) {
-        const matchedKeys = Object.keys(map)
-          .filter(key => {
-            const val = map[key];
-            const excluded = isObject(val) ? val.excluded : false;
-            return excluded ? value < key : value <= key;
-          })
-          .sort((a, b) => a - b);
-        const matchedValue = map[matchedKeys[0]];
-        return isObject(matchedValue) ? matchedValue.value : (matchedValue || '');
+        let result = '';
+        if (value <= this.lowThreshold) {
+          result = map.lowColor || map.lowClass;
+        } else if (value >= this.highThreshold) {
+          result = map.highColor || map.highClass;
+        } else {
+          result = map.mediumColor || map.mediumClass;
+        }
+        return result;
       },
 
       showDecimalIcon(item) {
@@ -257,7 +258,7 @@
       },
 
       getIconStyle(item) {
-        const voidColor = this.rateDisabled ? this.disabledVoidColor : this.voidColor;
+        const voidColor = this.rateDisabled ? this.colorMap.disabledVoidColor : this.colorMap.voidColor;
         return {
           color: item <= this.currentValue ? this.activeColor : voidColor
         };
@@ -276,10 +277,7 @@
         }
       },
 
-      handleKey(e) {
-        if (this.rateDisabled) {
-          return;
-        }
+      handelKey(e) {
         let currentValue = this.currentValue;
         const keyCode = e.keyCode;
         if (keyCode === 38 || keyCode === 39) { // left / down

@@ -1,4 +1,4 @@
-import Vue, { VNodeDirective, PluginObject } from 'vue'
+import Vue, { VNodeDirective } from 'vue'
 
 /** Options used in Loading service */
 export interface LoadingServiceOptions {
@@ -50,8 +50,6 @@ export interface ElLoading {
 
   /** If you do not have a specific DOM node to attach the Loading directive, or if you simply prefer not to use Loading as a directive, you can call this service with some configs to open a Loading instance. */
   service (options: LoadingServiceOptions): ElLoadingComponent
-
-  directive: PluginObject<never>
 }
 
 declare module 'vue/types/vue' {

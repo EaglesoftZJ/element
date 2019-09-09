@@ -1,3 +1,92 @@
+<script>
+  module.exports = {
+    data() {
+      return {
+        pickerOptions1: {
+          shortcuts: [{
+            text: 'Today',
+            onClick(picker) {
+              picker.$emit('pick', new Date());
+            }
+          }, {
+            text: 'Yesterday',
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24);
+              picker.$emit('pick', date);
+            }
+          }, {
+            text: 'A week ago',
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', date);
+            }
+          }]
+        },
+        pickerOptions2: {
+          shortcuts: [{
+            text: 'Last week',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: 'Last month',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: 'Last 3 months',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
+        },
+        value1: '',
+        value2: '',
+        value3: '',
+        value4: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
+        value5: '',
+        value6: '',
+        value7: ''
+      };
+    }
+  };
+</script>
+
+<style>
+.demo-block.demo-datetime-picker .source {
+    padding: 0;
+    display: flex;
+  }
+
+  .demo-datetime-picker .block {
+    padding: 30px 0;
+    text-align: center;
+    border-right: solid 1px #EFF2F6;
+    flex: 1;
+    &:last-child {
+      border-right: none;
+    }
+  }
+
+  .demo-datetime-picker .demonstration {
+    display: block;
+    color: #8492a6;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+</style>
+
 ## DateTimePicker
 
 Select date and time in one picker.
@@ -26,7 +115,7 @@ DateTimePicker is derived from DatePicker and TimePicker. For a more detailed ex
       v-model="value2"
       type="datetime"
       placeholder="Select date and time"
-      :picker-options="pickerOptions">
+      :picker-options="pickerOptions1">
     </el-date-picker>
   </div>
   <div class="block">
@@ -44,7 +133,7 @@ DateTimePicker is derived from DatePicker and TimePicker. For a more detailed ex
   export default {
     data() {
       return {
-        pickerOptions: {
+        pickerOptions1: {
           shortcuts: [{
             text: 'Today',
             onClick(picker) {
@@ -85,7 +174,7 @@ DateTimePicker is derived from DatePicker and TimePicker. For a more detailed ex
   <div class="block">
     <span class="demonstration">Default</span>
     <el-date-picker
-      v-model="value1"
+      v-model="value4"
       type="datetimerange"
       range-separator="To"
       start-placeholder="Start date"
@@ -95,9 +184,9 @@ DateTimePicker is derived from DatePicker and TimePicker. For a more detailed ex
   <div class="block">
     <span class="demonstration">With shortcuts</span>
     <el-date-picker
-      v-model="value2"
+      v-model="value5"
       type="datetimerange"
-      :picker-options="pickerOptions"
+      :picker-options="pickerOptions2"
       range-separator="To"
       start-placeholder="Start date"
       end-placeholder="End date"
@@ -110,7 +199,7 @@ DateTimePicker is derived from DatePicker and TimePicker. For a more detailed ex
   export default {
     data() {
       return {
-        pickerOptions: {
+        pickerOptions2: {
           shortcuts: [{
             text: 'Last week',
             onClick(picker) {
@@ -137,8 +226,8 @@ DateTimePicker is derived from DatePicker and TimePicker. For a more detailed ex
             }
           }]
         },
-        value1: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
-        value2: ''
+        value4: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
+        value5: ''
       };
     }
   };
@@ -154,7 +243,7 @@ DateTimePicker is derived from DatePicker and TimePicker. For a more detailed ex
   <div class="block">
     <span class="demonstration">Start date time 12:00:00</span>
     <el-date-picker
-      v-model="value1"
+      v-model="value6"
       type="datetimerange"
       start-placeholder="Start Date"
       end-placeholder="End Date"
@@ -164,7 +253,7 @@ DateTimePicker is derived from DatePicker and TimePicker. For a more detailed ex
   <div class="block">
     <span class="demonstration">Start date time 12:00:00, end date time 08:00:00</span>
     <el-date-picker
-      v-model="value2"
+      v-model="value7"
       type="datetimerange"
       align="right"
       start-placeholder="Start Date"
@@ -178,8 +267,8 @@ DateTimePicker is derived from DatePicker and TimePicker. For a more detailed ex
   export default {
     data() {
       return {
-        value1: '',
-        value2: ''
+        value6: '',
+        value7: ''
       };
     }
   };
@@ -190,11 +279,10 @@ DateTimePicker is derived from DatePicker and TimePicker. For a more detailed ex
 ### Attributes
 | Attribute      | Description          | Type      | Accepted Values       | Default  |
 |---------- |-------------- |---------- |--------------------------------  |-------- |
-| value / v-model | binding value | date(DateTimePicker) / array(DateTimeRangePicker) | — | — |
 | readonly | whether DatePicker is read only | boolean | — | false |
 | disabled | whether DatePicker is disabled | boolean | — | false |
 | editable | whether the input is editable | boolean | — | true |
-| clearable | whether to show clear button | boolean | — | true |
+| clearable | Whether to show clear button | boolean | — | true |
 |size | size of Input | string | large/small/mini | — |
 | placeholder | placeholder in non-range mode | string | — | — |
 | start-placeholder | placeholder for the start date in range mode | string | — | — |
@@ -219,7 +307,6 @@ DateTimePicker is derived from DatePicker and TimePicker. For a more detailed ex
 |---------- |-------------- |---------- |--------------------------------  |-------- |
 | shortcuts | a { text, onClick } object array to set shortcut options, check the table below | object[] | — | — |
 | disabledDate | a function determining if a date is disabled with that date as its parameter. Should return a Boolean | function | — | — |
-| cellClassName | set custom className | Function(Date) | — | — |
 | firstDayOfWeek | first day of week | Number | 1 to 7 | 7 |
 
 ### shortcuts

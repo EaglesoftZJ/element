@@ -23,8 +23,7 @@
   }
 
   @include e(group) {
-    margin-left: $--notification-group-margin-left;
-    margin-right: $--notification-group-margin-right;
+    margin-left: $--notification-group-margin;
   }
 
   @include e(title) {
@@ -35,10 +34,10 @@
   }
 
   @include e(content) {
-    font-size: $--notification-content-font-size;
+    font-size: $--notification-font-size;
     line-height: 21px;
     margin: 6px 0 0 0;
-    color: $--notification-content-color;
+    color: $--notification-color;
     text-align: justify;
 
     p {
@@ -66,19 +65,19 @@
   }
 
   .el-icon-success {
-    color: $--notification-success-icon-color;
+    color: $--notification-success-color;
   }
 
   .el-icon-error {
-    color: $--notification-danger-icon-color;
+    color: $--notification-danger-color;
   }
 
   .el-icon-info {
-    color: $--notification-info-icon-color;
+    color: $--notification-info-color;
   }
 
   .el-icon-warning {
-    color: $--notification-warning-icon-color;
+    color: $--notification-warning-color;
   }
 }
 

@@ -14,7 +14,7 @@
 
   @include when(multiple) {
     & .el-select-dropdown__item.selected {
-      color: $--select-option-selected-font-color;
+      color: $--select-option-selected;
       background-color: $--select-dropdown-background;
 
       &.hover {
@@ -25,7 +25,7 @@
         position: absolute;
         right: 20px;
         font-family: 'element-icons';
-        content: "\e6da";
+        content: "\e68c";
         font-size: 12px;
         font-weight: bold;
         -webkit-font-smoothing: antialiased;

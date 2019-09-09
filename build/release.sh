@@ -1,10 +1,10 @@
-#!/usr/bin/env sh
-set -e
-
 git checkout master
 git merge dev
 
-VERSION=`npx select-version-cli`
+#!/usr/bin/env sh
+set -e
+echo "Enter release version: "
+read VERSION
 
 read -p "Releasing $VERSION - are you sure? (y/n)" -n 1 -r
 echo    # (optional) move to a new line

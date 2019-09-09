@@ -2,8 +2,6 @@ import Vue from 'vue';
 import { addClass, removeClass } from 'element-ui/src/utils/dom';
 
 let hasModal = false;
-let hasInitZIndex = false;
-let zIndex;
 
 const getModal = function() {
   if (Vue.prototype.$isServer) return;
@@ -31,6 +29,8 @@ const getModal = function() {
 const instances = {};
 
 const PopupManager = {
+  zIndex: 2000,
+
   modalFade: true,
 
   getInstance: function(id) {
@@ -150,20 +150,6 @@ const PopupManager = {
     }
   }
 };
-
-Object.defineProperty(PopupManager, 'zIndex', {
-  configurable: true,
-  get() {
-    if (!hasInitZIndex) {
-      zIndex = zIndex || (Vue.prototype.$ELEMENT || {}).zIndex || 2000;
-      hasInitZIndex = true;
-    }
-    return zIndex;
-  },
-  set(value) {
-    zIndex = value;
-  }
-});
 
 const getTopPopup = function() {
   if (Vue.prototype.$isServer) return;

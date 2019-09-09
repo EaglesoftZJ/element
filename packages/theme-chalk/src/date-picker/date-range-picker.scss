@@ -50,11 +50,14 @@
     @include when(left) {
       border-right: 1px solid $--datepicker-inner-border-color;
     }
-    .el-date-range-picker__header {
 
-      div {
-        margin-left: 50px;
-        margin-right: 50px;
+    @include when(right) {
+      .el-date-range-picker__header {
+
+        div {
+          margin-left: 50px;
+          margin-right: 50px;
+        }
       }
     }
   }

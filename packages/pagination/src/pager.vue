@@ -39,8 +39,6 @@
 
       pageCount: Number,
 
-      pagerCount: Number,
-
       disabled: Boolean
     },
 
@@ -64,13 +62,12 @@
         let newPage = Number(event.target.textContent);
         const pageCount = this.pageCount;
         const currentPage = this.currentPage;
-        const pagerCountOffset = this.pagerCount - 2;
 
         if (target.className.indexOf('more') !== -1) {
           if (target.className.indexOf('quickprev') !== -1) {
-            newPage = currentPage - pagerCountOffset;
+            newPage = currentPage - 5;
           } else if (target.className.indexOf('quicknext') !== -1) {
-            newPage = currentPage + pagerCountOffset;
+            newPage = currentPage + 5;
           }
         }
 
@@ -102,8 +99,7 @@
 
     computed: {
       pagers() {
-        const pagerCount = this.pagerCount;
-        const halfPagerCount = (pagerCount - 1) / 2;
+        const pagerCount = 7;
 
         const currentPage = Number(this.currentPage);
         const pageCount = Number(this.pageCount);
@@ -112,11 +108,11 @@
         let showNextMore = false;
 
         if (pageCount > pagerCount) {
-          if (currentPage > pagerCount - halfPagerCount) {
+          if (currentPage > pagerCount - 3) {
             showPrevMore = true;
           }
 
-          if (currentPage < pageCount - halfPagerCount) {
+          if (currentPage < pageCount - 3) {
             showNextMore = true;
           }
         }

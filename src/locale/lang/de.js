@@ -69,12 +69,11 @@ export default {
     cascader: {
       noMatch: 'Nichts gefunden.',
       loading: 'Lädt.',
-      placeholder: 'Daten wählen',
-      noData: 'Keine Daten'
+      placeholder: 'Daten wählen'
     },
     pagination: {
       goto: 'Gehe zu',
-      pagesize: ' pro Seite',
+      pagesize: 'pro Seite',
       total: 'Gesamt {total}',
       pageClassifier: ''
     },
@@ -106,12 +105,6 @@ export default {
       filterPlaceholder: 'Einträge filtern',
       noCheckedFormat: '{total} Einträge',
       hasCheckedFormat: '{checked}/{total} ausgewählt'
-    },
-    image: {
-      error: 'FAILED' // to be translated
-    },
-    pageHeader: {
-      title: 'Back' // to be translated
     }
   }
 };

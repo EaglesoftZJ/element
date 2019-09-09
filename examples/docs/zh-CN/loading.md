@@ -1,3 +1,53 @@
+<style>
+  .demo-loading .el-table {
+    border: none;
+  }
+</style>
+
+<script>
+  export default {
+    data() {
+      return {
+        tableData: [{
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }],
+        loading: true,
+        loading2: true,
+        fullscreenLoading: false
+      }
+    },
+
+    methods: {
+      openFullScreen() {
+        this.fullscreenLoading = true;
+        setTimeout(() => {
+          this.fullscreenLoading = false;
+        }, 2000);
+      },
+      openFullScreen2() {
+        const loading = this.$loading({
+          lock: true,
+          text: 'Loading',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+        setTimeout(() => {
+          loading.close();
+        }, 2000);
+      }
+    }
+  }
+</script>
 ## Loading 加载
 
 加载数据时显示动效。
@@ -69,7 +119,7 @@
 ```html
 <template>
   <el-table
-    v-loading="loading"
+    v-loading="loading2"
     element-loading-text="拼命加载中"
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(0, 0, 0, 0.8)"
@@ -109,7 +159,7 @@
           name: '王小虎',
           address: '上海市普陀区金沙江路 1518 弄'
         }],
-        loading: true
+        loading2: true
       };
     }
   };
@@ -133,7 +183,7 @@
   </el-button>
   <el-button
     type="primary"
-    @click="openFullScreen">
+    @click="openFullScreen2">
     服务方式
   </el-button>
 </template>
@@ -152,7 +202,7 @@
           this.fullscreenLoading = false;
         }, 2000);
       },
-      openFullScreen() {
+      openFullScreen2() {
         const loading = this.$loading({
           lock: true,
           text: 'Loading',

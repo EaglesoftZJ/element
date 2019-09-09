@@ -5,11 +5,11 @@
     v-model="theme"></el-color-picker>
 </template>
 
-<style lang="scss">
+<style>
   .theme-picker {
     height: 80px;
     display: inline-block;
-    // @utils-vertical-center;
+    @utils-vertical-center;
   }
 
   .theme-picker .el-color-picker__trigger {
@@ -22,8 +22,7 @@
 </style>
 
 <script>
-  import Element from 'main/index.js';
-  const { version } = Element;
+  import { version } from 'main/index.js';
 
   const ORIGINAL_THEME = '#409EFF';
   export default {

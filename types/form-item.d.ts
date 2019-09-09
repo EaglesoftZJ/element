@@ -28,10 +28,4 @@ export declare class ElFormItem extends ElementUIComponent {
 
   /** Controls the size of components in this form */
   size: ElementUIComponentSize
-
-  /** Reset current field and remove validation result */
-  resetField (): void
-
-  /** Remove validation status of the field */
-  clearValidate (): void
 }

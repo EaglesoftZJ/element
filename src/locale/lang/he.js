@@ -67,8 +67,7 @@ export default {
     cascader: {
       noMatch: 'ללא נתונים מתאימים',
       loading: 'טוען',
-      placeholder: 'בחר',
-      noData: 'ללא נתונים'
+      placeholder: 'בחר'
     },
     pagination: {
       goto: 'עבור ל',
@@ -105,12 +104,6 @@ export default {
       filterPlaceholder: 'הקלד',
       noCheckedFormat: 'פריטים {total}',
       hasCheckedFormat: ' אישור {checked}/{total}'
-    },
-    image: {
-      error: 'FAILED' // to be translated
-    },
-    pageHeader: {
-      title: 'Back' // to be translated
     }
   }
 };
