@@ -50,7 +50,7 @@
                 </time-picker>
               </span>
             </span>
-            <span class="el-icon-angle-right"></span>
+            <span class="el-icon-arrow-right"></span>
             <span class="el-date-range-picker__editors-wrap is-right">
               <span class="el-date-range-picker__time-picker-wrap">
                 <el-input

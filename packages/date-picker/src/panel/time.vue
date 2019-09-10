@@ -63,9 +63,6 @@
           date = limitTimeRange(newVal, this.selectableRange, this.format);
         } else if (!newVal) {
           date = this.defaultValue ? new Date(this.defaultValue) : new Date();
-        } else {
-          // eg update
-          date = new Date(newVal);
         }
 
         this.date = date;

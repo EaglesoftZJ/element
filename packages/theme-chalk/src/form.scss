@@ -47,32 +47,6 @@
     display: none;
   }
 
-  // start
-  // 设置单个el-form-item的label-position
-  @include m(top) {
-    & .el-form-item__label {
-      float: none;
-      display: inline-block;
-      text-align: left;
-      padding: 0 0 10px 0;
-    }
-  }
-  @include m(right) {
-    & .el-form-item__label {
-      float: left;
-      text-align: right;
-      padding: 0 12px 0 0;
-    }
-  }
-  @include m(left) {
-    & .el-form-item__label {
-      float: left;
-      text-align: left;
-      padding: 0 12px 0 0;
-    }
-  }
-  // end
-
   @include m(medium) {
     .el-form-item__label {
       line-height: 36px;

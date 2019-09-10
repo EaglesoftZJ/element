@@ -170,24 +170,6 @@ export default class TreeStore {
 
     return checkedNodes;
   }
-  expandByKey(keys) {
-    var self = this;
-    const traverse = function(node) {
-      const childNodes = node.root ? node.root.childNodes : node.childNodes;
-      const parentNode = node.root || node;
-
-      childNodes.forEach((child) => {
-        if (self.key && child.data[self.key] && keys.indexOf(child.data[self.key]) !== -1) {
-          child.expand(null, parentNode);
-        } else if (self.accordion) {
-          child.collapse();
-        }
-
-        traverse(child);
-      });
-    };
-    traverse(this);
-  }
 
   getCheckedKeys(leafOnly = false) {
     return this.getCheckedNodes(leafOnly).map((data) => (data || {})[this.key]);

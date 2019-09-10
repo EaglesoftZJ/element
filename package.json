@@ -47,7 +47,7 @@
     "type": "git",
     "url": "git@github.com:ElemeFE/element.git"
   },
-  "publishConfig": { 
+  "publishConfig": {
     "registry": "http://220.189.207.21:9000/repository/eaglesoft/"
   },
   "homepage": "http://element.eleme.io",
