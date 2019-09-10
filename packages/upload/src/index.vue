@@ -1,7 +1,6 @@
 <script>
 import UploadList from './upload-list';
 import Upload from './upload';
-import IframeUpload from './iframe-upload';
 import ElProgress from 'element-ui/packages/progress';
 import Migrating from 'element-ui/src/mixins/migrating';
 
@@ -15,8 +14,7 @@ export default {
   components: {
     ElProgress,
     UploadList,
-    Upload,
-    IframeUpload
+    Upload
   },
 
   provide() {
@@ -105,19 +103,6 @@ export default {
     onExceed: {
       type: Function,
       default: noop
-    },
-    compressPic: {
-      // 压缩图片
-      type: Boolean
-    },
-    limitPicMB: {
-      // compressPic为true的情况生效 允许图片的大小 超过则压缩
-      type: Number,
-      default: 1
-    },
-    quality: { // 图片质量
-      type: Number,
-      default: 0.9
     }
   },
 
@@ -137,11 +122,25 @@ export default {
   },
 
   watch: {
+    listType(type) {
+      if (type === 'picture-card' || type === 'picture') {
+        this.uploadFiles = this.uploadFiles.map(file => {
+          if (!file.url && file.raw) {
+            try {
+              file.url = URL.createObjectURL(file.raw);
+            } catch (err) {
+              console.error('[Element Error][Upload]', err);
+            }
+          }
+          return file;
+        });
+      }
+    },
     fileList: {
       immediate: true,
       handler(fileList) {
         this.uploadFiles = fileList.map(item => {
-          item.uid = item.uid || Date.now() + this.tempIndex++;
+          item.uid = item.uid || (Date.now() + this.tempIndex++);
           item.status = item.status || 'success';
           return item;
         });
@@ -161,11 +160,13 @@ export default {
         raw: rawFile
       };
 
-      try {
-        file.url = URL.createObjectURL(rawFile);
-      } catch (err) {
-        console.error(err);
-        return;
+      if (this.listType === 'picture-card' || this.listType === 'picture') {
+        try {
+          file.url = URL.createObjectURL(rawFile);
+        } catch (err) {
+          console.error('[Element Error][Upload]', err);
+          return;
+        }
       }
 
       this.uploadFiles.push(file);
@@ -204,33 +205,10 @@ export default {
         file = this.getFile(raw);
       }
       let doRemove = () => {
-        // this.abort(file);
+        this.abort(file);
         let fileList = this.uploadFiles;
-        // fileList.splice(fileList.indexOf(file), 1);
-        let removeData = () => {
-          this.abort(file);
-          fileList.splice(fileList.indexOf(file), 1);
-        };
-        if (this.onRemove) {
-          var before = this.onRemove(file, fileList);
-          if (before && before.then) {
-            before.then(
-              () => {
-                removeData();
-              },
-              () => {
-                // do nothing
-              }
-            );
-          } else if (before) {
-            removeData();
-          } else {
-            // do nothing
-          }
-        } else {
-          removeData();
-        }
-        // this.onRemove(file, fileList);
+        fileList.splice(fileList.indexOf(file), 1);
+        this.onRemove(file, fileList);
       };
 
       if (!this.beforeRemove) {
@@ -273,11 +251,18 @@ export default {
         props: {
           'default-file-list': 'default-file-list is renamed to file-list.',
           'show-upload-list': 'show-upload-list is renamed to show-file-list.',
-          'thumbnail-mode':
-            'thumbnail-mode has been deprecated, you can implement the same effect according to this case: http://element.eleme.io/#/zh-CN/component/upload#yong-hu-tou-xiang-shang-chuan'
+          'thumbnail-mode': 'thumbnail-mode has been deprecated, you can implement the same effect according to this case: http://element.eleme.io/#/zh-CN/component/upload#yong-hu-tou-xiang-shang-chuan'
         }
       };
     }
+  },
+
+  beforeDestroy() {
+    this.uploadFiles.forEach(file => {
+      if (file.url && file.url.indexOf('blob:') === 0) {
+        URL.revokeObjectURL(file.url);
+      }
+    });
   },
 
   render(h) {
@@ -290,11 +275,16 @@ export default {
           listType={this.listType}
           files={this.uploadFiles}
           on-remove={this.handleRemove}
-          handlePreview={this.onPreview}
-        >
-          {props => {
-            return this.$scopedSlots.btn && this.$scopedSlots.btn(props);
-          }}
+          handlePreview={this.onPreview}>
+          {
+            (props) => {
+              if (this.$scopedSlots.file) {
+                return this.$scopedSlots.file({
+                  file: props.file
+                });
+              }
+            }
+          }
         </UploadList>
       );
     }
@@ -316,9 +306,6 @@ export default {
         listType: this.listType,
         disabled: this.uploadDisabled,
         limit: this.limit,
-        compressPic: this.compressPic,
-        limitPicMB: this.limitPicMB,
-        quality: this.quality,
         'on-exceed': this.onExceed,
         'on-start': this.handleStart,
         'on-progress': this.handleProgress,
@@ -332,21 +319,18 @@ export default {
     };
 
     const trigger = this.$slots.trigger || this.$slots.default;
-    const uploadComponent =
-      typeof FormData !== 'undefined' || this.$isServer ? (
-        <upload {...uploadData}>{trigger}</upload>
-      ) : (
-        <iframeUpload {...uploadData}>{trigger}</iframeUpload>
-      );
+    const uploadComponent = <upload {...uploadData}>{trigger}</upload>;
 
     return (
       <div>
-        {this.listType === 'picture-card' ? uploadList : ''}
-        {this.$slots.trigger
-          ? [uploadComponent, this.$slots.default]
-          : uploadComponent}
+        { this.listType === 'picture-card' ? uploadList : ''}
+        {
+          this.$slots.trigger
+            ? [uploadComponent, this.$slots.default]
+            : uploadComponent
+        }
         {this.$slots.tip}
-        {this.listType !== 'picture-card' ? uploadList : ''}
+        { this.listType !== 'picture-card' ? uploadList : ''}
       </div>
     );
   }

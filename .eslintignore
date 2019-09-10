@@ -6,3 +6,5 @@ lib
 coverage
 *.md
 *.scss
+*.woff
+*.ttf
