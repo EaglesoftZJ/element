@@ -61,7 +61,6 @@ import Scrollbar from '../packages/scrollbar/index.js';
 import CarouselItem from '../packages/carousel-item/index.js';
 import Collapse from '../packages/collapse/index.js';
 import CollapseItem from '../packages/collapse-item/index.js';
-import Calendar from '../packages/calendar/index.js';
 import Cascader from '../packages/cascader/index.js';
 import ColorPicker from '../packages/color-picker/index.js';
 import Transfer from '../packages/transfer/index.js';
@@ -75,6 +74,7 @@ import TimelineItem from '../packages/timeline-item/index.js';
 import Link from '../packages/link/index.js';
 import Divider from '../packages/divider/index.js';
 import Image from '../packages/image/index.js';
+import Calendar from '../packages/calendar/index.js';
 import Backtop from '../packages/backtop/index.js';
 import InfiniteScroll from '../packages/infinite-scroll/index.js';
 import PageHeader from '../packages/page-header/index.js';
@@ -142,7 +142,6 @@ const components = [
   CarouselItem,
   Collapse,
   CollapseItem,
-  Calendar,
   Cascader,
   ColorPicker,
   Transfer,
@@ -156,6 +155,7 @@ const components = [
   Link,
   Divider,
   Image,
+  Calendar,
   Backtop,
   PageHeader,
   CascaderPanel,
@@ -196,7 +196,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 export default {
-  version: '2.3.17',
+  version: '2.12.0',
   locale: locale.use,
   i18n: locale.i18n,
   install,
@@ -262,7 +262,6 @@ export default {
   CarouselItem,
   Collapse,
   CollapseItem,
-  Calendar,
   Cascader,
   ColorPicker,
   Transfer,
@@ -276,6 +275,7 @@ export default {
   Link,
   Divider,
   Image,
+  Calendar,
   Backtop,
   InfiniteScroll,
   PageHeader,

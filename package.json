@@ -1,6 +1,6 @@
 {
-  "name": "eg-element-ui",
-  "version": "2.3.17",
+  "name": "element-ui",
+  "version": "2.12.0",
   "description": "A Component Library for Vue.js.",
   "main": "lib/element-ui.common.js",
   "files": [
@@ -63,6 +63,7 @@
   "unpkg": "lib/index.js",
   "style": "lib/theme-chalk/index.css",
   "dependencies": {
+    "vue-draggable": "2.0.2",
     "async-validator": "~1.8.1",
     "babel-helper-vue-jsx-merge-props": "^2.0.0",
     "deepmerge": "^1.2.0",
