@@ -376,7 +376,7 @@ export default {
       // const tooltip = this.$refs.tooltip;
       let tooltip = column.showOverflowTooltip || column.showTooltipWhenOverflow;
       let popover = column.showOverflowPopover;
-      if (tooltip) {
+      if (tooltip && this.$refs.tooltip) {
         this.$refs.tooltip.setExpectedState(false);
         this.$refs.tooltip.handleClosePopper();
       } else if (popover) {

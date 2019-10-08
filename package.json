@@ -1,6 +1,6 @@
 {
   "name": "eg-element-ui",
-  "version": "2.3.17",
+  "version": "2.3.18",
   "description": "A Component Library for Vue.js.",
   "main": "lib/element-ui.common.js",
   "files": [
@@ -38,8 +38,8 @@
     "type": "git",
     "url": "git@github.com:ElemeFE/element.git"
   },
-  "publishConfig": { 
-    "registry": "http://220.189.207.21:9000/repository/eaglesoft/"
+  "publishConfig": {
+    "registry": "http://220.189.207.21:9000/repository/eaglesoft"
   },
   "homepage": "http://element.eleme.io",
   "keywords": [
