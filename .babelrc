@@ -7,7 +7,7 @@
         ["module-resolver", {
           "root": ["eg-element-ui"],
           "alias": {
-            "eg-element-ui/src": "eg-element-ui/lib"
+            "element-ui/src": "eg-element-ui/lib"
           }
         }]
       ]
