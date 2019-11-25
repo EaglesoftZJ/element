@@ -17,17 +17,12 @@
 
 <script type="text/babel">
   import Emitter from 'element-ui/src/mixins/emitter';
-  import { getValueByPath } from 'element-ui/src/utils/util';
-
+  import { getValueByPath, escapeRegexpString } from 'element-ui/src/utils/util';
   export default {
     mixins: [Emitter],
-
     name: 'ElOption',
-
     componentName: 'ElOption',
-
     inject: ['select'],
-
     props: {
       value: {
         required: true
@@ -39,7 +34,6 @@
         default: false
       }
     },
-
     data() {
       return {
         index: -1,
@@ -49,20 +43,16 @@
         hover: false
       };
     },
-
     computed: {
       isObject() {
         return Object.prototype.toString.call(this.value).toLowerCase() === '[object object]';
       },
-
       currentLabel() {
         return this.label || (this.isObject ? '' : this.value);
       },
-
       currentValue() {
         return this.value || this.label || '';
       },
-
       itemSelected() {
         if (!this.select.multiple) {
           return this.isEqual(this.value, this.select.value);
@@ -70,7 +60,6 @@
           return this.contains(this.select.value, this.value);
         }
       },
-
       limitReached() {
         if (this.select.multiple) {
           return !this.itemSelected &&
@@ -81,16 +70,20 @@
         }
       }
     },
-
     watch: {
       currentLabel() {
         if (!this.created && !this.select.remote) this.dispatch('ElSelect', 'setSelected');
       },
-      value() {
-        if (!this.created && !this.select.remote) this.dispatch('ElSelect', 'setSelected');
+      value(val, oldVal) {
+        const { remote, valueKey } = this.select;
+        if (!this.created && !remote) {
+          if (valueKey && typeof val === 'object' && typeof oldVal === 'object' && val[valueKey] === oldVal[valueKey]) {
+            return;
+          }
+          this.dispatch('ElSelect', 'setSelected');
+        }
       }
     },
-
     methods: {
       isEqual(a, b) {
         if (!this.isObject) {
@@ -100,55 +93,49 @@
           return getValueByPath(a, valueKey) === getValueByPath(b, valueKey);
         }
       },
-
       contains(arr = [], target) {
         if (!this.isObject) {
-          return arr.indexOf(target) > -1;
+          return arr && arr.indexOf(target) > -1;
         } else {
           const valueKey = this.select.valueKey;
-          return arr.some(item => {
+          return arr && arr.some(item => {
             return getValueByPath(item, valueKey) === getValueByPath(target, valueKey);
           });
         }
       },
-
       handleGroupDisabled(val) {
         this.groupDisabled = val;
       },
-
       hoverItem() {
         if (!this.disabled && !this.groupDisabled) {
           this.select.hoverIndex = this.select.options.indexOf(this);
         }
       },
-
       selectOptionClick() {
         if (this.disabled !== true && this.groupDisabled !== true) {
-          this.dispatch('ElSelect', 'handleOptionClick', this);
+          this.dispatch('ElSelect', 'handleOptionClick', [this, true]);
         }
       },
-
       queryChange(query) {
-        // query 里如果有正则中的特殊字符，需要先将这些字符转义
-        let parsedQuery = String(query).replace(/(\^|\(|\)|\[|\]|\$|\*|\+|\.|\?|\\|\{|\}|\|)/g, '\\$1');
-        this.visible = new RegExp(parsedQuery, 'i').test(this.currentLabel) || this.created;
+        this.visible = new RegExp(escapeRegexpString(query), 'i').test(this.currentLabel) || this.created;
         if (!this.visible) {
           this.select.filteredOptionsCount--;
         }
       }
     },
-
     created() {
       this.select.options.push(this);
       this.select.cachedOptions.push(this);
       this.select.optionsCount++;
       this.select.filteredOptionsCount++;
-
       this.$on('queryChange', this.queryChange);
       this.$on('handleGroupDisabled', this.handleGroupDisabled);
     },
-
     beforeDestroy() {
+      let index = this.select.cachedOptions.indexOf(this);
+      if (index > -1) {
+        this.select.cachedOptions.splice(index, 1);
+      }
       this.select.onOptionDestroy(this.select.options.indexOf(this));
     }
   };
