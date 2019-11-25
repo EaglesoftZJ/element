@@ -1,7 +1,7 @@
 <template>
   <!-- @focus="handleFocus" -->
   <el-input class="el-date-editor" :class="'el-date-editor--' + type" :readonly="!editable || readonly" :disabled="pickerDisabled" :size="pickerSize" :name="name" v-bind="firstInputId" v-if="!ranged" v-clickoutside="handleClose" :placeholder="placeholder"
-     @keydown.native="handleKeydown" :value="displayValue" @input="value => userInput = value" @change="handleChange" @mouseenter.native="handleMouseEnter" @mouseleave.native="showClose = false" :validateEvent="false" ref="reference">
+    @focus="handleFocusBefore" @keydown.native="handleKeydown" :value="displayValue" @input="value => userInput = value" @change="handleChange" @mouseenter.native="handleMouseEnter" @mouseleave.native="showClose = false" :validateEvent="false" ref="reference">
     <i slot="suffix" @click="handleClickIcon" :class="[showClose ? '' + clearIcon : '']" v-if="haveTrigger">
       </i>
     <i slot="suffix" class="el-input__icon" style="cursor: pointer;" :class="triggerClass" @click="handleFocus">
@@ -261,6 +261,10 @@
       startPlaceholder: String,
       endPlaceholder: String,
       prefixIcon: String,
+      focusAuto: {
+        type: Boolean,
+        default: false
+      },
       clearIcon: {
         type: String,
         default: 'el-icon-circle-close'
@@ -613,6 +617,11 @@
       },
       handleFieldReset(initialValue) {
         this.userInput = initialValue;
+      },
+      handleFocusBefore() {
+        if (this.focusAuto) {
+          this.handleFocus();
+        }
       },
       handleFocus() {
         const type = this.type;
