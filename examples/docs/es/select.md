@@ -547,7 +547,6 @@ Introduzca palabras y datos para buscar desde el servidor.
   <el-select
     v-model="value9"
     multiple
-    filterable
     remote
     reserve-keyword
     placeholder="Please enter a keyword"
@@ -625,7 +624,6 @@ Crear y seleccionar nuevos items que no están incluidas en las opciones de sele
   <el-select
     v-model="value10"
     multiple
-    filterable
     allow-create
     placeholder="Choose tags for your article">
     <el-option

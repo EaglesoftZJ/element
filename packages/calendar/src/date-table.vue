@@ -145,7 +145,7 @@ export default {
     };
   },
 
-  render() {
+  render(h) {
     const thead = this.hideHeader ? null : (<thead>
       {
         this.DAYS.map(day => <th key={day}>{ day }</th>)
