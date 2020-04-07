@@ -413,7 +413,6 @@
 :::demo
 ```html
 <el-tree :data="data" highlight-current	 :props="defaultProps" @node-click="handleNodeClick">
-  <a ref="aaa" style="display: block; width: 100px; overflow: hidden;" :title="test($refs, data)&&data.children&&data.show" slot-scope="{node, data}">{{data.label}}</a>
 </el-tree>
 
 <script>

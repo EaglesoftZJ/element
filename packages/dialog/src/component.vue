@@ -1,6 +1,6 @@
 <template>
   <transition name="dialog-fade" @enter="handleEnter" @after-enter="handleAfterEnter" @after-leave="handleAfterLeave">
-    <div class="el-dialog__wrapper" v-show="visible" @click.stop.self="handleWrapperClick">
+    <div class="el-dialog__wrapper" v-show="calVisible" @click.stop.self="handleWrapperClick">
       <div
         @click.stop
         class="el-dialog"
@@ -21,7 +21,12 @@
             <i class="el-dialog__close el-icon el-icon-close"></i>
           </button>
         </div>
-        <div class="el-dialog__body" :style="contentStyle" v-if="rendered"><slot v-if="bodyShow"></slot></div>
+        <div ref="body" class="el-dialog__body" :style="contentStyle" v-if="rendered">
+          <div ref="flow" class="el-dialog__body__flow">
+            <slot></slot>
+            <!-- <iframe ref=iframe class="flow-iframe"></iframe> -->
+          </div>
+        </div>
         <div class="el-dialog__footer" ref="footer" v-if="$slots.footer">
           <slot name="footer"></slot>
         </div>
@@ -107,13 +112,15 @@
       return {
         closed: false,
         dialogMaxHeight: 0,
+        storeDialogMaxHeight: 0,
         contentMaxHeight: 0,
         isDraged: false,
         dialogLeft: 0,
         dialogTop: 0,
         openAfterAnimate: false,
         closeAfterAnimate: false,
-        bodyShow: false
+        bodyShow: false,
+        calVisible: false
       };
     },
 
@@ -128,16 +135,28 @@
           if (this.appendToBody) {
             document.body.appendChild(this.$el);
           }
+          this.open();
           this.$nextTick(() => {
+            console.log('beforeBind', getComputedStyle(this.$refs.flow).height);
+            this.bindResizeEvent();
             setTimeout(() => {
-              this.bodyShow = true;
-              this.$emit('open');
+              this.calVisible = this.visible;
+              // this.$nextTick(() => {
+              //   this.updateMaxHeight();
+              // });
             }, 10);
+          // this.$nextTick(() => {
+          //   setTimeout(() => {
+          //     this.bodyShow = true;
+          //     this.$emit('open');
+          //   }, 10);
           });
         } else {
           this.$el.removeEventListener('scroll', this.updatePopper);
+          this.unbindResizeEvent();
           if (!this.closed) this.$emit('close');
-          this.bodyShow = false;
+          this.calVisible = this.visible;
+          // this.bodyShow = false;
         }
       }
     },
@@ -179,6 +198,9 @@
     },
 
     methods: {
+      test() {
+        // this.dialogMaxHeight = this.storeDialogMaxHeight;
+      },
       getMigratingConfig() {
         return {
           props: {
@@ -209,6 +231,7 @@
         this.broadcast('ElDropdownMenu', 'updatePopper');
       },
       handleEnter() {
+        this.updateMaxHeight();
       },
       handleAfterLeave() {
         this.isDraged = false;
@@ -219,12 +242,11 @@
       handleAfterEnter() {
         this.openAfterAnimate = true;
         this.closeAfterAnimate = false;
-        this.updateMaxHeight();
         this.$emit('opened');
       },
       updateMaxHeight() {
         var winHeight = document.body.clientHeight;
-        this.dialogMaxHeight = winHeight - 60;
+        this.storeDialogMaxHeight = this.dialogMaxHeight = winHeight - 60;
         this.contentMaxHeight = this.dialogMaxHeight -
           (this.$refs['header'] ? this.$refs['header'].offsetHeight : 0) -
           (this.$refs['footer'] ? this.$refs['footer'].offsetHeight : 0);
@@ -273,6 +295,28 @@
           document.removeEventListener('mousemove', handleMouseup);
         }
       },
+      handleFlowResize() {
+        console.log('handleFlowResize', getComputedStyle(this.$refs.flow).height);
+        const padding = parseFloat(getComputedStyle(this.$refs.body).paddingTop) +
+          parseFloat(getComputedStyle(this.$refs.body).paddingBottom);
+        this.$refs.body.style.height = (this.$refs.flow.clientHeight + padding) + 'px';
+        this.$refs.body.style.overflow = 'hidden';
+        setTimeout(() => {
+          this.$refs.body && (this.$refs.body.style.overflow = 'auto');
+        }, 300); // 展开动画执行300ms
+      },
+      bindResizeEvent() {
+        if (this.$refs.iframe && !this.fitHeight) {
+          const win = this.$refs.iframe.contentWindow;
+          win && win.addEventListener('resize', this.handleFlowResize);
+        }
+      },
+      unbindResizeEvent() {
+        if (this.$refs.iframe && !this.fitHeight) {
+          const win = this.$refs.iframe.contentWindow;
+          win && win.removeEventListener('resize', this.handleFlowResize);
+        }
+      },
       bindEvent() {
         if (this.drag) {
           this.$refs['header'].addEventListener('mousedown', this.handleMouseDown);
@@ -280,7 +324,7 @@
       },
       unBindEvent() {
         if (this.drag) {
-          this.$refs['header'].addEventListener('mousedown', this.handleMouseDown);
+          this.$refs['header'].removeEventListener('mousedown', this.handleMouseDown);
         }
       }
     },
@@ -297,14 +341,19 @@
         if (this.appendToBody) {
           document.body.appendChild(this.$el);
         }
+        this.open();
         this.$nextTick(() => {
+          this.bindResizeEvent();
+          console.log('beforeBind', getComputedStyle(this.$refs.flow).height);
           setTimeout(() => {
-            this.bodyShow = true;
-            this.open();
+            console.log('calVisible', getComputedStyle(this.$refs.flow).height);
+            this.calVisible = this.visible;
+            // this.$nextTick(() => {
+            //   this.updateMaxHeight();
+            // });
           }, 10);
         });
       }
-      this.updateMaxHeight();
       this.bindEvent();
     },
     beforeDestroy() {

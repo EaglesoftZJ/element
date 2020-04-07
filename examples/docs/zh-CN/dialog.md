@@ -318,7 +318,7 @@ Dialog 组件的内容可以是任意的，甚至可以是表格或表单，下�
 ```html
 <template>
   <el-button type="text" @click="dragVisible = true">可拖拽的dialog</el-button>
-  <el-dialog drag v-if="dragVisible" close-reset :visible.sync="dragVisible" title="标题">
+  <el-dialog ref="dialog111" drag v-if="dragVisible" close-reset :visible.sync="dragVisible" title="标题">
     <div style="width: 600px; height: 300px;">可拖拽的dialog</div>
     <div v-if="show" style="height: 300px;">可拖拽的dialog1</div>
     <span slot="footer" class="dialog-footer">

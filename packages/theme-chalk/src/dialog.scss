@@ -16,6 +16,7 @@
   // width: 50%;
   text-align: left;
   vertical-align: middle;
+  transition: max-height 0.3s ease;
 
   @include when(fullscreen) {
     width: 100%;
@@ -32,7 +33,7 @@
     right: 0;
     bottom: 0;
     left: 0;
-    overflow: auto;
+    overflow: hidden;
     margin: 0;
     // justify-content: center;
     // align-items: center;
@@ -89,6 +90,7 @@
     font-size: $--dialog-font-size;
     box-sizing: border-box;
     overflow: auto;
+    transition: height 0.25s ease;
   }
 
   @include e(footer) {
@@ -113,12 +115,41 @@
   }
 }
 
+.el-dialog__body__flow {
+  position: relative;
+  padding: 1px 0px;
+}
+.el-dialog__body__flow .flow-iframe {
+  position: absolute;
+  z-index: -1;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
 .dialog-fade-enter-active {
   animation: dialog-fade-in .3s;
 }
 
 .dialog-fade-leave-active {
   animation: dialog-fade-out .3s;
+}
+.dialog-rotate-enter-active,
+.dialog-rotate-leave-active {
+  -webkit-perspective: 1300px;
+  perspective: 1300px;
+  transition: all 0.3s ease;
+}
+.dialog-rotate-enter-active .el-dialog {
+  transform-origin: 50% 100%;
+  animation: dialog-rotate-in 0.3s forwards;
+}
+
+.dialog-rotate-leave-active .el-dialog {
+  transform-origin: 50% 100%;
+  animation: dialog-rotate-out 0.3s forwards;
 }
 
 @keyframes dialog-fade-in {
@@ -139,6 +170,28 @@
   }
   100% {
     transform: translate3d(0, -20px, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes dialog-rotate-in {
+  0% {
+    transform: rotateX(20deg) translate3d(0, 50%, 0);
+    opacity: 0;
+  }
+  100% {
+    transform: rotateX(0deg) translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes dialog-rotate-out {
+  0% {
+    ttransform: rotateX(0deg) translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: rotateX(20deg) translate3d(0, 50%, 0);
     opacity: 0;
   }
 }

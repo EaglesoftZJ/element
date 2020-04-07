@@ -406,7 +406,7 @@
           let nDivHight = this.$refs.bodyWrapper ? this.$refs.bodyWrapper.offsetHeight : 0;
           let nScrollHight = this.$refs.bodyWrapper ? this.$refs.bodyWrapper.scrollHeight : 0;
           let nScrollTop = this.$refs.bodyWrapper ? this.$refs.bodyWrapper.scrollTop : -1;
-          if (Math.ceil(nScrollTop) + Math.ceil(nDivHight) + 10 >= Math.floor(nScrollHight) && !this.egLoading && this.nodata === false) {
+          if (this.$refs.bodyWrapper && (Math.ceil(nScrollTop) + Math.ceil(nDivHight) + 10) >= Math.floor(nScrollHight) && !this.egLoading && this.nodata === false) {
             this.pageNum += 1;
             this.dataBind();
           }
