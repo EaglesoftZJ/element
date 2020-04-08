@@ -25,6 +25,7 @@ const load = function(lang, path) {
 
 const LOAD_DOCS_MAP = {
   'zh-CN': path => {
+    console.log('1111111', `./docs/zh-CN${path}.md`);
     return r => require.ensure([], () =>
       r(require(`./docs/zh-CN${path}.md`)),
     'zh-CN');
@@ -89,6 +90,8 @@ const registerRoute = (navConfig) => {
 
     route[index].children.push(child);
   }
+
+  console.log('route', route);
 
   return route;
 };

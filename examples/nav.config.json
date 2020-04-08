@@ -251,6 +251,10 @@
             {
               "path": "/calendar",
               "title": "Calendar 日历"
+            },
+            {
+              "path": "/drawer",
+              "title": "Drawer 抽屉"
             }
           ]
         }

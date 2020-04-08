@@ -66,6 +66,7 @@ import { ElTooltip } from './tooltip'
 import { ElTransfer } from './transfer'
 import { ElTree } from './tree'
 import { ElUpload } from './upload'
+import { ElDrawer } from './drawer'
 
 export interface InstallationOptions {
   locale: any,
@@ -287,4 +288,7 @@ export class Transfer extends ElTransfer {}
 export class Tree extends ElTree {}
 
 /** Upload Component */
-export class Upload extends ElUpload {}
+export class Upload extends ElUpload { }
+
+/** Drawer Component */
+export class Drawer extends ElDrawer {}
