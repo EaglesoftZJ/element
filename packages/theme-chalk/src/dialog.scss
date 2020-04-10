@@ -115,19 +115,19 @@
   }
 }
 
-.el-dialog__body__flow {
-  position: relative;
-  padding: 1px 0px;
-}
-.el-dialog__body__flow .flow-iframe {
-  position: absolute;
-  z-index: -1;
-  left: 0px;
-  top: 0px;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-}
+// .el-dialog__body__flow {
+//   position: relative;
+//   padding: 1px 0px;
+// }
+// .el-dialog__body__flow .flow-iframe {
+//   position: absolute;
+//   z-index: -1;
+//   left: 0px;
+//   top: 0px;
+//   width: 100%;
+//   height: 100%;
+//   opacity: 0;
+// }
 
 .dialog-fade-enter-active {
   animation: dialog-fade-in .3s;
