@@ -22,10 +22,10 @@
           </button>
         </div>
         <div ref="body" class="el-dialog__body" :style="contentStyle" v-if="rendered">
-          <div ref="flow" class="el-dialog__body__flow">
-            <slot></slot>
-            <!-- <iframe ref=iframe class="flow-iframe"></iframe> -->
-          </div>
+          <slot></slot>
+          <!-- <div ref="flow" class="el-dialog__body__flow">
+            <iframe ref=iframe class="flow-iframe"></iframe>
+          </div> -->
         </div>
         <div class="el-dialog__footer" ref="footer" v-if="$slots.footer">
           <slot name="footer"></slot>
@@ -137,8 +137,8 @@
           }
           this.open();
           this.$nextTick(() => {
-            console.log('beforeBind', getComputedStyle(this.$refs.flow).height);
-            this.bindResizeEvent();
+            // console.log('beforeBind', getComputedStyle(this.$refs.flow).height);
+            // this.bindResizeEvent();
             setTimeout(() => {
               this.calVisible = this.visible;
               // this.$nextTick(() => {
@@ -153,7 +153,7 @@
           });
         } else {
           this.$el.removeEventListener('scroll', this.updatePopper);
-          this.unbindResizeEvent();
+          // this.unbindResizeEvent();
           if (!this.closed) this.$emit('close');
           this.calVisible = this.visible;
           // this.bodyShow = false;
@@ -344,9 +344,9 @@
         this.open();
         this.$nextTick(() => {
           this.bindResizeEvent();
-          console.log('beforeBind', getComputedStyle(this.$refs.flow).height);
+          // console.log('beforeBind', getComputedStyle(this.$refs.flow).height);
           setTimeout(() => {
-            console.log('calVisible', getComputedStyle(this.$refs.flow).height);
+            // console.log('calVisible', getComputedStyle(this.$refs.flow).height);
             this.calVisible = this.visible;
             // this.$nextTick(() => {
             //   this.updateMaxHeight();
