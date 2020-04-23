@@ -15,7 +15,14 @@
           :date="date">
         </time-spinner>
       </div>
-      <div class="el-time-panel__footer">
+      <div
+        :class="[
+          'el-time-panel__footer', 
+          {
+            'btn-group__reverse__css': $ELEMENT.btnDirection === 'row-reverse'
+          }
+        ]"
+      >
         <button
           type="button"
           class="el-time-panel__btn cancel"

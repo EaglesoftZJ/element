@@ -162,7 +162,15 @@
           </div>
         </div>
       </div>
-      <div class="el-picker-panel__footer" v-if="showTime">
+      <div
+        :class="[
+          'el-picker-panel__footer', 
+          {
+            'btn-group__reverse__css': $ELEMENT.btnDirection === 'row-reverse',
+            'btn-group__reverse__buttoncss': $ELEMENT.btnDirection === 'row-reverse'
+          }
+        ]"
+        v-if="showTime">
         <el-button
           size="mini"
           type="text"
@@ -332,7 +340,6 @@
         unlinkPanels: false
       };
     },
-
     watch: {
       minDate(val) {
         this.$nextTick(() => {

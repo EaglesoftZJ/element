@@ -48,7 +48,15 @@
             <div class="el-message-box__errormsg" :style="{ visibility: !!editorErrorMessage ? 'visible' : 'hidden' }">{{ editorErrorMessage }}</div>
           </div>
         </div>
-        <div class="el-message-box__btns">
+        <div 
+          :class="[
+            'el-message-box__btns', 
+            {
+              'btn-group__reverse__css': $ELEMENT.btnDirection === 'row-reverse',
+              'btn-group__reverse__buttoncss': $ELEMENT.btnDirection === 'row-reverse',
+            }
+          ]"
+        >
           <el-button
             :loading="cancelButtonLoading"
             :class="[ cancelButtonClasses ]"

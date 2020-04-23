@@ -118,7 +118,13 @@
       </div>
 
       <div
-        class="el-picker-panel__footer"
+        :class="[
+          'el-picker-panel__footer', 
+          {
+            'btn-group__reverse__css': $ELEMENT.btnDirection === 'row-reverse',
+            'btn-group__reverse__buttoncss': $ELEMENT.btnDirection === 'row-reverse'
+          }
+        ]"
         v-show="footerVisible && currentView === 'date'">
         <el-button
           size="mini"
