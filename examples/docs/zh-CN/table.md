@@ -35,7 +35,7 @@
           name: '王小虎',
           province: '上海',
           city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
+          address: '上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄上海市普陀区金沙江路 1518 弄',
           zip: 200333,
           tag: '公司'
         }],
@@ -463,12 +463,12 @@
 ```html
   <template>
      <div>
-       <el-table primary-key="id" highlight-current-row ref="aaa" :data="tableData" style="width: 100%">
+       <el-table primary-key="id" highlight-current-row ref="aaa" :data="tableData" style="width: 100%" tooltip-placement="top-start">
       <el-table-column prop="date" label="日期" width="180">
       </el-table-column>
       <el-table-column prop="name" label="姓名" width="180">
       </el-table-column>
-      <el-table-column prop="address" label="地址">
+      <el-table-column prop="address" label="地址" show-overflow-tooltip>
       </el-table-column>
     </el-table>
     <el-button @click="handleClick1">click</el-button>
@@ -494,7 +494,7 @@
           }, {
             date: '2016-05-03',
             name: '王小虎',
-            address: '上海市普陀区金沙江路 1516 弄'
+            address: '上海市普陀区金沙江路上海市普陀区金沙江路上海市普陀区金沙江路上海市普陀区金沙江路上海市普陀区金沙江路上海市普陀区金沙江路 1516 弄'
           }]
         }
       }
@@ -526,6 +526,7 @@
     </el-table-column>
     <el-table-column
       prop="address"
+      show-overflow-Tooltip
       label="地址">
     </el-table-column>
   </el-table>

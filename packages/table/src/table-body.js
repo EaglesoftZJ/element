@@ -24,7 +24,8 @@ export default {
     rowClassName: [String, Function],
     rowStyle: [Object, Function],
     fixed: String,
-    highlight: Boolean
+    highlight: Boolean,
+    tooltipPlacement: String
   },
 
   render(h) {
@@ -125,8 +126,8 @@ export default {
               ];
             }).concat(
               [
-                <el-tooltip effect={ this.table.tooltipEffect } placement="top" ref="tooltip" content={ this.tooltipContent }></el-tooltip>,
-                <el-popover popper-class={ this.customClass } ref="popover" content={ this.tooltipContent } placement="top" trigger="hover"><span slot="reference"></span></el-popover>
+                <el-tooltip effect={ this.table.tooltipEffect } placement={ this.tooltipPlacement } ref="tooltip" content={ this.tooltipContent }></el-tooltip>,
+                <el-popover popper-class={ this.customClass } ref="popover" content={ this.tooltipContent } placement={ this.tooltipPlacement } trigger="hover"><span slot="reference"></span></el-popover>
               ]
             )
           }

@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2020-04-21 15:40:02
+ * @LastEditTime: 2020-04-24 09:41:44
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: /element/examples/entry.js
+ */
 import Vue from 'vue';
 import entry from './app';
 import VueRouter from 'vue-router';
@@ -13,7 +21,9 @@ import title from './i18n/title.json';
 import emitter from './assets/scripts/emitter';
 import Eaglesoft from './assets/scripts/eaglesoft';
 
-Vue.use(Element);
+Vue.use(Element, {
+  btnDirection: 'row-reverse'
+});
 Vue.use(VueRouter);
 Vue.use(Eaglesoft);
 Vue.component('demo-block', demoBlock);

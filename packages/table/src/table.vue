@@ -22,7 +22,7 @@
       </table-header>
     </div>
     <div class="el-table__body-wrapper" ref="bodyWrapper" :class="[layout.scrollX ? `is-scrolling-${scrollPosition}` : 'is-scrolling-none']" @scroll="tableScroll" :style="fitHeight ? fitHeightBodyStyle  : [bodyHeight]">
-      <table-body :context="context" :store="store" :stripe="stripe" :row-class-name="rowClassName" :row-style="rowStyle" :highlight="highlightCurrentRow" :style="{
+      <table-body :tooltip-placement="tooltipPlacement" :context="context" :store="store" :stripe="stripe" :row-class-name="rowClassName" :row-style="rowStyle" :highlight="highlightCurrentRow" :style="{
                    width: bodyWidth
                 }">
       </table-body>
@@ -234,6 +234,10 @@
       refreshBindQuery: { // 刷新请求是否绑定queryData
         type: Boolean,
         default: true
+      },
+      tooltipPlacement: {
+        type: String,
+        default: 'top'
       }
       /* end */
     },
@@ -248,7 +252,7 @@
       dataBind() {
         return new Promise((resolve) => {
           if (this.egLoading) return;
-          const pageNum = this.$linq.from(this.pageSizeStore).sum(); // 已经加载的条数
+          const pageNum = this.$linq ? this.$linq.from(this.pageSizeStore).sum() : 0; // 已经加载的条数
           this.pageSizeStore.push(this.pageSize);
           if (this.action !== '') {
             this.egLoading = true;
