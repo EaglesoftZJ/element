@@ -118,6 +118,12 @@ export default {
     quality: { // 图片质量
       type: Number,
       default: 0.9
+    },
+    props: { // 文件字段映射 20200509
+      type: Object,
+      default() {
+        return {};
+      }
     }
   },
 
@@ -133,6 +139,18 @@ export default {
   computed: {
     uploadDisabled() {
       return this.disabled || (this.elForm || {}).disabled;
+    },
+    calProps() {
+      const props = {
+        name: 'name',
+        url: 'url',
+      };
+      for (const key in props) {
+        if (this.props[key]) {
+          props[key] = this.props[key];
+        }
+      }
+      return props;
     }
   },
 
@@ -291,6 +309,7 @@ export default {
           files={this.uploadFiles}
           on-remove={this.handleRemove}
           handlePreview={this.onPreview}
+          props={ this.calProps }
         >
           {props => {
             return this.$scopedSlots.btn && this.$scopedSlots.btn(props);

@@ -21,14 +21,14 @@
       <img
         class="el-upload-list__item-thumbnail"
         v-if="file.status !== 'uploading' && ['picture-card', 'picture'].indexOf(listType) > -1"
-        :src="file.url" alt=""
+        :src="file[props['url']] || file.url" alt=""
       >
       <a class="el-upload-list__item-name" @click="handleClick(file)">
         <i class="el-icon-document" v-if="!$scopedSlots.default"></i>
         <template v-else>
           <slot :file="file"></slot>
         </template>
-        {{file.name}}
+        {{file[props['name']] || file.name }}
       </a>
       <label class="el-upload-list__item-status-label">
         <i :class="{
@@ -90,7 +90,8 @@
         default: false
       },
       handlePreview: Function,
-      listType: String
+      listType: String,
+      props: {}
     },
     methods: {
       parsePercentage(val) {

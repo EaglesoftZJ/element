@@ -221,9 +221,12 @@
 <template>
   <div class="block">
     <span class="demonstration">默认</span>
+    {{ value6[0] && value6[0].toLocaleString() }}
+    {{ value6[1] && value6[1].toLocaleString() }}
     <el-date-picker
       v-model="value6"
       type="daterange"
+      :default-time="['10:00:00', '11:00:00']"
       range-separator="至"
       start-placeholder="开始日期"
       end-placeholder="结束日期">
