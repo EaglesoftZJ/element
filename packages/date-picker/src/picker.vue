@@ -541,7 +541,7 @@
       },
       handleChange() {
         if (this.userInput) {
-          const value = this.parseString(this.displayValue);
+          const value = this.parseString(this.displayValue); // 将string转化成date
           if (value) {
             if (!this.picker) {
               this.mountPicker();
@@ -550,7 +550,13 @@
             if (this.isValidValue(value)) {
               this.emitInput(value);
               this.userInput = null;
+            } else {
+              this.emitInput(null);
+              this.userInput = null;
             }
+          } else {
+            this.emitInput(null);
+            this.userInput = null;
           }
         }
         if (this.userInput === '') {
