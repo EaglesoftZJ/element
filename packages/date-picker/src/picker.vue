@@ -642,7 +642,10 @@
         if (keyCode === 9) {
           if (!this.ranged) {
             this.handleChange();
-            this.pickerVisible = this.picker.visible = false;
+            this.pickerVisible = false;
+            if (this.picker) {
+              this.picker.visible = false;
+            }
             this.blur();
             event.stopPropagation();
           } else {
