@@ -71,6 +71,7 @@ import Aside from '../packages/aside/index.js';
 import Main from '../packages/main/index.js';
 import Footer from '../packages/footer/index.js';
 import Drawer from '../packages/drawer/index.js';
+import Image from '../packages/image/index.js';
 import locale from 'element-ui/src/locale';
 import CollapseTransition from 'element-ui/src/transitions/collapse-transition';
 
@@ -142,6 +143,7 @@ const components = [
   Main,
   Footer,
   Drawer,
+  Image,
   CollapseTransition
 ];
 
@@ -176,7 +178,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 module.exports = {
-  version: '2.3.35',
+  version: '2.3.36',
   locale: locale.use,
   i18n: locale.i18n,
   install,
@@ -251,7 +253,8 @@ module.exports = {
   Aside,
   Main,
   Footer,
-  Drawer
+  Drawer,
+  Image
 };
 
 module.exports.default = module.exports;

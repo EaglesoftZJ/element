@@ -255,6 +255,10 @@
             {
               "path": "/drawer",
               "title": "Drawer 抽屉"
+            },
+            {
+              "path": "/image",
+              "title": "Image 图片"
             }
           ]
         }

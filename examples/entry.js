@@ -7,6 +7,7 @@
  * @FilePath: /element/examples/entry.js
  */
 import Vue from 'vue';
+import jquery from 'jquery';
 import entry from './app';
 import VueRouter from 'vue-router';
 import Element from 'main/index.js';
@@ -50,6 +51,7 @@ router.afterEach(route => {
   }
   document.title = 'Element';
 });
+window.$ = jquery;
 
 new Vue({ // eslint-disable-line
   render: h => h(entry),
