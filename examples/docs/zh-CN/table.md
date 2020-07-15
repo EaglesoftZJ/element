@@ -870,7 +870,7 @@
   <el-table
     is-show-total
     :data="tableData3"
-    style="width: 100%"
+    style="width: 1000.5px; max-width: none;"
     border
     height="250">
     <el-table-column

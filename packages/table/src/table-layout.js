@@ -116,7 +116,11 @@ class TableLayout {
 
   updateColumnsWidth() {
     const fit = this.fit;
-    const bodyWidth = this.table.$el.clientWidth;
+    let bodyWidth = this.table.$el.clientWidth;
+    if ($) {
+      bodyWidth = $(this.table.$el).width();
+    }
+    // const bodyWidth = this.table.$el.clientWidth;
     // console.log('bodyWidth', bodyWidth);
     let bodyMinWidth = 0;
 
