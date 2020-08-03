@@ -63,6 +63,7 @@ import Collapse from '../packages/collapse/index.js';
 import CollapseItem from '../packages/collapse-item/index.js';
 import Calendar from '../packages/calendar/index.js';
 import Cascader from '../packages/cascader/index.js';
+import CascaderPanel from '../packages/cascader-panel/index.js';
 import ColorPicker from '../packages/color-picker/index.js';
 import Transfer from '../packages/transfer/index.js';
 import Container from '../packages/container/index.js';
@@ -135,6 +136,7 @@ const components = [
   CollapseItem,
   Calendar,
   Cascader,
+  CascaderPanel,
   ColorPicker,
   Transfer,
   Container,
@@ -178,7 +180,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 module.exports = {
-  version: '2.3.37',
+  version: '2.3.39',
   locale: locale.use,
   i18n: locale.i18n,
   install,
@@ -246,6 +248,7 @@ module.exports = {
   CollapseItem,
   Calendar,
   Cascader,
+  CascaderPanel,
   ColorPicker,
   Transfer,
   Container,

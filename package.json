@@ -1,6 +1,6 @@
 {
   "name": "eg-element-ui",
-  "version": "2.3.38",
+  "version": "2.3.39",
   "description": "A Component Library for Vue.js.",
   "main": "lib/element-ui.common.js",
   "files": [
@@ -76,6 +76,8 @@
     "babel-plugin-syntax-jsx": "6.8.0",
     "babel-plugin-transform-vue-jsx": "3.3.0",
     "babel-preset-es2015": "6.14.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-2": "^6.24.1",
     "chai": "3.5.0",
     "cheerio": "0.18.0",
     "chokidar": "1.7.0",
