@@ -18,12 +18,12 @@
           //   return true;
           // },
           // isLeafFn(data) {
-          //   return true;
-          // }，
+          //   return false;
+          // },
           children: 'child',
           label: 'orgmc',
-          value: 'id',
-          checkStrictly: true
+          value: 'id'
+          // checkStrictly: true
         },
         opts: 
           [{
