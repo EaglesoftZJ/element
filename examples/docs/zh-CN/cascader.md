@@ -2,6 +2,7 @@
   export default {
     data() {
       return {
+        visible: false,
         options2: [{
           label: '江苏',
           cities: []
@@ -25,7 +26,8 @@
           value: 'id'
           // checkStrictly: true
         },
-        opts: 
+        opts: [],
+        opts2: 
           [{
     "child": [
       {
@@ -355,7 +357,7 @@
           }]
         }],
         optionsWithDisabled: [],
-        selectedOptions: [],
+        selectedOptions: ["1171593257927364610"],
         selectedOptions2: [],
         selectedOptions3: ['zujian', 'data', 'tag']
       };
@@ -363,8 +365,12 @@
     created() {
       this.optionsWithDisabled = JSON.parse(JSON.stringify(this.options));
       this.optionsWithDisabled[0].disabled = true;
+      this.opts = this.opts2;
     },
     mounted() {
+      // setTimeout(() => {
+      //   this.visible = true;
+      // }, 1000);
       this.$nextTick(() => {
         const demos = document.querySelectorAll('.source');
         demos[0].style.padding = '0';
@@ -372,6 +378,25 @@
       });
     },
     methods: {
+      getInputValue() {
+        // console.log(this.$refs.aaa.inputValue);
+        // const obj = this.$options.data.apply(this);
+        // $.extend(this.$data, obj)
+        this.opts = this.$options.data.apply(this).opts2;
+        this.selectedOptions.push('1171593260599136257');
+        
+        // console.log('opts', this.opts, obj, this.$data);
+        // this.visible = false;
+      },
+      open() {
+        // console.log(this.$refs.aaa.inputValue);
+        // $.extend(this.$data, this.$options.data.apply(this))
+        // setTimeout(() => {
+        //   this.opts = this.opts2;
+        // }, 500)
+        this.opts = this.opts2;
+        // this.visible = true;
+      },
       handleItemChange(val) {
         console.log('active item:', val);
         setTimeout(_ => {
@@ -435,14 +460,20 @@
 :::demo 只需为 Cascader 的`options`属性指定选项数组即可渲染出一个级联选择器。通过`expand-trigger`可以定义展开子级菜单的触发方式。本例还展示了`change`事件，它的参数为 Cascader 的绑定值：一个由各级菜单的值所组成的数组。
 ```html
 <div class="block">
-  <span class="demonstration">默认 click 触发子菜单</span>
-  <el-cascader
-    :props="props1"
-    :options="opts"
-    filterable
-    v-model="selectedOptions"
-    @change="handleChange">
-  </el-cascader>
+  <el-button @click="open">click</el-button>
+  <!-- <el-dialog :visible.sync="visible"> -->
+    <el-button @click="getInputValue">click</el-button>
+    <span class="demonstration">默认 click 触发子菜单</span>
+    {{selectedOptions}}
+    <el-cascader
+    ref="aaa"
+      :props="props1"
+      :options="opts"
+      filterable
+      v-model="selectedOptions"
+      @change="handleChange">
+    </el-cascader>
+  <!-- </el-dialog> -->
 </div>
 <div class="block">
   <span class="demonstration">hover 触发子菜单</span>
@@ -653,7 +684,9 @@
             label: '组件交互文档'
           }]
         }],
-        selectedOptions: [],
+        selectedOptions: [
+          
+        ],
         selectedOptions2: []
       };
     },

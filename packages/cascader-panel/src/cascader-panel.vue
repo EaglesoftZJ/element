@@ -139,16 +139,18 @@ export default {
   },
 
   watch: {
+    value() {
+      this.activePath = [];
+      this.syncCheckedValue();
+      this.checkStrictly && this.calculateCheckedNodePaths();
+    },
     options: {
       handler: function() {
+        this.activePath = [];
         this.initStore();
       },
       immediate: true,
       deep: true
-    },
-    value() {
-      this.syncCheckedValue();
-      this.checkStrictly && this.calculateCheckedNodePaths();
     },
     checkedValue(val) {
       if (!isEqual(val, this.value)) {
