@@ -896,32 +896,34 @@
       this.store.states.sortType = this.sortType;
       this.store.states.action = this.action;
       /* 兼容v8 */
-      this.$emitter.on(this.id + '_grid_bind', () => {
-        this.nodata = false;
-        this.bindData.splice(0, this.bindData.length);
-        this.pageNum = 0;
-        this.deleteNum = 0;
-        if (this.getScrollTop() === 0) {
-          this.dataBind();
-        } else {
-          this.pageNum = -1;
-        }
-      });
-      this.$emitter.on(this.id + '_refresh', data => this.refresh(data));
-      /* 兼容v8 */
-      this.$on('grid_orderby', column => {
-        this.nodata = false;
-        this.bindData.splice(0, this.bindData.length);
-        this.pageNum = 0;
-        this.store.states.orderBy = column.property;
-        this.store.states.sortType = column.order === 'ascending' ? 'asc' : 'desc';
-        if (this.getScrollTop() === 0) {
-          this.dataBind();
-        } else {
-          this.pageNum = -1;
-        }
-      });
-      /* end */
+      if (this.$emitter) {
+        this.$emitter.on(this.id + '_grid_bind', () => {
+          this.nodata = false;
+          this.bindData.splice(0, this.bindData.length);
+          this.pageNum = 0;
+          this.deleteNum = 0;
+          if (this.getScrollTop() === 0) {
+            this.dataBind();
+          } else {
+            this.pageNum = -1;
+          }
+        });
+        this.$emitter.on(this.id + '_refresh', data => this.refresh(data));
+        /* 兼容v8 */
+        this.$on('grid_orderby', column => {
+          this.nodata = false;
+          this.bindData.splice(0, this.bindData.length);
+          this.pageNum = 0;
+          this.store.states.orderBy = column.property;
+          this.store.states.sortType = column.order === 'ascending' ? 'asc' : 'desc';
+          if (this.getScrollTop() === 0) {
+            this.dataBind();
+          } else {
+            this.pageNum = -1;
+          }
+        });
+        /* end */
+      }
       this.bindEvents();
       this.store.updateColumns();
       this.doLayout();
