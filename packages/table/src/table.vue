@@ -674,7 +674,7 @@
           this.layout.updateElsHeight();
         }
         if (this.fitHeight) {
-          this.layout.setHeight(this.$refs.bodyWrapper ? this.$refs.bodyWrapper.clientHeight : 0);
+          // this.layout.setHeight(this.$refs.bodyWrapper ? this.$refs.bodyWrapper.clientHeight : 0);
         }
         if (this.bindData.length > 0) {
           this.tableScroll(null);
