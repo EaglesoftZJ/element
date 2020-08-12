@@ -71,5 +71,6 @@
   "main": "./packages/main/index.js",
   "footer": "./packages/footer/index.js",
   "drawer": "./packages/drawer/index.js",
-  "image": "./packages/image/index.js"
+  "image": "./packages/image/index.js",
+  "divider": "./packages/divider/index.js"
 }

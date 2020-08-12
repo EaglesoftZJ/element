@@ -73,6 +73,7 @@ import Main from '../packages/main/index.js';
 import Footer from '../packages/footer/index.js';
 import Drawer from '../packages/drawer/index.js';
 import Image from '../packages/image/index.js';
+import Divider from '../packages/divider/index.js';
 import locale from 'element-ui/src/locale';
 import CollapseTransition from 'element-ui/src/transitions/collapse-transition';
 
@@ -146,6 +147,7 @@ const components = [
   Footer,
   Drawer,
   Image,
+  Divider,
   CollapseTransition
 ];
 
@@ -257,7 +259,8 @@ module.exports = {
   Main,
   Footer,
   Drawer,
-  Image
+  Image,
+  Divider
 };
 
 module.exports.default = module.exports;
