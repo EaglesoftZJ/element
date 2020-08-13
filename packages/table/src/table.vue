@@ -674,7 +674,7 @@
           this.layout.updateElsHeight();
         }
         if (this.fitHeight) {
-          // this.layout.setHeight(this.$refs.bodyWrapper ? this.$refs.bodyWrapper.clientHeight : 0);
+          this.layout.setHeight(this.$refs.bodyWrapper ? this.$refs.bodyWrapper.clientHeight : 0);
         }
         if (this.bindData.length > 0) {
           this.tableScroll(null);
@@ -692,7 +692,8 @@
     computed: {
       /* start */
       fitHeightStyle() {
-        return 'width:100%;height:100%;box-sizing:border-box;padding:' + (this.layout.headerHeight ? this.layout.headerHeight : 0) + 'px 0px ' + (this.layout.footerHeight ? this.layout.footerHeight : 0) + 'px';
+        console.log('footerHeight', this.layout.footerHeight);
+        return 'width:100%;height:100%;box-sizing:border-box;padding:' + (this.layout.headerHeight ? this.layout.headerHeight : 0) + 'px 0px ' + (this.layout.footerHeight && this.isShowTotal ? this.layout.footerHeight : 0) + 'px';
       },
       fitHeightHeaderStyle() {
         return 'position:relative;top:-' + (this.layout.headerHeight ? this.layout.headerHeight : 0) + 'px';
