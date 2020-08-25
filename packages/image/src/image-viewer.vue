@@ -29,8 +29,8 @@
           <i class="el-image-viewer__actions__divider"></i>
           <i :class="mode.icon" @click="toggleMode"></i>
           <i class="el-image-viewer__actions__divider"></i>
-          <i class="el-icon-refresh-left" @click="handleActions('anticlocelise')"></i>
-          <i class="el-icon-refresh-right" @click="handleActions('clocelise')"></i>
+          <i class="el-icon-undo" @click="handleActions('anticlocelise')"></i>
+          <i class="el-icon-repeat" @click="handleActions('clocelise')"></i>
         </div>
       </div>
       <!-- CANVAS -->
@@ -58,11 +58,11 @@ import { rafThrottle, isFirefox } from 'element-ui/src/utils/util';
 const Mode = {
   CONTAIN: {
     name: 'contain',
-    icon: 'el-icon-full-screen'
+    icon: 'el-icon-expand'
   },
   ORIGINAL: {
     name: 'original',
-    icon: 'el-icon-c-scale-to-original'
+    icon: 'el-icon-compress'
   }
 };
 

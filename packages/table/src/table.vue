@@ -413,10 +413,10 @@
           if (this.$refs.bodyWrapper && (Math.ceil(nScrollTop) + Math.ceil(nDivHight) + 10) >= Math.floor(nScrollHight) && !this.egLoading && this.nodata === false) {
             this.pageNum += 1;
             this.dataBind();
-            this.$emit('table-scroll-bottom');
+            this.$emit('table-scroll-to-bottom');
           }
         } else if (this.$refs.bodyWrapper && (Math.ceil(nScrollTop) + Math.ceil(nDivHight) + 10) >= Math.floor(nScrollHight) && !this.egLoading && this.nodata === false) {
-          this.$emit('table-scroll-bottom');
+          this.$emit('table-scroll-to-bottom');
         }
         this.currentScroll = this.$refs.bodyWrapper && this.$refs.bodyWrapper.scrollTop;
         this.$emit('table-scroll', ev);
