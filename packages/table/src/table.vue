@@ -130,7 +130,26 @@
   import TableBody from './table-body';
   import TableHeader from './table-header';
   import TableFooter from './table-footer';
+  import { getRowIdentity } from './util';
   let tableIdSeed = 1;
+    const flattenData = function(data) {
+    if (!data) return data;
+    let newData = [];
+    const flatten = arr => {
+      arr.forEach((item) => {
+        newData.push(item);
+        if (Array.isArray(item.children)) {
+          flatten(item.children);
+        }
+      });
+    };
+    flatten(data);
+    if (data.length === newData.length) {
+      return data;
+    } else {
+      return newData;
+    }
+  };
   export default {
     name: 'ElTable',
     componentName: 'ElTable',
@@ -188,6 +207,22 @@
         type: Boolean,
         default: true
       },
+      indent: {
+        type: Number,
+        default: 16
+      },
+      treeProps: {
+        type: Object,
+        default() {
+          return {
+            hasChildren: 'hasChildren',
+            children: 'children'
+          };
+        }
+      },
+      lazy: Boolean,
+
+      load: Function,
       /* start */
       action: {
         type: String,
@@ -682,6 +717,53 @@
         if (this.bindData.length > 0) {
           this.tableScroll(null);
         }
+      },
+      getRowKey(row) {
+        const rowKey = getRowIdentity(row, this.store.states.rowKey);
+        if (!rowKey) {
+          throw new Error('if there\'s nested data, rowKey is required.');
+        }
+        return rowKey;
+      },
+      getTableTreeData(data) {
+        const treeData = {};
+        const traverse = (children, parentData, level) => {
+          children.forEach(item => {
+            const rowKey = this.getRowKey(item);
+            treeData[rowKey] = {
+              display: false,
+              level
+            };
+            parentData.children.push(rowKey);
+            if (Array.isArray(item.children) && item.children.length) {
+              treeData[rowKey].children = [];
+              treeData[rowKey].expanded = false;
+              traverse(item.children, treeData[rowKey], level + 1);
+            }
+          });
+        };
+        if (data) {
+          data.forEach(item => {
+            const containChildren = Array.isArray(item.children) && item.children.length;
+            if (!(containChildren || item.hasChildren)) return;
+            const rowKey = this.getRowKey(item);
+            const treeNode = {
+              level: 0,
+              expanded: false,
+              display: true,
+              children: []
+            };
+            if (containChildren) {
+              treeData[rowKey] = treeNode;
+              traverse(item.children, treeData[rowKey], 1);
+            } else if (item.hasChildren && this.lazy) {
+              treeNode.hasChildren = true;
+              treeNode.loaded = false;
+              treeData[rowKey] = treeNode;
+            }
+          });
+        }
+        return treeData;
       }
     },
     created() {
@@ -850,9 +932,10 @@
         immediate: true,
         handler(value) {
           /* start */
-          // if (!this.action) {
-          //     this.store.commit('setData', value);
-          // }
+          if (!this.action && !this.pageing) { // 非异步非分页的情况下 直接生成tableTree
+            this.store.states.treeData = this.getTableTreeData(value);
+            value = flattenData(value);
+          }
           if (!this.pageing) {
             // 不分页直接赋值
             this.recordTotal = value.length;
@@ -965,10 +1048,16 @@
       // end
     },
     data() {
+      const { hasChildren = 'hasChildren', children = 'children' } = this.treeProps;
       const store = new TableStore(this, {
         rowKey: this.rowKey,
         defaultExpandAll: this.defaultExpandAll,
-        selectOnIndeterminate: this.selectOnIndeterminate
+        selectOnIndeterminate: this.selectOnIndeterminate,
+        // TreeTable 的相关配置
+        indent: this.indent,
+        lazy: this.lazy,
+        lazyColumnIdentifier: hasChildren,
+        childrenColumnName: children
       });
       const layout = new TableLayout({
         store,

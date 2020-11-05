@@ -572,4 +572,15 @@
       overflow: hidden;
     }
   }
+  [class*=el-table__row--level] {
+    .el-table__expand-icon {
+      display: inline-block;
+      line-height: 20px;
+      height: 20px;
+      text-align: center;
+      width: 14px;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+  }
 }

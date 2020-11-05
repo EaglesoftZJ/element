@@ -29,7 +29,32 @@ export default {
   },
 
   render(h) {
+    // const { treeData, lazyTreeNodeMap, childrenColumnName, rowKey } = store.states;
     const columnsHidden = this.columns.map((column, index) => this.isColumnHidden(index));
+    let rows = this.data;
+    const { lazyColumnIdentifier, childrenColumnName } = this.store.states;
+    if (this.store.states.lazy && Object.keys(this.store.states.lazyTreeNodeMap).length) {
+      rows = rows.reduce((prev, item) => {
+        prev.push(item);
+        const rowKey = this.store.table.getRowKey(item);
+        const parent = this.store.states.treeData[rowKey];
+        if (parent && parent.children) {
+          const tmp = [];
+          const traverse = (children) => {
+            if (!children) return;
+            children.forEach(key => {
+              tmp.push(this.store.states.lazyTreeNodeMap[key]);
+              if (this.store.states.treeData[key]) {
+                traverse(this.store.states.treeData[key].children);
+              }
+            });
+          };
+          traverse(parent.children);
+          prev = prev.concat(tmp);
+        }
+        return prev;
+      }, []);
+    }
     console.log('columns', this.columns);
     return (
       <table
@@ -47,71 +72,65 @@ export default {
         </colgroup>
         <tbody>
           {
-            this._l(this.data, (row, $index) =>{
+            this._l(rows, (row, $index) =>{
+              const rowKey = this.table.primaryKey ? row[this.table.primaryKey] : this.table.rowKey ? this.getKeyOfRow(row, $index) : $index;
+              const treeNode = this.treeData[rowKey];
+              const rowClasses = this.getRowClass(row, $index);
+              console.log('treeNode', treeNode);
+              if (treeNode) {
+                rowClasses.push('el-table__row--level-' + treeNode.level);
+              }
               return [<tr
+                v-show={ treeNode ? treeNode.display : true }
                 style={ this.rowStyle ? this.getRowStyle(row, $index) : null }
-                key={ this.table.primaryKey ? row[this.table.primaryKey] : this.table.rowKey ? this.getKeyOfRow(row, $index) : $index }
+                key={ rowKey }
                 on-dblclick={ ($event) => this.handleDoubleClick($event, row) }
                 on-click={ ($event) => this.handleClick($event, row) }
                 on-contextmenu={ ($event) => this.handleContextMenu($event, row) }
                 on-mouseenter={ _ => this.handleMouseEnter($index) }
                 on-mouseleave={ _ => this.handleMouseLeave() }
-                class={ [this.getRowClass(row, $index), {'current-row': this.table.highlightCurrentRow && this.store.states.currentRow && this.table.primaryKey && row[this.table.primaryKey] === this.store.states.currentRow[this.table.primaryKey]}] }>
+                class={ [rowClasses, {'current-row': this.table.highlightCurrentRow && this.store.states.currentRow && this.table.primaryKey && row[this.table.primaryKey] === this.store.states.currentRow[this.table.primaryKey]}] }>
                 {
                   this._l(this.columns, (column, cellIndex) => {
                     const { rowspan, colspan } = this.getSpan(row, column, $index, cellIndex);
                     if (!rowspan || !colspan) {
                       return '';
                     } else {
-                      if (rowspan === 1 && colspan === 1) {
-                        return (
-                          <td
-                            style={ this.getCellStyle($index, cellIndex, row, column) }
-                            class={ this.getCellClass($index, cellIndex, row, column) }
-                            on-mouseenter={ ($event) => this.handleCellMouseEnter($event, row, column) }
-                            on-mouseleave={ ($event) => this.handleCellMouseLeave($event, column) }>
-                            {
-                              column.renderCell.call(
-                                this._renderProxy,
-                                h,
-                                {
-                                  row,
-                                  column,
-                                  $index,
-                                  store: this.store,
-                                  _self: this.context || this.table.$vnode.context
-                                },
-                                columnsHidden[cellIndex]
-                              )
-                            }
-                          </td>
-                        );
-                      } else {
-                        return (
-                          <td
-                            style={ this.getCellStyle($index, cellIndex, row, column) }
-                            class={ this.getCellClass($index, cellIndex, row, column) }
-                            rowspan={ rowspan }
-                            colspan={ colspan }
-                            on-mouseenter={ ($event) => this.handleCellMouseEnter($event, row, column) }
-                            on-mouseleave={ ($event) => this.handleCellMouseLeave($event, column) }>
-                            {
-                              column.renderCell.call(
-                                this._renderProxy,
-                                h,
-                                {
-                                  row,
-                                  column,
-                                  $index,
-                                  store: this.store,
-                                  _self: this.context || this.table.$vnode.context
-                                },
-                                columnsHidden[cellIndex]
-                              )
-                            }
-                          </td>
-                        );
+                      const data = {
+                        store: this.store,
+                        _self: this.context || this.table.$vnode.context,
+                        row,
+                        column,
+                        $index
+                      };
+                      if (cellIndex === this.firstDefaultColumnIndex && treeNode) {
+                        data.treeNode = {
+                          hasChildren: treeNode.hasChildren || (treeNode.children && treeNode.children.length),
+                          expanded: treeNode.expanded,
+                          indent: treeNode.level * this.treeIndent,
+                          level: treeNode.level,
+                          loaded: treeNode.loaded,
+                          rowKey
+                        };
                       }
+                      return (
+                        <td
+                          style={ this.getCellStyle($index, cellIndex, row, column) }
+                          class={ this.getCellClass($index, cellIndex, row, column) }
+                          rowspan={ rowspan }
+                          colspan={ colspan }
+                          on-mouseenter={ ($event) => this.handleCellMouseEnter($event, row, column) }
+                          on-mouseleave={ ($event) => this.handleCellMouseLeave($event, column) }>
+                          {
+                            column.renderCell.call(
+                              this._renderProxy,
+                              h,
+                              data,
+                              columnsHidden[cellIndex]
+                            )
+                          }
+                        </td>
+                      );
                     }
                   })
                 }
@@ -181,6 +200,10 @@ export default {
       return this.store.states.data;
     },
 
+    treeData() {
+      return this.store.states.treeData;
+    },
+
     columnsCount() {
       return this.store.states.columns.length;
     },
@@ -203,6 +226,18 @@ export default {
 
     columns() {
       return this.store.states.columns;
+    },
+    firstDefaultColumnIndex() {
+      for (let index = 0; index < this.columns.length; index++) {
+        if (this.columns[index].type === 'default') {
+          return index;
+        }
+      }
+      return 0;
+    },
+
+    treeIndent() {
+      return this.store.states.indent;
     }
   },
 
@@ -278,6 +313,13 @@ export default {
 
     getRowClass(row, rowIndex) {
       const classes = ['el-table__row'];
+      if (this.table.highlightCurrentRow && row === this.store.states.currentRow) {
+        classes.push('current-row');
+      }
+
+      if (rowIndex === this.store.states.hoverRow) {
+        classes.push('hover-row');
+      }
 
       if (this.stripe && rowIndex % 2 === 1) {
         classes.push('el-table__row--striped');
@@ -296,7 +338,7 @@ export default {
         classes.push('expanded');
       }
 
-      return classes.join(' ');
+      return classes;
     },
 
     getCellStyle(rowIndex, columnIndex, row, column) {
