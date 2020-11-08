@@ -132,24 +132,6 @@
   import TableFooter from './table-footer';
   import { getRowIdentity } from './util';
   let tableIdSeed = 1;
-    const flattenData = function(data) {
-    if (!data) return data;
-    let newData = [];
-    const flatten = arr => {
-      arr.forEach((item) => {
-        newData.push(item);
-        if (Array.isArray(item.children)) {
-          flatten(item.children);
-        }
-      });
-    };
-    flatten(data);
-    if (data.length === newData.length) {
-      return data;
-    } else {
-      return newData;
-    }
-  };
   export default {
     name: 'ElTable',
     componentName: 'ElTable',
@@ -727,6 +709,7 @@
       },
       getTableTreeData(data) {
         const treeData = {};
+        const { lazyColumnIdentifier, childrenColumnName } = this.store.states;
         const traverse = (children, parentData, level) => {
           children.forEach(item => {
             const rowKey = this.getRowKey(item);
@@ -735,17 +718,17 @@
               level
             };
             parentData.children.push(rowKey);
-            if (Array.isArray(item.children) && item.children.length) {
+            if (Array.isArray(item[childrenColumnName]) && item[childrenColumnName].length) {
               treeData[rowKey].children = [];
               treeData[rowKey].expanded = false;
-              traverse(item.children, treeData[rowKey], level + 1);
+              traverse(item[childrenColumnName], treeData[rowKey], level + 1);
             }
           });
         };
         if (data) {
           data.forEach(item => {
-            const containChildren = Array.isArray(item.children) && item.children.length;
-            if (!(containChildren || item.hasChildren)) return;
+            const containChildren = Array.isArray(item[childrenColumnName]) && item[childrenColumnName].length;
+            if (!(containChildren || item[lazyColumnIdentifier])) return;
             const rowKey = this.getRowKey(item);
             const treeNode = {
               level: 0,
@@ -755,15 +738,36 @@
             };
             if (containChildren) {
               treeData[rowKey] = treeNode;
-              traverse(item.children, treeData[rowKey], 1);
-            } else if (item.hasChildren && this.lazy) {
+              traverse(item[childrenColumnName], treeData[rowKey], 1);
+            } else if (item[lazyColumnIdentifier] && this.lazy) {
               treeNode.hasChildren = true;
               treeNode.loaded = false;
               treeData[rowKey] = treeNode;
             }
           });
         }
+        console.log('treeData', treeData)
         return treeData;
+      },
+      flattenData(data) {
+        if (!data) return data;
+        const { lazyColumnIdentifier, childrenColumnName } = this.store.states;
+        console.log('lazyColumnIdentifier', lazyColumnIdentifier, childrenColumnName);
+        let newData = [];
+        const flatten = arr => {
+          arr.forEach((item) => {
+            newData.push(item);
+            if (Array.isArray(item[childrenColumnName])) {
+              flatten(item[childrenColumnName]);
+            }
+          });
+        };
+        flatten(data);
+        if (data.length === newData.length) {
+          return data;
+        } else {
+          return newData;
+        }
       }
     },
     created() {
@@ -934,7 +938,7 @@
           /* start */
           if (!this.action && !this.pageing) { // 非异步非分页的情况下 直接生成tableTree
             this.store.states.treeData = this.getTableTreeData(value);
-            value = flattenData(value);
+            value = this.flattenData(value);
           }
           if (!this.pageing) {
             // 不分页直接赋值

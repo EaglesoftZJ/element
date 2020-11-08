@@ -273,7 +273,7 @@
           date: '2016-05-01',
           name: '王小虎',
           address: '上海市普陀区金沙江路 1519 弄',
-          children: [{
+          children1: [{
               id: 31,
               date: '2016-05-01',
               name: '王小虎',
@@ -305,7 +305,7 @@
           date: '2016-05-01',
           name: '王小虎',
           address: '上海市普陀区金沙江路 1519 弄',
-          hasChildren: true
+          hasChildren1: true
         }, {
           id: 4,
           date: '2016-05-03',
@@ -2008,6 +2008,7 @@
     :data="treeTableData"
     style="width: 100%;margin-bottom: 20px;"
     border
+    :tree-props="{ children: 'children1' }"
     row-key="id">
     <el-table-column
       prop="date"
@@ -2034,6 +2035,7 @@
     border
     lazy
     :load="load"
+    :tree-props="{ hasChildren: 'hasChildren1' }"
     >
     <el-table-column
       prop="date"

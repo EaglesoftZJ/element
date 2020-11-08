@@ -659,6 +659,7 @@ TableStore.prototype.toggleTreeExpansion = function(rowKey) {
 };
 
 TableStore.prototype.loadData = function(row, treeNode) {
+  const { lazyColumnIdentifier } = this.states;
   const table = this.table;
   const parentRowKey = treeNode.rowKey;
   if (table.lazy && table.load) {
@@ -676,7 +677,7 @@ TableStore.prototype.loadData = function(row, treeNode) {
           display: true,
           level: parent.level + 1
         };
-        if (item.hasChildren) {
+        if (item[lazyColumnIdentifier]) {
           child.expanded = false;
           child.hasChildren = true;
           child.children = [];

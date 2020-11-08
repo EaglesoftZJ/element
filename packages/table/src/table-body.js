@@ -32,6 +32,7 @@ export default {
     // const { treeData, lazyTreeNodeMap, childrenColumnName, rowKey } = store.states;
     const columnsHidden = this.columns.map((column, index) => this.isColumnHidden(index));
     let rows = this.data;
+    console.log('rows', rows);
     const { lazyColumnIdentifier, childrenColumnName } = this.store.states;
     if (this.store.states.lazy && Object.keys(this.store.states.lazyTreeNodeMap).length) {
       rows = rows.reduce((prev, item) => {
