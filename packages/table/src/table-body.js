@@ -32,7 +32,7 @@ export default {
     // const { treeData, lazyTreeNodeMap, childrenColumnName, rowKey } = store.states;
     const columnsHidden = this.columns.map((column, index) => this.isColumnHidden(index));
     let rows = this.data;
-    console.log('rows', rows);
+    // console.log('rows', rows);
     const { lazyColumnIdentifier, childrenColumnName } = this.store.states;
     if (this.store.states.lazy && Object.keys(this.store.states.lazyTreeNodeMap).length) {
       rows = rows.reduce((prev, item) => {
@@ -56,7 +56,7 @@ export default {
         return prev;
       }, []);
     }
-    console.log('columns', this.columns);
+    // console.log('columns', this.columns);
     return (
       <table
         class="el-table__body"
@@ -77,7 +77,7 @@ export default {
               const rowKey = this.table.primaryKey ? row[this.table.primaryKey] : this.table.rowKey ? this.getKeyOfRow(row, $index) : $index;
               const treeNode = this.treeData[rowKey];
               const rowClasses = this.getRowClass(row, $index);
-              console.log('treeNode', treeNode);
+              // console.log('treeNode', treeNode);
               if (treeNode) {
                 rowClasses.push('el-table__row--level-' + treeNode.level);
               }
