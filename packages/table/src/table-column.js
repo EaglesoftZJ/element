@@ -2,6 +2,7 @@ import ElCheckbox from 'element-ui/packages/checkbox';
 import ElTag from 'element-ui/packages/tag';
 import objectAssign from 'element-ui/src/utils/merge';
 import { getPropByPath } from 'element-ui/src/utils/util';
+import Vue from 'vue';
 
 let columnIdSeed = 1;
 
@@ -54,6 +55,7 @@ const forced = {
       return column.label || '#';
     },
     renderCell: function(h, { $index, column }) {
+      // h = this.$parent.$createElement;
       let i = $index + 1;
       const index = column.index;
 
@@ -304,7 +306,7 @@ export default {
         renderCell = DEFAULT_RENDER_CELL;
       }
       const children = [
-        _self.renderTreeCell(data),
+        _self.renderTreeCell(data, h),
         renderCell(h, data)
       ];
 
@@ -420,7 +422,7 @@ export default {
     }
   },
   methods: {
-    renderTreeCell(data) {
+    renderTreeCell(data, h) {
       // console.log('renderTreeCell', data);
       if (!data.treeNode) return null;
       const ele = [];
