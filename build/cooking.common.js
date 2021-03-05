@@ -9,7 +9,8 @@ cooking.set({
   extends: ['vue2'],
   minimize: false,
   alias: config.alias,
-  externals: config.externals
+  externals: config.externals,
+  watch: true
 });
 
 cooking.add('output.filename', 'element-ui.common.js');

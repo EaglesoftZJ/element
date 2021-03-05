@@ -659,6 +659,7 @@
         }
       },
       resizeListener() {
+        console.log('resizeListener');
         if (!this.$ready) return;
         let shouldUpdateLayout = false;
         const el = this.$el;
@@ -822,7 +823,8 @@
         return this.height ||
           this.maxHeight ||
           this.fixedColumns.length > 0 ||
-          this.rightFixedColumns.length > 0;
+          this.rightFixedColumns.length > 0 ||
+          this.fitHeight;
       },
       selection() {
         return this.store.states.selection;
