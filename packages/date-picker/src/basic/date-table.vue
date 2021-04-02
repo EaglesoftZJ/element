@@ -484,7 +484,8 @@
           d.setFullYear(newDate.getFullYear());
           d.setMonth(newDate.getMonth());
           d.setDate(newDate.getDate());
-          return d;
+          const result = new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate(), d.getHours(), d.getMinutes(), d.getSeconds())
+          return result;
         }
       }
     }
