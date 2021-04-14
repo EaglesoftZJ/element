@@ -1,3 +1,67 @@
+<script>
+  import DialogTest from '../../components/dialog-test.vue';
+  module.exports = {
+    data() {
+      return {
+        gridData: [{
+          date: '2016-05-02',
+          name: 'John Smith',
+          address: 'No.1518,  Jinshajiang Road, Putuo District'
+        }, {
+          date: '2016-05-04',
+          name: 'John Smith',
+          address: 'No.1518,  Jinshajiang Road, Putuo District'
+        }, {
+          date: '2016-05-01',
+          name: 'John Smith',
+          address: 'No.1518,  Jinshajiang Road, Putuo District'
+        }, {
+          date: '2016-05-03',
+          name: 'John Smith',
+          address: 'No.1518,  Jinshajiang Road, Putuo District'
+        }],
+        dialogVisible: false,
+        dialogTableVisible: false,
+        dialogFormVisible: false,
+        outerVisible: false,
+        innerVisible: false,
+        centerDialogVisible: false,
+        form: {
+          name: '',
+          region: '',
+          date1: '',
+          date2: '',
+          delivery: false,
+          type: [],
+          resource: '',
+          desc: ''
+        },
+        formLabelWidth: '120px'
+      };
+    },
+    methods: {
+      handleClick(done) {
+        this.$edlg.open({
+          title: 'test',
+          type: 'Default',
+          vnode: DialogTest,
+          beforeShow: (a, b) => {
+            console.log('beforeShow', b);
+          },
+          buttons: [
+            {
+              text: '取消', // 显示名称
+              size: 'normal', // 大小
+              callback: (dlgBox, slot) => { // 弹出窗实例和打开的组件实例
+                dlgBox.close();
+              }
+            }
+          ]
+        });
+      }
+    }
+  };
+</script>
 <style>
   .demo-box.demo-button {
     .el-row {
@@ -34,7 +98,7 @@
 ```html
 <el-row>
   <el-button>默认按钮</el-button>
-  <el-button type="primary">主要按钮</el-button>
+  <el-button type="primary" @click="handleClick">主要按钮</el-button>
   <el-button type="success">成功按钮</el-button>
   <el-button type="info">信息按钮</el-button>
   <el-button type="warning">警告按钮</el-button>

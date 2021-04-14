@@ -74,6 +74,7 @@ import Footer from '../packages/footer/index.js';
 import Drawer from '../packages/drawer/index.js';
 import Image from '../packages/image/index.js';
 import Divider from '../packages/divider/index.js';
+import EgDialog from '../packages/eg-dialog/index.js';
 import locale from 'element-ui/src/locale';
 import CollapseTransition from 'element-ui/src/transitions/collapse-transition';
 
@@ -148,6 +149,7 @@ const components = [
   Drawer,
   Image,
   Divider,
+  EgDialog,
   CollapseTransition
 ];
 
@@ -172,6 +174,7 @@ const install = function(Vue, opts = {}) {
   Vue.prototype.$prompt = MessageBox.prompt;
   Vue.prototype.$notify = Notification;
   Vue.prototype.$message = Message;
+  Vue.prototype.$egdlg = EgDialog;
 
   Vue.prototype.$ELEMENT = ELEMENT;
 };
@@ -260,7 +263,8 @@ module.exports = {
   Footer,
   Drawer,
   Image,
-  Divider
+  Divider,
+  EgDialog
 };
 
 module.exports.default = module.exports;

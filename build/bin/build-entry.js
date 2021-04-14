@@ -40,6 +40,7 @@ const install = function(Vue, opts = {}) {
   Vue.prototype.$prompt = MessageBox.prompt;
   Vue.prototype.$notify = Notification;
   Vue.prototype.$message = Message;
+  Vue.prototype.$egdlg = EgDialog;
 
   Vue.prototype.$ELEMENT = ELEMENT;
 };

@@ -2541,10 +2541,10 @@ Table展示远程数据的时候可以使用
     <el-table-column prop="krnrs" label="可容纳人数" align="center" ></el-table-column>
     <el-table-column :sortable="false" fixed="right" label="操作" align="center" width="210">
         <template scope="scope">
-            <el-button :size="$config.size" @click.stop="hyslcbd(scope.row)" type="text" size="small">
+            <el-button size="small" @click.stop="hyslcbd(scope.row)" type="text" size="small">
                 {{ scope.row.lcbdbh ? '更新绑定' : '流程绑定'}}
             </el-button>
-            <el-button :size="$config.size" @click.stop="hysqedit(scope.row)" type="text" size="small" v-if="scope.row.lcbdbh">
+            <el-button size="small" @click.stop="hysqedit(scope.row)" type="text" size="small" v-if="scope.row.lcbdbh">
                 会议预定
             </el-button>
         </template>

@@ -1,1 +1,33 @@
 
+.el-eg-dialog:after {
+  content: none!important;
+}
+/* 弹窗样式重置*/
+.el-eg-dialog {
+  max-width: 100%!important;
+}
+.el-eg-dialog__content {
+  max-width: 100%!important;
+}
+.el-eg-dialog__header {
+  z-index: 1;
+  background: #fff;
+}
+.el-eg-dialog__contentArea {
+  padding: 50px 0 0 250px;
+}
+.el-eg-dialog.img-preview, .el-eg-dialog.img-preview .el-eg-dialog__content {
+overflow: visible;
+}
+.el-eg-dialog.ntko-dialog {
+  width: 0px!important;
+  height: 0px!important;
+  overflow: hidden;
+  /* background: transparent; */
+}
+.el-eg-dialog__contentArea {
+  padding-left: 200px;
+}
+.el-eg-dialog__contentArea {
+  padding-top: 50px;
+}

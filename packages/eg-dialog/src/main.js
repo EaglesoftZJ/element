@@ -4,7 +4,7 @@ const defaults = {
   type: '',
   showInput: false,
   showClose: true,
-  lockScroll: true,
+  lockScroll: false,
   closeOnClickModal: true,
   closeOnPressEscape: true,
   inputValue: null,
@@ -13,6 +13,7 @@ const defaults = {
   inputValidator: null,
   inputErrorMessage: '',
   customClass: '',
+  wrapperClass: '',
   beforeClose: null,
   beforeShow: null,
   style: '',
@@ -73,6 +74,17 @@ const initInstance = () => {
   instance = new MessageBoxConstructor({
     el: document.createElement('div')
   });
+  instance.$on('update:visible', (val) => {
+    instance.visible = false;
+  });
+  instance.$on('rendered', (val) => {
+    instance.$nextTick(() => {
+      if (instance.message && instance.message.nodeName) {
+        // instance.message = null;
+        instance.$refs['body'].appendChild(instance.message);
+      } 
+    })
+  });
   // console.log('instance', instance);
   instanceManager[instance._uid] = instance;
   instance.callback = defaultCallback;
@@ -81,6 +93,7 @@ const initInstance = () => {
 const showNextMsg = () => {
 
   initInstance();
+  
   instance.action = '';
 
   if (!instance.visible || instance.closeTimer) {
@@ -90,7 +103,9 @@ const showNextMsg = () => {
       let options = currentMsg.options;
       for (let prop in options) {
         if (options.hasOwnProperty(prop)) {
-          instance[prop] = options[prop];
+          if (prop !== 'props') {
+            instance[prop] = options[prop];
+          }
         }
       }
       // console.log('options.callback', options.callback);
@@ -105,9 +120,27 @@ const showNextMsg = () => {
         oldCb(action, instance);
         showNextMsg();
       };
+
+      // 弹窗实例生成后再生成弹窗内容的vode
+      if (currentMsg.options.vnode) {
+        if (currentMsg.options.props) {
+          currentMsg.options.props.dialogBox = instance;
+        } else {
+          currentMsg.options.props = {dialogBox: instance};
+        }
+        if (!instance.message.nodeName) {
+          instance.message = instance.$createElement(currentMsg.options.vnode, {
+            props: currentMsg.options.props,
+            on: currentMsg.options.on ? currentMsg.options.on : {}
+          });
+        }
+      }
       if (isVNode(instance.message)) {
         instance.$slots.default = [instance.message];
         instance.message = null;
+      } else if (instance.message.nodeName) {
+        // instance.message = null;
+          // instance.$refs['body'].appendChild(instance.message);
       } else {
         delete instance.$slots.default;
       }
@@ -217,7 +250,7 @@ EgDialog.close = () => {
 EgDialog.closeAll = () => {
   console.log('instanceManager', instanceManager);
   for (var key in instanceManager) {
-    instanceManager[key].close();
+     instanceManager[key].close();
   }
   msgQueue = [];
   currentMsg = null;

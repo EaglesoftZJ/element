@@ -21,12 +21,14 @@ import FooterNav from './components/footer-nav';
 import title from './i18n/title.json';
 import emitter from './assets/scripts/emitter';
 import Eaglesoft from './assets/scripts/eaglesoft';
+import EgDialog from './assets/scripts/egDialog';
 
 Vue.use(Element, {
   btnDirection: 'row-reverse'
 });
 Vue.use(VueRouter);
 Vue.use(Eaglesoft);
+Vue.use(EgDialog);
 Vue.component('demo-block', demoBlock);
 Vue.component('main-footer', MainFooter);
 Vue.component('main-header', MainHeader);
