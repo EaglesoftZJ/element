@@ -74,14 +74,16 @@ const initInstance = () => {
   instance = new MessageBoxConstructor({
     el: document.createElement('div')
   });
-  instance.$on('update:visible', (val) => {
-    instance.visible = false;
+  const currentInstance = instance; // 每次打开弹窗instance都会变，所以用一个currentInstance存储当前的实例
+  currentInstance.$on('update:visible', (val) => {
+    console.log(123123);
+    currentInstance.visible = false;
   });
-  instance.$on('rendered', (val) => {
-    instance.$nextTick(() => {
-      if (instance.message && instance.message.nodeName) {
-        // instance.message = null;
-        instance.$refs['body'].appendChild(instance.message);
+  currentInstance.$on('rendered', (val) => {
+    currentInstance.$nextTick(() => {
+      if (currentInstance.message && currentInstance.message.nodeName) {
+        // currentInstance.message = null;
+        currentInstance.$refs['body'].appendChild(currentInstance.message);
       } 
     })
   });

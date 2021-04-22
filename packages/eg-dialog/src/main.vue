@@ -166,8 +166,7 @@ export default {
       wrapperClass: '',
       dialogStyle: '',
       contentStyle: '',
-      style: '',
-      message: '',
+      style: ''
     };
   },
 
@@ -212,6 +211,11 @@ export default {
         // this.bodyShow = false;
       }
     },
+    rendered(val) {
+      if (val) {
+        this.$emit('rendered');
+      }
+    }
   },
 
   computed: {
@@ -267,13 +271,6 @@ export default {
       }
       return style;
     },
-  },
-  watch: {
-    rendered(val) {
-      if (val) {
-        this.$emit('rendered');
-      }
-    }
   },
 
   methods: {
