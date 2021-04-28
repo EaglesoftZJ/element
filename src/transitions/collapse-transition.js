@@ -68,8 +68,16 @@ export default {
   name: 'ElCollapseTransition',
   functional: true,
   render(h, { children }) {
+    const instance = new Transition();
     const data = {
-      on: new Transition()
+      on: {
+        beforeEnter: instance.beforeEnter,
+        enter: instance.enter,
+        afterEnter: instance.afterEnter,
+        beforeLeave: instance.beforeLeave,
+        leave: instance.leave,
+        afterLeave: instance.afterLeave,
+      }
     };
 
     return h('transition', data, children);
