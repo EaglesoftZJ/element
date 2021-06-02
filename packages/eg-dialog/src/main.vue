@@ -289,9 +289,8 @@ export default {
       this.handleClose();
     },
     handleClose() {
-      console.log('handleClose');
       if (typeof this.beforeClose === "function") {
-        this.beforeClose(this.hide);
+        this.beforeClose('', this, this.close, this.$slots.default[0].componentInstance);
       } else {
         this.hide();
       }
