@@ -218,14 +218,14 @@
         return currentNode ? currentNode[this.nodeKey] : null;
       },
 
-      setCheckedNodes(nodes, leafOnly) {
+      setCheckedNodes(nodes, leafOnly, checkStrictly) {
         if (!this.nodeKey) throw new Error('[Tree] nodeKey is required in setCheckedNodes');
-        this.store.setCheckedNodes(nodes, leafOnly);
+        this.store.setCheckedNodes(nodes, leafOnly, checkStrictly);
       },
 
-      setCheckedKeys(keys, leafOnly) {
+      setCheckedKeys(keys, leafOnly, checkStrictly) {
         if (!this.nodeKey) throw new Error('[Tree] nodeKey is required in setCheckedKeys');
-        this.store.setCheckedKeys(keys, leafOnly);
+        this.store.setCheckedKeys(keys, leafOnly, checkStrictly);
       },
 
       setChecked(data, checked, deep) {

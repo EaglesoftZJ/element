@@ -244,7 +244,7 @@ export default class TreeStore {
     }
   }
 
-  _setCheckedKeys(key, leafOnly = false, checkedKeys) {
+  _setCheckedKeys(key, leafOnly = false, checkedKeys, checkStrictly) {
     const allNodes = this._getAllNodes().sort((a, b) => b.level - a.level);
     const cache = Object.create(null);
     const keys = Object.keys(checkedKeys);
@@ -266,7 +266,7 @@ export default class TreeStore {
         parent = parent.parent;
       }
 
-      if (node.isLeaf || this.checkStrictly) {
+      if (node.isLeaf || this.checkStrictly || checkStrictly) {
         node.setChecked(true, false);
         continue;
       }
@@ -288,17 +288,17 @@ export default class TreeStore {
     }
   }
 
-  setCheckedNodes(array, leafOnly = false) {
+  setCheckedNodes(array, leafOnly = false, checkStrictly = false) {
     const key = this.key;
     const checkedKeys = {};
     array.forEach((item) => {
       checkedKeys[(item || {})[key]] = true;
     });
 
-    this._setCheckedKeys(key, leafOnly, checkedKeys);
+    this._setCheckedKeys(key, leafOnly, checkedKeys, checkStrictly);
   }
 
-  setCheckedKeys(keys, leafOnly = false) {
+  setCheckedKeys(keys, leafOnly = false, checkStrictly = false) {
     this.defaultCheckedKeys = keys;
     const key = this.key;
     const checkedKeys = {};
@@ -306,7 +306,7 @@ export default class TreeStore {
       checkedKeys[key] = true;
     });
 
-    this._setCheckedKeys(key, leafOnly, checkedKeys);
+    this._setCheckedKeys(key, leafOnly, checkedKeys, checkStrictly);
   }
 
   setDefaultExpandedKeys(keys) {

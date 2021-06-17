@@ -345,7 +345,7 @@
         ]);
       },
       setCheckedKeys() {
-        this.$refs.tree.setCheckedKeys([3]);
+        this.$refs.tree.setCheckedKeys([3, 7], false, true);
       },
       resetChecked() {
         this.$refs.tree.setCheckedKeys([]);
