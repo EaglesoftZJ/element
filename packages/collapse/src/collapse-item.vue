@@ -1,7 +1,7 @@
 <template>
   <div class="el-collapse-item" :class="{'is-active': isActive}">
     <div class="el-collapse-item__header" @click="handleHeaderClick">
-      <i class="el-collapse-item__header__arrow el-icon-chevron-right"></i>
+      <i class="el-collapse-item__header__arrow el-icon-chevron-right el-collapse-item__arrow"></i>
       <slot name="title">{{title}}</slot>
     </div>
     <el-collapse-transition>

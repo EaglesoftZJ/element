@@ -14,11 +14,10 @@
       class="el-eg-dialog__wrapper el-dialog__wrapper"
       :class="wrapperClass"
       v-show="calVisible"
-      @click.stop.self="handleWrapperClick"
+      @click.self="handleWrapperClick"
       :style="style"
     >
       <div
-        @click.stop
         class="el-eg-dialog el-dialog"
         :class="[
           { 'is-fullscreen': fullscreen, 'el-dialog--center': center },
@@ -425,6 +424,7 @@ export default {
         const componentInstance = this.getInstance();
         this.transitionCallback(type, this, componentInstance);
       }
+      this.$emit(type);
     },
     doFunctions(evt, index) {
       const componentInstance = this.getInstance();
