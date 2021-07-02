@@ -1,8 +1,7 @@
 <template>
   <transition name="dialog-fade" @enter="handleEnter" @after-enter="handleAfterEnter" @after-leave="handleAfterLeave">
-    <div class="el-dialog__wrapper" v-show="calVisible" @click.stop.self="handleWrapperClick">
+    <div class="el-dialog__wrapper" v-show="calVisible" @click.self="handleWrapperClick">
       <div
-        @click.stop
         class="el-dialog"
         :class="[{ 'is-fullscreen': fullscreen, 'el-dialog--center': center }, customClass]"
         ref="dialog"
@@ -12,7 +11,6 @@
             <span class="el-dialog__title">{{ title }}</span>
           </slot>
           <button
-            mousedown.stop
             type="button"
             class="el-dialog__headerbtn"
             aria-label="Close"

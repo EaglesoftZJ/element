@@ -31,7 +31,6 @@
             <span class="el-eg-dialog__title el-dialog__title">{{ title }}</span>
           </slot>
           <button
-            mousedown.stop
             type="button"
             class="el-dialog__headerbtn"
             aria-label="Close"
