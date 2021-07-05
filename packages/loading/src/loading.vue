@@ -1,6 +1,7 @@
 <template>
   <transition name="el-loading-fade" @after-leave="handleAfterLeave">
     <div
+      @click.stop
       v-show="visible"
       class="el-loading-mask"
       :style="{ backgroundColor: background || '' }"

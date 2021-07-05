@@ -231,6 +231,14 @@
       start-placeholder="开始日期"
       end-placeholder="结束日期">
     </el-date-picker>
+     <el-date-picker
+      v-model="value6"
+      type="monthrange"
+      :default-time="['10:00:00', '11:00:00']"
+      range-separator="至"
+      start-placeholder="开始月"
+      end-placeholder="结束月">
+    </el-date-picker>
   </div>
   <div class="block">
     <span class="demonstration">带快捷选项</span>

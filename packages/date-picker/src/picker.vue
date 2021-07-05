@@ -61,6 +61,8 @@
     timerange: 'HH:mm:ss',
     daterange: 'yyyy-MM-dd',
     datetimerange: 'yyyy-MM-dd HH:mm:ss',
+    monthrange: 'yyyy-MM',
+    yearrange: 'yyyy',
     year: 'yyyy'
   };
   const HAVE_TRIGGER_TYPES = [
@@ -72,6 +74,8 @@
     'month',
     'year',
     'daterange',
+    'monthrange', // 月范围 添加
+    'yearrange', // 年范围 添加
     'timerange',
     'datetimerange'
   ];
