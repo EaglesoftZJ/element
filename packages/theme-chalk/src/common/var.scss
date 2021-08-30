@@ -646,6 +646,18 @@ $--datepicker-active-color: $--color-primary !default;
 $--datepicker-text-hover-color: $--color-primary !default;
 $--datepicker-cell-hover-color: #fff !default;
 
+$--datepicker-font-color: $--color-text-regular !default;
+/// color|1|Color|0
+$--datepicker-off-font-color: $--color-text-placeholder !default;
+/// color||Color|0
+$--datepicker-header-font-color: $--color-text-regular !default;
+/// color||Color|0
+$--datepicker-inrange-background-color: $--border-color-extra-light !default;
+/// color||Color|0
+$--datepicker-inrange-hover-background-color: $--border-color-extra-light !default;
+/// color||Color|0
+$--datepicker-hover-font-color: $--color-primary !default;
+
 /* Loading
 --------------------------*/
 $--loading-spinner-size: 42px !default;

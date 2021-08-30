@@ -162,6 +162,10 @@
       formatter: RANGE_FORMATTER,
       parser: RANGE_PARSER
     },
+    monthrange: {
+      formatter: RANGE_FORMATTER,
+      parser: RANGE_PARSER
+    },
     timerange: {
       formatter: RANGE_FORMATTER,
       parser: RANGE_PARSER
@@ -217,6 +221,7 @@
       TYPE_VALUE_RESOLVER_MAP[type] || TYPE_VALUE_RESOLVER_MAP['default']
     ).formatter;
     const format = customFormat || DEFAULT_FORMATS[type];
+    console.log('format123', format);
     return formatter(value, format);
   };
   // only considers date-picker's value: Date or [Date, Date]
@@ -809,7 +814,7 @@
         }
       },
       emitInput(val) {
-        console.log(val);
+        console.log(111, val);
         const formatted = this.formatToValue(val);
         if (!valueEquals(this.value, formatted)) {
           console.log(formatted);

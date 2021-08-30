@@ -2030,6 +2030,7 @@
   <el-table
     :data="treeTableData"
     style="width: 100%;margin-bottom: 20px;"
+    height="300"
     border
     :tree-props="{ children: 'children1' }"
     row-key="id">

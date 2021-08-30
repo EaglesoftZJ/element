@@ -444,6 +444,9 @@ export default {
         data.store.loadData(data.row, data.treeNode);
       } else {
         data.store.toggleTreeExpansion(data.treeNode.rowKey);
+        this.$nextTick(() => {
+          this.owner.doLayout();
+        })
       }
     }
   },

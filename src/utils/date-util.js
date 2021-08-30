@@ -192,12 +192,29 @@ export const modifyTime = function(date, h, m, s) {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate(), h, m, s, date.getMilliseconds());
 };
 
-export const modifyWithTimeString = (date, time) => {
+export const modifyMonth = function(date, h, m, s, type) {
+  if (type === 'min') { // 开始时间
+    return new Date(date.getFullYear(), date.getMonth(), 1, h, m, s, date.getMilliseconds());
+  } else if (type === 'max') { // 结束时间
+    const date1 = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    return new Date(date.getFullYear(), date.getMonth(), date1.getDate(), h, m, s, date.getMilliseconds());
+  }
+};
+
+export const modifyWithTimeString = (date, time, type) => {
   if (date == null || !time) {
     return date;
   }
   time = parseDate(time, 'HH:mm:ss');
-  return modifyTime(date, time.getHours(), time.getMinutes(), time.getSeconds());
+  return modifyTime(date, time.getHours(), time.getMinutes(), time.getSeconds(), type);
+};
+
+export const monthRangeWithLastString = (date, time) => { // 月份范围，添加日和time
+  if (date == null || !time) {
+    return date;
+  }
+  time = parseDate(time, 'HH:mm:ss');
+  return modifyMonth(date, time.getHours(), time.getMinutes(), time.getSeconds());
 };
 
 export const clearTime = function(date) {

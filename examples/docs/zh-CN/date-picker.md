@@ -66,7 +66,8 @@
         value10: '',
         value11: '',
         value12: '',
-        value13: []
+        value13: [],
+        value_range: []
       };
     }
   };
@@ -221,8 +222,6 @@
 <template>
   <div class="block">
     <span class="demonstration">默认</span>
-    {{ value6[0] && value6[0].toLocaleString() }}
-    {{ value6[1] && value6[1].toLocaleString() }}
     <el-date-picker
       v-model="value6"
       type="daterange"
@@ -232,9 +231,9 @@
       end-placeholder="结束日期">
     </el-date-picker>
      <el-date-picker
-      v-model="value6"
+      v-model="value_range"
       type="monthrange"
-      :default-time="['10:00:00', '11:00:00']"
+      :default-time="['00:00:00', '23:59:59']"
       range-separator="至"
       start-placeholder="开始月"
       end-placeholder="结束月">

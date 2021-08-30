@@ -80,7 +80,7 @@
 <script type="text/babel">
   import {
     isDate,
-    modifyWithTimeString,
+    monthRangeWithLastString,
     prevYear,
     nextYear,
     nextMonth
@@ -210,8 +210,8 @@
 
       handleRangePick(val, close = true) {
         const defaultTime = this.defaultTime || [];
-        const minDate = modifyWithTimeString(val.minDate, defaultTime[0]);
-        const maxDate = modifyWithTimeString(val.maxDate, defaultTime[1]);
+        const minDate = monthRangeWithLastString(val.minDate, defaultTime[0], 'min');
+        const maxDate = monthRangeWithLastString(val.maxDate, defaultTime[1], 'max');
         if (this.maxDate === maxDate && this.minDate === minDate) {
           return;
         }
