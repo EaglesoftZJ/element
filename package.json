@@ -39,7 +39,7 @@
     "url": "git@github.com:ElemeFE/element.git"
   },
   "publishConfig": {
-    "registry": "http://172.16.18.39:8082/repository/eaglesoft/"
+    "registry": "http://172.16.18.101:8082/repository/eaglesoft/"
   },
   "homepage": "http://element.eleme.io",
   "keywords": [
