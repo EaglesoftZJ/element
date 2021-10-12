@@ -145,6 +145,7 @@ export default {
     fitHeight: Boolean,
     drag: Boolean,
     closeReset: Boolean,
+    removeContent: Boolean // 弹窗关闭后是否移除内容dom
   },
 
   data() {
@@ -470,6 +471,7 @@ export default {
       }
 
       this.opened = false;
+      this.removeContent && (this.rendered = false); // 弹窗关闭时移除内容区域
 
       if (!this.transition) {
         this.doAfterClose();

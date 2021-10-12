@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>htmltocanvas</title>
+</head>
+<body>
+  html: <textarea id="textarea" rows="10">
+  </textarea>
+  style: <textarea id="style" rows="10">
+  </textarea>
+  <div id="box" class="box"></div>
+  <button onclick="saveFile()">保存</button>
+  <script src="./jquery.js"></script>
+  <script src="./html2canvas.js"></script>
+  <script>
+    function saveFile() {
+      const textarea = document.getElementById('textarea');
+      const style = document.getElementById('style');
+      const el = $(textarea.value)[0];
+      const box = document.getElementById('box');
+      box.innerHTML = '';
+      textarea.value && box.appendChild(el);
+      style.value && box.appendChild($(style.value)[0]);
+      html2canvas(el, {
+        backgroundColor: 'transparent'
+      }).then((canvas) => {
+        const type = 'image/png';
+        const dataUrl = canvas.toDataURL(type);
+        console.log('dataUrl', dataUrl);
+        const dataStr = dataUrl.replace(type, 'image/octet-stream');
+        const a = document.createElement('a');
+        a.download = '图片.png';
+        a.href = dataStr;
+        a.click();
+      });
+    }
+  </script>
+</body>
+</html>
