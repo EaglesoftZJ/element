@@ -22,8 +22,8 @@
             class="el-message-box__headerbtn"
             aria-label="Close"
             v-if="showClose"
-            @click="handleAction('cancel')"
-            @keydown.enter="handleAction('cancel')">
+            @click="handleAction(distinguishCancelAndClose ? 'close' : 'cancel')"
+            @keydown.enter="handleAction(distinguishCancelAndClose ? 'close' : 'cancel')">
             <i class="el-message-box__close el-icon-close"></i>
           </button>
         </div>
@@ -181,7 +181,7 @@
       },
       handleWrapperClick() {
         if (this.closeOnClickModal) {
-          this.handleAction('cancel');
+          this.handleAction(this.distinguishCancelAndClose ? 'close' : 'cancel');
         }
       },
 
@@ -321,7 +321,8 @@
         exist: true,
         dangerouslyUseHTMLString: false,
         focusAfterClosed: null,
-        isOnComposition: false
+        isOnComposition: false,
+        distinguishCancelAndClose: false
       };
     }
   };

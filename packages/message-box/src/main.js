@@ -28,7 +28,8 @@ const defaults = {
   beforeClose: null,
   dangerouslyUseHTMLString: false,
   center: false,
-  roundButton: false
+  roundButton: false,
+  distinguishCancelAndClose: false
 };
 
 import Vue from 'vue';
