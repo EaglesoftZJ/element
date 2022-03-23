@@ -453,6 +453,26 @@ TableStore.prototype.toggleRowExpansion = function(row, expanded) {
   }
 };
 
+// 展开行与 TreeTable 都要使用
+TableStore.prototype.toggleRowExpansionAdapter = function(row, expanded) {
+  const hasExpandColumn = this.states.columns.some(({ type }) => type === 'expand');
+  if (hasExpandColumn) {
+    this.toggleRowExpansion(row, expanded);
+  } else {
+    this.assertRowKey();
+    const { rowKey } = this.states;
+    const id = getRowIdentity(row, rowKey);
+    this.toggleTreeExpansion(id);
+  }
+};
+
+// 检查 rowKey 是否存在
+TableStore.prototype.assertRowKey = function() {
+  const rowKey = this.states.rowKey;
+  if (!rowKey) throw new Error('[ElTable] prop row-key is required');
+},
+
+
 TableStore.prototype.isRowExpanded = function(row) {
   const { expandRows = [], rowKey } = this.states;
   if (rowKey) {

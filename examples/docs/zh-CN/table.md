@@ -380,6 +380,12 @@
         this.height2 = obj2[this.height2];
         
       },
+      handleRowClick1(row, column, event) {
+        this.$refs.treeTableData.toggleRowExpansion(row);
+      },
+      handleRowClick5(row, column, event) {
+        this.$refs.tableData5.toggleRowExpansion(row);
+      },
       moveUp(row, index) {
         if (index - 1 >= 0) {
           this.$refs.tableData111.changeWzh(row, index - 1);
@@ -1922,6 +1928,8 @@
 <template>
   <el-table
     :data="tableData5"
+    ref="tableData5"
+    @row-click="handleRowClick5"
     style="width: 100%">
     <el-table-column type="expand">
       <template slot-scope="props">
@@ -2029,9 +2037,11 @@
 <div>
   <el-table
     :data="treeTableData"
+    ref="treeTableData"
     style="width: 100%;margin-bottom: 20px;"
     height="300"
     border
+    @row-click="handleRowClick1"
     :tree-props="{ children: 'children1' }"
     row-key="id">
     <el-table-column

@@ -578,7 +578,7 @@
         this.store.updateAllSelected();
       },
       toggleRowExpansion(row, expanded) {
-        this.store.toggleRowExpansion(row, expanded);
+        this.store.toggleRowExpansionAdapter(row, expanded);
       },
       clearSelection() {
         this.store.clearSelection();
