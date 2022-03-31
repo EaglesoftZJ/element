@@ -165,6 +165,7 @@ const TableStore = function(table, initialState = {}) {
 TableStore.prototype.mutations = {
   setData(states, data) {
     const dataInstanceChanged = states._data !== data;
+    console.log(123123);
     states._data = data;
 
     Object.keys(states.filters).forEach((columnId) => {
@@ -688,11 +689,12 @@ TableStore.prototype.loadData = function(row, treeNode) {
         throw new Error('data must be an array');
       }
       const treeData = this.states.treeData;
-      data.forEach(item => {
+      data.forEach((item, index) => {
         const rowKey = table.getRowKey(item);
         const parent = treeData[parentRowKey];
         parent.loaded = true;
         parent.children.push(rowKey);
+        item.$inLevelIndex = index;
         const child = {
           display: true,
           level: parent.level + 1

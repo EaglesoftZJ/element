@@ -712,8 +712,9 @@
         const treeData = {};
         const { lazyColumnIdentifier, childrenColumnName } = this.store.states;
         const traverse = (children, parentData, level) => {
-          children.forEach(item => {
+          children.forEach((item, index) => {
             const rowKey = this.getRowKey(item);
+            item.$inLevelIndex = index;
             treeData[rowKey] = {
               display: false,
               level
@@ -727,15 +728,17 @@
           });
         };
         if (data) {
-          data.forEach(item => {
+          data.forEach((item, index) => {
             const containChildren = Array.isArray(item[childrenColumnName]) && item[childrenColumnName].length;
+            item.$inLevelIndex = index;
             if (!(containChildren || item[lazyColumnIdentifier])) return;
             const rowKey = this.getRowKey(item);
             const treeNode = {
               level: 0,
               expanded: false,
               display: true,
-              children: []
+              children: [],
+              
             };
             if (containChildren) {
               treeData[rowKey] = treeNode;

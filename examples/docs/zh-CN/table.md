@@ -2042,8 +2042,16 @@
     height="300"
     border
     @row-click="handleRowClick1"
+    :test="'aaa'"
     :tree-props="{ children: 'children1' }"
     row-key="id">
+    <el-table-column
+      prop="date"
+      label="aa"
+      sortable
+      width="180">
+      <template slot-scope="{ row }">{{ row.$inLevelIndex + 1 }}</template>
+    </el-table-column>
     <el-table-column
       prop="date"
       label="日期"
@@ -2071,6 +2079,13 @@
     :load="load"
     :tree-props="{ hasChildren: 'hasChildren1' }"
     >
+    <el-table-column
+      prop="date"
+      label="aa"
+      sortable
+      width="180">
+      <template slot-scope="{ row }">{{ row.$inLevelIndex + 1 }}</template>
+    </el-table-column>
     <el-table-column
       prop="date"
       label="日期"
