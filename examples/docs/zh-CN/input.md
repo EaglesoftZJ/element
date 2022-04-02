@@ -3,7 +3,7 @@
     data() {
       return {
         restaurants: [],
-        input: '',
+        input: 0,
         input1: '123712937128731873891273891273981738912',
         input2: '',
         input21: '',

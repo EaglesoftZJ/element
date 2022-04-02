@@ -3,7 +3,7 @@
     data() {
       return {
         links: [],
-        input: '',
+        input: 1,
         input1: '',
         input2: '',
         input21: '',

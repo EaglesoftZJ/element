@@ -125,7 +125,7 @@
 
     data() {
       return {
-        currentValue: this.value || '',
+        currentValue: this.value || this.value === 0 ? this.value : '',
         textareaCalcStyle: {},
         prefixOffset: null,
         suffixOffset: null,
