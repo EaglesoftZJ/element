@@ -694,7 +694,7 @@ TableStore.prototype.loadData = function(row, treeNode) {
         const parent = treeData[parentRowKey];
         parent.loaded = true;
         parent.children.push(rowKey);
-        item.$inLevelIndex = index;
+        this.table.storeLevelIndex[rowKey] = index;
         const child = {
           display: true,
           level: parent.level + 1

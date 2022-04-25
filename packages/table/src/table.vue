@@ -714,7 +714,7 @@
         const traverse = (children, parentData, level) => {
           children.forEach((item, index) => {
             const rowKey = this.getRowKey(item);
-            item.$inLevelIndex = index;
+            this.storeLevelIndex[rowKey] = index;
             treeData[rowKey] = {
               display: false,
               level
@@ -730,15 +730,19 @@
         if (data) {
           data.forEach((item, index) => {
             const containChildren = Array.isArray(item[childrenColumnName]) && item[childrenColumnName].length;
-            item.$inLevelIndex = index;
+            let rowKey = '';
+            if (this.store.states.rowKey) {
+              rowKey = this.getRowKey(item);
+              this.storeLevelIndex[rowKey] = index;
+            }
+            // item.$inLevelIndex = index;
             if (!(containChildren || item[lazyColumnIdentifier])) return;
-            const rowKey = this.getRowKey(item);
+            // const rowKey = this.getRowKey(item);
             const treeNode = {
               level: 0,
               expanded: false,
               display: true,
-              children: [],
-              
+              children: []
             };
             if (containChildren) {
               treeData[rowKey] = treeNode;
@@ -1100,7 +1104,8 @@
         currentScroll: 0, // 记录当前的滚动位置
         start: -1, // 用于记录客户端返回的当前加载条数
         nowQueryData: null,
-        pageSizeStore: [] // 存储历史pageSize用于精确计算当前加载条数
+        pageSizeStore: [], // 存储历史pageSize用于精确计算当前加载条数
+        storeLevelIndex: {} // 存储每行数据在层级中的下标
         /* end */
       };
     }

@@ -1,6 +1,6 @@
 {
   "name": "eg-element-ui",
-  "version": "2.3.68",
+  "version": "2.3.69",
   "description": "A Component Library for Vue.js.",
   "main": "lib/element-ui.common.js",
   "files": [
@@ -125,7 +125,7 @@
     "markdown-it-anchor": "2.5.0",
     "markdown-it-container": "2.0.0",
     "mocha": "3.1.1",
-    "node-sass": "4.5.3",
+    "node-sass": "4.9.2",
     "perspective.js": "1.0.0",
     "postcss": "5.1.2",
     "postcss-loader": "0.11.1",

@@ -2050,7 +2050,7 @@
       label="aa"
       sortable
       width="180">
-      <template slot-scope="{ row }">{{ row.$inLevelIndex + 1 }}</template>
+      <template slot-scope="{ row, $inLevelIndex }">{{ $inLevelIndex + 1 }}</template>
     </el-table-column>
     <el-table-column
       prop="date"
@@ -2084,7 +2084,7 @@
       label="aa"
       sortable
       width="180">
-      <template slot-scope="{ row }">{{ row.$inLevelIndex + 1 }}</template>
+      <template slot-scope="{ row, $inLevelIndex }">{{ $inLevelIndex + 1 }}</template>
     </el-table-column>
     <el-table-column
       prop="date"

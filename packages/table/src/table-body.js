@@ -102,7 +102,8 @@ export default {
                         _self: this.context || this.table.$vnode.context,
                         row,
                         column,
-                        $index
+                        $index,
+                        $inLevelIndex: this.table.storeLevelIndex[rowKey]
                       };
                       if (cellIndex === this.firstDefaultColumnIndex && treeNode) {
                         data.treeNode = {
