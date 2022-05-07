@@ -6,7 +6,7 @@
 
 :::demo 设置 `value` 来指定当前显示的月份。如果 `value` 未指定，则显示当月。`value` 支持 `v-model` 双向绑定。
 ```html
-<el-calendar v-model="value">
+<el-calendar v-model="value" :first-day-of-week="7">
 </el-calendar>
 
 <script>
