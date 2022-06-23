@@ -103,6 +103,7 @@
       },
       fitHeight: Boolean,
       drag: Boolean,
+      dragDefaultPosition: Boolean, // 拖拽默认位置
       closeReset: Boolean
     },
 
@@ -176,6 +177,11 @@
           style.left = this.dialogLeft + 'px';
           style.top = this.dialogTop + 'px';
         }
+        if (this.drag && this.dragDefaultPosition && !this.openAfterAnimate) {
+          style.opacity = 0;
+        } else if (this.drag && this.dragDefaultPosition && this.openAfterAnimate) {
+          style.opacity = 1;
+        }
         return style;
       },
       contentStyle() {
@@ -241,6 +247,7 @@
         this.openAfterAnimate = true;
         this.closeAfterAnimate = false;
         this.$emit('opened');
+        this.enterDrag();
       },
       updateMaxHeight() {
         var winHeight = document.body.clientHeight;
@@ -248,6 +255,13 @@
         this.contentMaxHeight = this.dialogMaxHeight -
           (this.$refs['header'] ? this.$refs['header'].offsetHeight : 0) -
           (this.$refs['footer'] ? this.$refs['footer'].offsetHeight : 0);
+      },
+      enterDrag() {
+        if (this.drag && this.dragDefaultPosition) {
+          this.dialogLeft = this.dragDefaultPosition.left;
+          this.dialogTop = this.dragDefaultPosition.top;
+          this.isDraged = true;
+        }
       },
       initDrag() {
         // 设置拖拽
