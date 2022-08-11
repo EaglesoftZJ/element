@@ -103,7 +103,7 @@
       },
       fitHeight: Boolean,
       drag: Boolean,
-      dragDefaultPosition: Boolean, // 拖拽默认位置
+      dragDefaultPosition: Object, // 拖拽默认位置
       closeReset: Boolean
     },
 
