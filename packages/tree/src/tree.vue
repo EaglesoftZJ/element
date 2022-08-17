@@ -128,7 +128,11 @@
         type: Number,
         default: 18
       },
-      iconClass: String
+      iconClass: String,
+      expandTrigger: { // 用户手动触发树展开方式
+        type: String,
+        default: 'click' // click dblclick
+      }
     },
 
     computed: {

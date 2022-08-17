@@ -412,7 +412,7 @@
 
 :::demo
 ```html
-<el-tree :data="data" highlight-current	 :props="defaultProps" @node-click="handleNodeClick">
+<el-tree :data="data" expand-trigger="click" highlight-current	 :props="defaultProps" @node-click="handleNodeClick">
 </el-tree>
 
 <script>
@@ -590,6 +590,7 @@
 :::demo 分别通过`default-expanded-keys`和`default-checked-keys`设置默认展开和默认选中的节点。需要注意的是，此时必须设置`node-key`，其值为节点数据中的一个字段名，该字段在整棵树中是唯一的。
 ```html
 <el-tree
+  expand-trigger="dblclick"
   :data="data2"
   :current-node-key="3"
   highlight-current

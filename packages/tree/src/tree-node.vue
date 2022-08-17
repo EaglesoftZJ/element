@@ -2,6 +2,7 @@
   <div
     class="el-tree-node"
     @click.stop="handleClick"
+    @dblclick.stop.prevent="handleExpandIconClick('dblclick')"
     @contextmenu="($event) => this.handleContextMenu($event)"
     v-show="node.visible"
     :class="{
@@ -9,7 +10,8 @@
       'is-current': isCurrent(),
       'is-hidden': !node.visible,
       'is-focusable': !node.disabled,
-      'is-checked': !node.disabled && node.checked
+      'is-checked': !node.disabled && node.checked,
+      'is-expand-dblclick': tree.expandTrigger === 'dblclick'
     }"
     role="treeitem"
     tabindex="-1"
@@ -26,7 +28,8 @@
     <div class="el-tree-node__content"
       :style="{ 'padding-left': (node.level - 1) * tree.indent + 'px' }">
       <span
-        @click.stop="handleExpandIconClick"
+        @click.stop="handleExpandIconClick('click')"
+        @dblclick.stop.prevent="handleExpandIconClick('dblclick')"
         :class="[
           { 'is-leaf': node.isLeaf, expanded: !node.isLeaf && expanded },
           'el-tree-node__expand-icon',
@@ -40,6 +43,7 @@
         :indeterminate="node.indeterminate"
         :disabled="!!node.disabled"
         @click.native.stop
+        @dblclick.native.stop
         @change="handleCheckChange"
       >
       </el-checkbox>
@@ -116,12 +120,16 @@
           const tree = parent.tree;
           const node = this.node;
           const { data, store } = node;
+          // if (this.$parent.tree.expandTrigger === 'dblclick') {
+          //   opt.on.selectstart = 'return false';
+          // }
           return (
             parent.renderContent
               ? parent.renderContent.call(parent._renderProxy, h, { _self: tree.$vnode.context, node, data, store })
               : tree.$scopedSlots.default
                 ? tree.$scopedSlots.default({ node, data })
-                : <span class="el-tree-node__label">{ node.label }</span>
+                : this.$parent.tree.expandTrigger === 'dblclick' ? <span class="el-tree-node__label" onselectstart="return false">{ node.label }</span> : 
+                  <span class="el-tree-node__label">{ node.label }</span>
           );
         }
       }
@@ -173,7 +181,7 @@
         this.tree.$emit('current-change', store.currentNode ? store.currentNode.data : null, store.currentNode);
         this.tree.currentNode = this;
         if (this.tree.expandOnClickNode) {
-          this.handleExpandIconClick();
+          this.handleExpandIconClick('click');
         }
         if (this.tree.checkOnClickNode && !this.node.disabled) {
           this.handleCheckChange(null, {
@@ -191,8 +199,10 @@
         this.tree.$emit('node-contextmenu', event, this.node.data, this.node, this);
       },
 
-      handleExpandIconClick() {
+      // triggerType触发类型
+      handleExpandIconClick(triggerType) {
         if (this.node.isLeaf) return;
+        if (this.tree.expandTrigger !== triggerType) return;
         if (this.expanded) {
           this.tree.$emit('node-collapse', this.node.data, this.node, this);
           this.node.collapse();
