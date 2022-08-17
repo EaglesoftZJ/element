@@ -132,6 +132,10 @@
       expandTrigger: { // 用户手动触发树展开方式
         type: String,
         default: 'click' // click dblclick
+      },
+      dblClickDelay: { // 双击等待延迟时间
+        type: Number,
+        default: 200
       }
     },
 

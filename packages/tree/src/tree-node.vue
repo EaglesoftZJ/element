@@ -187,8 +187,16 @@
 
       handleClick() {
         clearTimeout(this.setTime);
-        this.isClickWaiting = true;
-        this.setTime = setTimeout(() => {
+        if (this.tree.expandTrigger === 'dblclick') {
+          this.setTime = setTimeout(() => {
+            this.isClickWaiting = true;
+            go.call(this);
+            console.log('dblClickDelay');
+          }, this.tree.dblClickDelay);
+        } else {
+          go.call(this);
+        }
+        function go() {
           this.isClickWaiting = false;
           const store = this.tree.store;
           store.setCurrentNode(this.node);
@@ -203,7 +211,7 @@
             });
           }
           this.tree.$emit('node-click', this.node.data, this.node, this);
-        }, 300);
+        }
       },
 
       handleContextMenu(event) {
