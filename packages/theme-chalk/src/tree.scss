@@ -121,6 +121,10 @@
 .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
   background-color: mix($--color-white, $--color-primary, 92%);
 }
+.isClickWaiting {
+  position: relative;
+  z-index: 999999999;
+}
 
 // .is-expand-dblclick .el-tree-node__label {
 //   user-select: none;

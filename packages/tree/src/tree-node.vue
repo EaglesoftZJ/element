@@ -2,7 +2,7 @@
   <div
     class="el-tree-node"
     @click.stop="handleClick"
-    @dblclick.stop.prevent="handleExpandIconClick('dblclick')"
+    @dblclick.stop.prevent="handleDblClick"
     @contextmenu="($event) => this.handleContextMenu($event)"
     v-show="node.visible"
     :class="{
@@ -11,7 +11,7 @@
       'is-hidden': !node.visible,
       'is-focusable': !node.disabled,
       'is-checked': !node.disabled && node.checked,
-      'is-expand-dblclick': tree.expandTrigger === 'dblclick'
+      'isClickWaiting': isClickWaiting
     }"
     role="treeitem"
     tabindex="-1"
@@ -141,7 +141,9 @@
         expanded: false,
         childNodeRendered: false,
         oldChecked: null,
-        oldIndeterminate: null
+        oldIndeterminate: null,
+        setTime: null,
+        isClickWaiting: false
       };
     },
 
@@ -175,20 +177,33 @@
         this.indeterminate = indeterminate;
       },
 
-      handleClick() {
-        const store = this.tree.store;
-        store.setCurrentNode(this.node);
-        this.tree.$emit('current-change', store.currentNode ? store.currentNode.data : null, store.currentNode);
-        this.tree.currentNode = this;
+      handleDblClick() {
+        clearTimeout(this.setTime);
+        this.isClickWaiting = false;
         if (this.tree.expandOnClickNode) {
-          this.handleExpandIconClick('click');
+          this.handleExpandIconClick('dblclick');
         }
-        if (this.tree.checkOnClickNode && !this.node.disabled) {
-          this.handleCheckChange(null, {
-            target: { checked: !this.node.checked }
-          });
-        }
-        this.tree.$emit('node-click', this.node.data, this.node, this);
+      },
+
+      handleClick() {
+        clearTimeout(this.setTime);
+        this.isClickWaiting = true;
+        this.setTime = setTimeout(() => {
+          this.isClickWaiting = false;
+          const store = this.tree.store;
+          store.setCurrentNode(this.node);
+          this.tree.$emit('current-change', store.currentNode ? store.currentNode.data : null, store.currentNode);
+          this.tree.currentNode = this;
+          if (this.tree.expandOnClickNode) {
+            this.handleExpandIconClick('click');
+          }
+          if (this.tree.checkOnClickNode && !this.node.disabled) {
+            this.handleCheckChange(null, {
+              target: { checked: !this.node.checked }
+            });
+          }
+          this.tree.$emit('node-click', this.node.data, this.node, this);
+        }, 300);
       },
 
       handleContextMenu(event) {
