@@ -412,16 +412,16 @@
         return HAVE_TRIGGER_TYPES.indexOf(this.type) !== -1;
       },
       displayValue() {
-        console.log('displayValue', this.userInput, this.parsedValue);
+        // console.log('displayValue', this.userInput, this.parsedValue);
         const formattedValue = formatAsFormatAndType(
           this.parsedValue,
           this.format,
           this.type,
           this.rangeSeparator
         );
-        console.log('displayValue', formattedValue);
+        // console.log('displayValue', formattedValue);
         if (Array.isArray(this.userInput)) {
-          console.log('displayValue', this.userInput);
+          // console.log('displayValue', this.userInput);
           return [
             this.userInput[0] || (formattedValue && formattedValue[0]) || '',
             this.userInput[1] || (formattedValue && formattedValue[1]) || ''
@@ -777,14 +777,14 @@
         this.picker.resetView && this.picker.resetView();
         this.picker.$on('dodestroy', this.doDestroy);
         this.picker.$on('pick', (date = '', visible = false) => {
-          console.log('pick', date);
+          // console.log('pick', date);
           this.userInput = null;
           this.pickerVisible = this.picker.visible = visible;
           this.emitInput(date);
           this.picker.resetView && this.picker.resetView();
         });
         this.picker.$on('select-range', (start, end, pos) => {
-          console.log('select-range');
+          // console.log('select-range');
           if (this.refInput.length === 0) return;
           if (!pos || pos === 'min') {
             this.refInput[0].setSelectionRange(start, end);
@@ -814,10 +814,10 @@
         }
       },
       emitInput(val) {
-        console.log(111, val);
+        // console.log(111, val);
         const formatted = this.formatToValue(val);
         if (!valueEquals(this.value, formatted)) {
-          console.log(formatted);
+          // console.log(formatted);
           this.$emit('input', formatted);
         }
       },

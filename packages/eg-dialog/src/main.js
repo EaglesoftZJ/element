@@ -76,7 +76,7 @@ const initInstance = () => {
   });
   const currentInstance = instance; // 每次打开弹窗instance都会变，所以用一个currentInstance存储当前的实例
   currentInstance.$on('update:visible', (val) => {
-    console.log(123123);
+    // console.log(123123);
     currentInstance.visible = false;
   });
   currentInstance.$on('rendered', (val) => {

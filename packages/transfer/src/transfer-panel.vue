@@ -349,7 +349,7 @@
       }
     },
     mounted() {
-      console.log('buttons', this.buttons);
+      // console.log('buttons', this.buttons);
       this.$sbar && this.$sbar.use(this.$refs, this);
     },
     destoryed() {

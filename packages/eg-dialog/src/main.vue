@@ -190,7 +190,7 @@ export default {
           // console.log('beforeBind', getComputedStyle(this.$refs.flow).height);
           // this.bindResizeEvent();
           setTimeout(() => {
-            console.log('aaa111222');
+            // console.log('aaa111222');
             this.calVisible = this.visible;
             // this.$nextTick(() => {
             //   this.updateMaxHeight();
@@ -239,7 +239,7 @@ export default {
         style.left = this.dialogLeft + "px";
         style.top = this.dialogTop + "px";
       }
-       console.log('this.dialogStyle', this.dialogStyle);
+      //  console.log('this.dialogStyle', this.dialogStyle);
       if (this.dialogStyle) {
         this.dialogStyle.split(';').forEach((item) => {
           const arr = item.split(':');
@@ -375,7 +375,7 @@ export default {
       }
     },
     handleFlowResize() {
-      console.log("handleFlowResize", getComputedStyle(this.$refs.flow).height);
+      // console.log("handleFlowResize", getComputedStyle(this.$refs.flow).height);
       const padding =
         parseFloat(getComputedStyle(this.$refs.body).paddingTop) +
         parseFloat(getComputedStyle(this.$refs.body).paddingBottom);

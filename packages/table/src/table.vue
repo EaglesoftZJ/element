@@ -659,7 +659,7 @@
         }
       },
       resizeListener() {
-        console.log('resizeListener');
+        // console.log('resizeListener');
         if (!this.$ready) return;
         let shouldUpdateLayout = false;
         const el = this.$el;
@@ -671,7 +671,7 @@
         if (oldWidth !== width) {
           shouldUpdateLayout = true;
         }
-        console.log('shouldUpdateLayout bodyWidth', shouldUpdateLayout, oldWidth, width);
+        // console.log('shouldUpdateLayout bodyWidth', shouldUpdateLayout, oldWidth, width);
         const height = el.offsetHeight;
         if ((this.height || this.shouldUpdateHeight) && oldHeight !== height) {
           shouldUpdateLayout = true;
@@ -754,13 +754,13 @@
             }
           });
         }
-        console.log('treeData', treeData)
+        // console.log('treeData', treeData)
         return treeData;
       },
       flattenData(data) {
         if (!data) return data;
         const { lazyColumnIdentifier, childrenColumnName } = this.store.states;
-        console.log('lazyColumnIdentifier', lazyColumnIdentifier, childrenColumnName);
+        // console.log('lazyColumnIdentifier', lazyColumnIdentifier, childrenColumnName);
         let newData = [];
         const flatten = arr => {
           arr.forEach((item) => {
@@ -789,7 +789,7 @@
     computed: {
       /* start */
       fitHeightStyle() {
-        console.log('footerHeight', this.layout.footerHeight);
+        // console.log('footerHeight', this.layout.footerHeight);
         return 'width:100%;height:100%;box-sizing:border-box;padding:' + (this.layout.headerHeight ? this.layout.headerHeight : 0) + 'px 0px ' + (this.layout.footerHeight && this.isShowTotal ? this.layout.footerHeight : 0) + 'px';
       },
       fitHeightHeaderStyle() {

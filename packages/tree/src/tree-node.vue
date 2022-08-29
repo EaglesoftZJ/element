@@ -191,7 +191,7 @@
           this.setTime = setTimeout(() => {
             this.isClickWaiting = true;
             go.call(this);
-            console.log('dblClickDelay');
+            // console.log('dblClickDelay');
           }, this.tree.dblClickDelay);
         } else {
           go.call(this);

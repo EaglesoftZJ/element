@@ -74,7 +74,7 @@ const forced = {
       return column.label || '';
     },
     renderCell: function(h, { row, store }, proxy) {
-      console.log('render-cell');
+      // console.log('render-cell');
       const expanded = store.states.expandRows.indexOf(row) > -1;
       return <div class={ 'el-table__expand-icon ' + (expanded ? 'el-table__expand-icon--expanded' : '') }
         on-click={ e => proxy.handleExpandClick(row, e) }>

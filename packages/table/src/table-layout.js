@@ -48,7 +48,7 @@ class TableLayout {
     if (this.table.$el && bodyWrapper) {
       const body = bodyWrapper.querySelector('.el-table__body');
       this.scrollY = body.offsetHeight > this.bodyHeight;
-      console.log('resize111, height', body.offsetHeight, this.bodyHeight)
+      // console.log('resize111, height', body.offsetHeight, this.bodyHeight)
     }
   }
 
@@ -143,7 +143,7 @@ class TableLayout {
         this.scrollX = false;
 
         const totalFlexWidth = bodyWidth - scrollYWidth - bodyMinWidth;
-        console.log('resize111 last', bodyWidth, scrollYWidth, bodyMinWidth);
+        // console.log('resize111 last', bodyWidth, scrollYWidth, bodyMinWidth);
 
         if (flexColumns.length === 1) {
           flexColumns[0].realWidth = (flexColumns[0].minWidth || 80) + totalFlexWidth;
@@ -157,7 +157,7 @@ class TableLayout {
             const flexWidth = Math.floor((column.minWidth || 80) * flexWidthPerPixel);
             noneFirstWidth += flexWidth;
             column.realWidth = (column.minWidth || 80) + flexWidth;
-            console.log('resize111', column.realWidth, flexWidthPerPixel);
+            // console.log('resize111', column.realWidth, flexWidthPerPixel);
           });
 
           flexColumns[0].realWidth = (flexColumns[0].minWidth || 80) + totalFlexWidth - noneFirstWidth;
@@ -168,7 +168,7 @@ class TableLayout {
           column.realWidth = column.minWidth;
         });
       }
-      console.log('bodyWidth bodyMinWidth', bodyMinWidth, 'bodyWidth bodyWidth', bodyWidth);
+      // console.log('bodyWidth bodyMinWidth', bodyMinWidth, 'bodyWidth bodyWidth', bodyWidth);
       this.bodyWidth = Math.max(bodyMinWidth, bodyWidth);
       this.table.resizeState.width = this.bodyWidth;
     } else {

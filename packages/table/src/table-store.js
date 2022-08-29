@@ -165,7 +165,7 @@ const TableStore = function(table, initialState = {}) {
 TableStore.prototype.mutations = {
   setData(states, data) {
     const dataInstanceChanged = states._data !== data;
-    console.log(123123);
+    // console.log(123123);
     states._data = data;
 
     Object.keys(states.filters).forEach((columnId) => {
@@ -382,7 +382,7 @@ const doFlattenColumns = (columns) => {
 
 TableStore.prototype.updateColumns = function() {
   const states = this.states;
-  console.log('updateColumns=====================', states._columns);
+  // console.log('updateColumns=====================', states._columns);
   const _columns = states._columns || [];
   states.fixedColumns = _columns.filter((column) => column.fixed === true || column.fixed === 'left');
   states.rightFixedColumns = _columns.filter((column) => column.fixed === 'right');
@@ -625,7 +625,7 @@ TableStore.prototype.updateCurrentRow = function() {
       currentRowChange = true;
     }
   }
-  console.log('currentRowChange', currentRowChange);
+  // console.log('currentRowChange', currentRowChange);
 
   if (this.table.primaryKey && currentRowChange || !this.table.primaryKey && data.indexOf(oldCurrentRow) === -1) {
     states.currentRow = null;

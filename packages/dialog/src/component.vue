@@ -308,7 +308,7 @@
         }
       },
       handleFlowResize() {
-        console.log('handleFlowResize', getComputedStyle(this.$refs.flow).height);
+        // console.log('handleFlowResize', getComputedStyle(this.$refs.flow).height);
         const padding = parseFloat(getComputedStyle(this.$refs.body).paddingTop) +
           parseFloat(getComputedStyle(this.$refs.body).paddingBottom);
         this.$refs.body.style.height = (this.$refs.flow.clientHeight + padding) + 'px';
