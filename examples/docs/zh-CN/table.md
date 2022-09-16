@@ -338,6 +338,9 @@
     },
 
     methods: {
+      test111() {
+        this.tableData5 = JSON.parse(JSON.stringify(this.tableData5));
+      },
       load(tree, treeNode, resolve) {
         resolve([
           {
@@ -1926,9 +1929,12 @@
 :::demo 通过设置 type="expand" 和 `Scoped slot` 可以开启展开行功能，`el-table-column` 的模板会被渲染成为展开行的内容，展开行可访问的属性与使用自定义列模板时的 `Scoped slot` 相同。
 ```html
 <template>
+  <el-button @click="test111">click</el-button>
   <el-table
     :data="tableData5"
     ref="tableData5"
+    :aaa="123"
+    row-key="id"
     @row-click="handleRowClick5"
     style="width: 100%">
     <el-table-column type="expand">

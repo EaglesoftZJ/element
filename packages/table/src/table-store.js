@@ -78,25 +78,27 @@ const toggleRowSelection = function(states, row, selected) {
   return changed;
 };
 
+
 const toggleRowExpansion = function(states, row, expanded) {
   let changed = false;
-  const expandRows = states.expandRows;
+  const { expandRows } = states;
+  const isExpaned = this.isInExpandRows(row);
   if (typeof expanded !== 'undefined') {
     const index = expandRows.indexOf(row);
     if (expanded) {
-      if (index === -1) {
+      if (!isExpaned) {
         expandRows.push(row);
         changed = true;
       }
     } else {
-      if (index !== -1) {
+      if (isExpaned) {
         expandRows.splice(index, 1);
         changed = true;
       }
     }
   } else {
     const index = expandRows.indexOf(row);
-    if (index === -1) {
+    if (!isExpaned) {
       expandRows.push(row);
       changed = true;
     } else {
@@ -368,6 +370,17 @@ TableStore.prototype.mutations = {
   })
 };
 
+// 判断当前行是否已经展开
+TableStore.prototype.isInExpandRows = function(row) {
+  const { expandRows, rowKey } = this.states;
+  if (rowKey) {
+    const expandMap = getKeysMap(expandRows, rowKey);
+    return !!expandMap[getRowIdentity(row, rowKey)];
+  } else {
+    return expandRows.includes(row);
+  }
+}
+
 const doFlattenColumns = (columns) => {
   const result = [];
   columns.forEach((column) => {
@@ -447,7 +460,7 @@ TableStore.prototype.toggleRowSelection = function(row, selected) {
 };
 
 TableStore.prototype.toggleRowExpansion = function(row, expanded) {
-  const changed = toggleRowExpansion(this.states, row, expanded);
+  const changed = toggleRowExpansion.call(this, this.states, row, expanded);
   if (changed) {
     this.table.$emit('expand-change', row, this.states.expandRows);
     this.scheduleLayout();
