@@ -10,6 +10,7 @@
           @change="handleChange"
           :arrow-control="useArrow"
           :show-seconds="showSeconds"
+          :show-minutes="showMinutes"
           :am-pm-mode="amPmMode"
           @select-range="setSelectionRange"
           :date="date">
@@ -110,6 +111,9 @@
     },
 
     computed: {
+      showMinutes() {
+        return this.showSeconds || (this.format || '').indexOf('mm') !== -1;
+      },
       showSeconds() {
         return (this.format || '').indexOf('ss') !== -1;
       },

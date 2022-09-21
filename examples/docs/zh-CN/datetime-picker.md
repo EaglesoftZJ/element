@@ -51,7 +51,7 @@
             }
           }]
         },
-        value1: 1526175722927,
+        value1: '',
         value2: '',
         value3: '',
         value4: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
@@ -100,9 +100,11 @@ DateTimePicker 由 DatePicker 和 TimePicker 派生，`Picker Options` 或者其
 :::demo 通过设置`type`属性为`datetime`，即可在同一个选择器里同时进行日期和时间的选择。快捷选项的使用方法与 Date Picker 相同。
 ```html
 <template>
+  {{ value1 }}
   <div class="block">
     <span class="demonstration">默认</span>
     <el-date-picker
+      format="yyyy-MM-dd HH"
       v-model="value1"
       type="datetime"
       placeholder="选择日期时间">
@@ -175,6 +177,7 @@ DateTimePicker 由 DatePicker 和 TimePicker 派生，`Picker Options` 或者其
     <el-date-picker
       v-model="value4"
       type="datetimerange"
+      format="yyyy-MM-dd HH"
       range-separator="至"
       start-placeholder="开始日期"
       end-placeholder="结束日期">

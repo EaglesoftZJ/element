@@ -219,6 +219,24 @@
     },
 
     methods: {
+      getCurrentDataByFormat() {
+        const str = '0000/01/01 00:00:00';
+        const defaultFormat = 'yyyy/MM/dd HH:mm:ss';
+        const arr = ['yyyy', 'MM', 'dd', 'HH', 'mm', 'ss'];
+        let result = formatDate(new Date(), defaultFormat);
+        if (this.format) {
+          for (let i = arr.length - 1; i >= 0; i--) {
+            const current = arr[i];
+            if (this.format.indexOf(arr[i]) !== -1) {
+              const endIndex = defaultFormat.indexOf(current) + current.length;
+              result = result.substring(0, endIndex) + str.substring(endIndex);
+              break;
+            }
+          }
+        }
+        console.log('getCurrentDataByFormat', result);
+        return new Date();
+      },
       proxyTimePickerDataProperties() {
         const format = timeFormat => {this.$refs.timepicker.format = timeFormat;};
         const value = value => {this.$refs.timepicker.value = value;};

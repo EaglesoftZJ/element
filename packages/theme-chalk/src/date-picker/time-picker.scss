@@ -54,6 +54,15 @@
         padding-left: calc(100% / 3);
       }
     }
+    &.no-minutes {
+      &::after {
+        left: 100%;
+      }
+
+      &::before {
+        padding-left: 100%;
+      }
+    }
   }
 
   @include e(footer) {

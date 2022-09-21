@@ -1,5 +1,5 @@
 <template>
-  <div class="el-time-spinner" :class="{ 'has-seconds': showSeconds }">
+  <div class="el-time-spinner" :class="{ 'has-seconds': showSeconds, 'no-minutes': !showMinutes }">
     <template v-if="!arrowControl">
       <el-scrollbar
         @mouseenter.native="emitSelectRange('hours')"
@@ -19,6 +19,7 @@
       <el-scrollbar
         @mouseenter.native="emitSelectRange('minutes')"
         @mousemove.native="adjustCurrentSpinner('minutes')"
+        v-show="showMinutes"
         class="el-time-spinner__wrapper"
         wrap-style="max-height: inherit;"
         view-class="el-time-spinner__list"
@@ -62,6 +63,7 @@
         </ul>
       </div>
       <div
+        v-if="showMinutes"
         @mouseenter="emitSelectRange('minutes')"
         class="el-time-spinner__wrapper is-arrow">
         <i v-repeat-click="decrease" class="el-time-spinner__arrow el-icon-arrow-up"></i>
@@ -109,6 +111,10 @@
     props: {
       date: {},
       defaultValue: {}, // reserved for future use
+      showMinutes: {
+        type: Boolean,
+        default: true
+      },
       showSeconds: {
         type: Boolean,
         default: true
