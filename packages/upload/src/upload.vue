@@ -56,6 +56,19 @@ export default {
     quality: { // 图片质量
       type: Number,
       default: 0.9
+    },
+    // 分片上传
+    chunkUpload: { // 分片上产
+      type: Boolean,
+      default: false
+    },
+    chunkSize: { // 分片大小
+      type: Number,
+      default: 5 * 1024 * 1024
+    },
+    continueApi: { // 断点续传、秒传接口
+      type: String,
+      default: ''
     }
   },
 

@@ -124,6 +124,32 @@ export default {
       default() {
         return {};
       }
+    },
+    // 分片上传
+    chunkUpload: { // 分片上产
+      type: Boolean,
+      default: false
+    },
+    chunkSize: { // 分片大小
+      type: Number,
+      default: 5 * 1024 * 1024
+    },
+    chunkProps: { // 分片参数key
+      type: Object,
+      default() {
+        return {
+          fileName: 'file', // file内容key
+          fileSize: 'fileSize', // 文件总大小
+          index: 'segmentIndex', // 分片索引
+          size: 'segmentSize', // 分片大小
+          nameMd5: 'md5NameKey', // 文件名称组成的hash
+          fileMd5: 'md5FielKey' // 文件内容组成的hash
+        }
+      }
+    },
+    continueApi: { // 断点续传、秒传接口
+      type: String,
+      default: ''
     }
   },
 
@@ -338,6 +364,10 @@ export default {
         compressPic: this.compressPic,
         limitPicMB: this.limitPicMB,
         quality: this.quality,
+        chunkUpload: this.chunkUpload,
+        chunkSize: this.chunkSize,
+        chunkProps: this.chunkProps,
+        continueApi: this.continueApi,
         'on-exceed': this.onExceed,
         'on-start': this.handleStart,
         'on-progress': this.handleProgress,

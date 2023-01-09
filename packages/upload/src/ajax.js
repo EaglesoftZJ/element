@@ -104,8 +104,9 @@ function convertBase64UrlToFile(urlData, name) {
   });
 }
 
+
 export default function upload(option) {
-  var promise = new window.Promise((reslove, reject) => {
+  var promise = new window.Promise((resolve, reject) => {
     if (typeof XMLHttpRequest === 'undefined') {
       return;
     }
@@ -173,7 +174,7 @@ export default function upload(option) {
         }
       }
       xhr.send(formData);
-      reslove(xhr);
+      resolve(xhr);
     }
   });
   return promise;
