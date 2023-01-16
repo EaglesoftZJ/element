@@ -111,7 +111,9 @@
         }
       },
       bindEnter() {
-        if (this.bindEnterFn || this.bindEnterByText && this.$slots.default && this.$slots.default[0] && this.$slots.default[0].text === '查询') {
+        let text = this.bindEnterByText && this.$slots.default && this.$slots.default[0] && this.$slots.default[0].text;
+        text = text.replace(/\s+/g, '');
+        if (this.bindEnterFn || text === '查询') {
           document.addEventListener('keyup', this.handleEnter);
         }
       },
