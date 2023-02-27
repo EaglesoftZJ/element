@@ -104,7 +104,7 @@ DateTimePicker 由 DatePicker 和 TimePicker 派生，`Picker Options` 或者其
   <div class="block">
     <span class="demonstration">默认</span>
     <el-date-picker
-      format="yyyy-MM-dd HH"
+      format="yyyy年MM月dd日 HH点mm分ss秒"
       v-model="value1"
       type="datetime"
       placeholder="选择日期时间">
@@ -177,7 +177,7 @@ DateTimePicker 由 DatePicker 和 TimePicker 派生，`Picker Options` 或者其
     <el-date-picker
       v-model="value4"
       type="datetimerange"
-      format="yyyy-MM-dd HH"
+      format="yyyyMMdd HH点mm分ss秒"
       range-separator="至"
       start-placeholder="开始日期"
       end-placeholder="结束日期">
