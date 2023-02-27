@@ -41,6 +41,14 @@
       validateOnRuleChange: {
         type: Boolean,
         default: true
+      },
+      scrollToError: { // 表单校验后滚动到错误位置
+        type: Boolean,
+        default: true
+      },
+      scrollToErrorOffset: { // 表单校验后滚动到错误位置距离容器顶部的偏移值
+        type: Number,
+        default: 50
       }
     },
     watch: {
@@ -110,13 +118,19 @@
         }
         let invalidFields = {};
         this.fields.forEach(field => {
+          let currentFieldValid = true; // 当前表单项的校验状态
           field.validate('', (message, field, el) => {
             if (message) {
               valid = false;
+              currentFieldValid = false;
             }
-            if (!scrolled && !valid && el) {
+            if (!scrolled && !currentFieldValid && el && this.scrollToError) {
               scrolled = true;
               el.focus();
+              this.scrollToErrorField();
+            } else if (!scrolled && !currentFieldValid && !el && this.scrollToError) {
+              scrolled = true;
+              this.scrollToErrorField();
             }
             invalidFields = objectAssign({}, invalidFields, field);
             if (typeof callback === 'function' && ++count === this.fields.length) {
@@ -134,6 +148,32 @@
         if (!field) { throw new Error('must call validateField with valid prop string!'); }
 
         field.validate('', cb);
+      },
+      // 滚动到表单第一个错误位子
+      scrollToErrorField() {
+        this.$nextTick(() => {
+          const scrollNode = getScrollParent(this.$el);
+          console.log('scrollNode', scrollNode);
+          const $error = $(this.$el).find('.is-error');
+          if (scrollNode && $error.length) {
+            const scrollBoxTop = $(scrollNode).offset().top; // 滚动容器距离浏览器的高度
+            const errorTop = $error.eq(0).offset().top; // 距离浏览器顶部高度
+            const errorShouldTop = scrollBoxTop + this.scrollToErrorOffset; // 错误信息应该展示在距滚动容器以下偏移值的位置
+            let scrollTop = $(scrollNode).scrollTop() + errorTop - errorShouldTop;
+            if (scrollTop < 0) scrollTop = 0;
+            if (scrollTop > scrollNode.scrollHeight - scrollNode.clientHeight) scrollTop = scrollNode.scrollHeight - scrollNode.clientHeight;
+            $(scrollNode).scrollTop(scrollTop);
+          }
+        });
+        function getScrollParent(node) { // 寻找父级滚动容器
+          if (!node) return null;
+          const { overflowY } = window.getComputedStyle(node);
+          if (overflowY === 'auto' || overflowY === 'scroll') { // 滚动条容器
+            return node;
+          } else {
+            return getScrollParent(node.parentNode); // 判断父级
+          }
+        }
       },
       /**
        * 第一个表单元素获取焦点

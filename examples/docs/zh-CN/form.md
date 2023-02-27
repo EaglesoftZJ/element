@@ -134,7 +134,7 @@
       };
     },
     mounted() {
-      this.$refs.focusForm.toFocusFirst();
+      // this.$refs.focusForm.toFocusFirst();
     },
     methods: {
       onSubmit() {
