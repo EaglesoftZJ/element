@@ -241,6 +241,10 @@
               "title": "Card 卡片"
             },
             {
+              "path": "/timeline",
+              "title": "Timeline 时间线"
+            },
+            {
               "path": "/carousel",
               "title": "Carousel 走马灯"
             },

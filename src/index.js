@@ -74,6 +74,8 @@ import Footer from '../packages/footer/index.js';
 import Drawer from '../packages/drawer/index.js';
 import Image from '../packages/image/index.js';
 import Divider from '../packages/divider/index.js';
+import Timeline from '../packages/timeline/index.js';
+import TimelineItem from '../packages/timeline-item/index.js';
 import EgDialog from '../packages/eg-dialog/index.js';
 import locale from 'element-ui/src/locale';
 import CollapseTransition from 'element-ui/src/transitions/collapse-transition';
@@ -149,6 +151,8 @@ const components = [
   Drawer,
   Image,
   Divider,
+  Timeline,
+  TimelineItem,
   EgDialog,
   CollapseTransition
 ];
@@ -185,7 +189,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 module.exports = {
-  version: '2.4.6',
+  version: '2.4.7',
   locale: locale.use,
   i18n: locale.i18n,
   install,
@@ -264,6 +268,8 @@ module.exports = {
   Drawer,
   Image,
   Divider,
+  Timeline,
+  TimelineItem,
   EgDialog
 };
 
