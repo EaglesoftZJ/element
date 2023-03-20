@@ -113,7 +113,7 @@
       bindEnter() {
         let text = this.bindEnterByText && this.$slots.default && this.$slots.default[0] && this.$slots.default[0].text;
         text = text && typeof text === 'string' ? text.replace(/\s+/g, '') : '';
-        if (this.bindEnterFn || text === '查询') {
+        if (this.bindEnterFn || text === '查询' || text === '搜索') {
           document.addEventListener('keyup', this.handleEnter);
         }
       },
