@@ -13,35 +13,33 @@
     }
     ]"
     @mouseenter="hovering = true; handleMouseenter(arguments[0])"
-    @mouseleave="hovering = false; tlpShow = false"
+    @mouseleave="hovering = false; handleMouseleave(arguments[0])"
   >
     <template v-if="type !== 'textarea'">
       <!-- 前置元素 -->
       <div class="el-input-group__prepend" v-if="$slots.prepend">
         <slot name="prepend"></slot>
       </div>
-      <el-tooltip v-model="tlpShow" popper-class="tooltip-use-in-form" :disabled="tlpDisabled" :content="currentValue + ''" placement="top-start">
-          <input
-            :tabindex="tabindex"
-            v-if="type !== 'textarea'"
-            class="el-input__inner"
-            v-bind="$attrs"
-            :type="type"
-            :disabled="inputDisabled"
-            :autocomplete="autoComplete"
-            :value="currentValue"
-            ref="input"
-            @compositionstart="handleComposition"
-            @compositionupdate="handleComposition"
-            @compositionend="handleComposition"
-            @input="handleInput"
-            @focus="handleFocus"
-            @blur="handleBlur"
-            @change="handleChange"
-            @click="handleClick"
-            :aria-label="label"
-          >
-      </el-tooltip>
+      <input
+        :tabindex="tabindex"
+        v-if="type !== 'textarea'"
+        class="el-input__inner"
+        v-bind="$attrs"
+        :type="type"
+        :disabled="inputDisabled"
+        :autocomplete="autoComplete"
+        :value="currentValue"
+        ref="input"
+        @compositionstart="handleComposition"
+        @compositionupdate="handleComposition"
+        @compositionend="handleComposition"
+        @input="handleInput"
+        @focus="handleFocus"
+        @blur="handleBlur"
+        @change="handleChange"
+        @click="handleClick"
+        :aria-label="label"
+      >
       <!-- 前置内容 -->
       <span class="el-input__prefix" v-if="$slots.prefix || prefixIcon" :style="prefixOffset">
         <slot name="prefix"></slot>
@@ -97,9 +95,18 @@
       :aria-label="label"
     >
     </textarea>
+    <el-tooltip
+      ref="tooltip"
+      popper-class="tooltip-use-in-form"
+      :disabled="tlpDisabled"
+      :content="currentValue + ''"
+      placement="top-start"
+    >
+    </el-tooltip>
   </div>
 </template>
 <script>
+  import debounce from 'throttle-debounce/debounce';
   import emitter from 'element-ui/src/mixins/emitter';
   import Migrating from 'element-ui/src/mixins/migrating';
   import calcTextareaHeight from './calcTextareaHeight';
@@ -312,18 +319,40 @@
         const target = event.currentTarget.querySelector('input');
         if (!target) return;
         //  && !this.focused
-        if (target.scrollWidth > target.clientWidth) {
+        // 当宽度为小数时如380.1 scrollWidth会变成381 clientWidth会变为380 就会造成实际内容没超出但是会显示tooltip
+        // 这里用差值来判断，将误差控制在2像素
+        const dValue = Math.abs(target.scrollWidth - target.clientWidth);
+        if (dValue > 2) {
           this.tlpDisabled = false;
           this.tlpShow = true;
+          this.showTooltip();
         } else {
           this.tlpDisabled = true;
           this.tlpShow = false;
+          this.hideTooltip();
         }
+      },
+      handleMouseleave() {
+        this.tlpShow = false;
+        this.hideTooltip();
+      },
+      showTooltip() {
+        const tooltip = this.$refs.tooltip;
+        tooltip.referenceElm = this.$refs.input;
+        tooltip.$refs.popper && (tooltip.$refs.popper.style.display = 'none');
+        tooltip.doDestroy();
+        tooltip.setExpectedState(true);
+        this.activateTooltip(tooltip);
+      },
+      hideTooltip() {
+        this.$refs.tooltip.setExpectedState(false);
+        this.$refs.tooltip.handleClosePopper();
       }
     },
 
     created() {
       this.$on('inputSelect', this.select);
+      this.activateTooltip = debounce(50, tooltip => tooltip.handleShowPopper());
     },
 
     mounted() {

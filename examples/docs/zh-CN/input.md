@@ -191,7 +191,7 @@
 
 :::demo
 ```html
-<el-input v-model="input" placeholder="请输入内容" @change="test"></el-input>
+<el-input v-model="input" style="width: 300.3px;" placeholder="请输入内容" @change="test"></el-input>
 
 <script>
 export default {
