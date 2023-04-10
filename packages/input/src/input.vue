@@ -338,15 +338,21 @@
       },
       showTooltip() {
         const tooltip = this.$refs.tooltip;
-        tooltip.referenceElm = this.$refs.input;
-        tooltip.$refs.popper && (tooltip.$refs.popper.style.display = 'none');
-        tooltip.doDestroy();
-        tooltip.setExpectedState(true);
-        this.activateTooltip(tooltip);
+        if (tooltip) {
+          tooltip.referenceElm = this.$refs.input;
+          tooltip.$refs.popper && (tooltip.$refs.popper.style.display = 'none');
+          tooltip.doDestroy();
+          tooltip.setExpectedState(true);
+          this.activateTooltip(tooltip);
+        }
+        
       },
       hideTooltip() {
-        this.$refs.tooltip.setExpectedState(false);
-        this.$refs.tooltip.handleClosePopper();
+        const tooltip = this.$refs.tooltip;
+        if (tooltip) {
+          this.$refs.tooltip.setExpectedState(false);
+          this.$refs.tooltip.handleClosePopper();
+        }
       }
     },
 
