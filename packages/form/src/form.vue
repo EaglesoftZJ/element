@@ -166,7 +166,7 @@
           }
         });
         function getScrollParent(node) { // 寻找父级滚动容器
-          if (!node) return null;
+          if (!node || !node.tagName) return null;
           const { overflowY } = window.getComputedStyle(node);
           if (overflowY === 'auto' || overflowY === 'scroll') { // 滚动条容器
             return node;
