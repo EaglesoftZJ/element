@@ -18,17 +18,18 @@
       @blur="focusing = false"
       @click="focusing = false"
     >
+      <el-tooltip v-if="index === 0" popper-class="tooltip-use-in-form" placement="top-start" :content="tooltipContent" ref="tooltip"></el-tooltip>
       <img
         class="el-upload-list__item-thumbnail"
         v-if="file.status !== 'uploading' && ['picture-card', 'picture'].indexOf(listType) > -1"
         :src="file[props['url']] || file.url" alt=""
       >
-      <a class="el-upload-list__item-name" @click="handleClick(file)">
+      <a class="el-upload-list__item-name" @mouseenter="handleNameMouseEnter" @mouseleave="handleNameMouseLeave" @click="handleClick(file)">
         <i class="el-icon-document" v-if="!$scopedSlots.default"></i>
         <template v-else>
           <slot :file="file"></slot>
         </template>
-        {{file[props['name']] || file.name }}
+        {{ file[props['name']] || file.name }}
       </a>
       <label class="el-upload-list__item-status-label">
         <i :class="{
@@ -65,6 +66,7 @@
   </transition-group>
 </template>
 <script>
+  import debounce from 'throttle-debounce/debounce';
   import Locale from 'element-ui/src/mixins/locale';
   import ElProgress from 'element-ui/packages/progress';
 
@@ -73,7 +75,8 @@
 
     data() {
       return {
-        focusing: false
+        focusing: false,
+        tooltipContent: ''
       };
     },
     components: { ElProgress },
@@ -93,12 +96,43 @@
       listType: String,
       props: {}
     },
+    created() {
+      this.activateTooltip = debounce(50, tooltip => tooltip.handleShowPopper());
+    },
     methods: {
       parsePercentage(val) {
         return parseInt(val, 10);
       },
       handleClick(file) {
         this.handlePreview && this.handlePreview(file);
+      },
+      handleNameMouseEnter(event) {
+        const currentTarget = event.currentTarget;
+        if (currentTarget.scrollWidth > currentTarget.clientWidth) {
+          this.showToolTip(currentTarget);
+        }
+      },
+      handleNameMouseLeave(event) {
+        const currentTarget = event.currentTarget;
+        this.hideToolTip(currentTarget);
+      },
+      showToolTip(target) {
+        const tooltip = this.$refs.tooltip[0];
+        if (tooltip) {
+          this.tooltipContent = target.innerText;
+          tooltip.referenceElm = target;
+          tooltip.$refs.popper && (tooltip.$refs.popper.style.display = 'none');
+          tooltip.doDestroy();
+          tooltip.setExpectedState(true);
+          this.activateTooltip(tooltip);
+        }
+      },
+      hideToolTip() {
+        const tooltip = this.$refs.tooltip[0];
+        if (tooltip) {
+          tooltip.setExpectedState(false);
+          tooltip.handleClosePopper();
+        }
       }
     }
   };
