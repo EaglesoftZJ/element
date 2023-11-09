@@ -5,6 +5,7 @@
     inputSize ? 'el-input--' + inputSize : '',
     {
       'is-disabled': inputDisabled,
+      'is-exceed': inputExceed,
       'el-input-group': $slots.prepend || $slots.append,
       'el-input-group--append': $slots.append,
       'el-input-group--prepend': $slots.prepend,
@@ -51,10 +52,10 @@
       <!-- 后置内容 -->
       <span
         class="el-input__suffix"
-        v-if="$slots.suffix || suffixIcon || showClear || validateState && needStatusIcon"
+        v-if="getSuffixVisible()"
         :style="suffixOffset">
         <span class="el-input__suffix-inner">
-          <template v-if="!showClear">
+          <template v-if="!showClear || !isWordLimitVisible">
             <slot name="suffix"></slot>
             <i class="el-input__icon"
               v-if="suffixIcon"
@@ -65,6 +66,11 @@
             class="el-input__icon el-icon-circle-close el-input__clear"
             @click="clear"
           ></i>
+          <span v-if="isWordLimitVisible" class="el-input__count">
+            <span class="el-input__count-inner">
+              {{ textLength }}/{{ upperLimit }}
+            </span>
+          </span>
         </span>
         <i class="el-input__icon"
           v-if="validateState"
@@ -95,6 +101,7 @@
       :aria-label="label"
     >
     </textarea>
+    <span v-if="isWordLimitVisible && type === 'textarea'" class="el-input__count">{{ textLength }}/{{ upperLimit }}</span>
     <el-tooltip
       ref="tooltip"
       popper-class="tooltip-use-in-form"
@@ -173,7 +180,11 @@
         type: Boolean,
         default: false
       },
-      tabindex: String
+      showWordLimit: {
+        type: Boolean,
+        default: false
+      },
+      tabindex: String,
     },
 
     computed: {
@@ -207,6 +218,28 @@
       },
       showClear() {
         return this.clearable && !this.disabled && this.currentValue !== '' && (this.focused || this.hovering);
+      },
+      isWordLimitVisible() {
+        return this.showWordLimit &&
+          this.$attrs.maxlength &&
+          (this.type === 'text' || this.type === 'textarea') &&
+          !this.inputDisabled &&
+          !this.readonly
+      },
+      upperLimit() {
+        return this.$attrs.maxlength;
+      },
+      textLength() {
+        if (typeof this.value === 'number') {
+          return String(this.value).length;
+        }
+
+        return (this.value || '').length;
+      },
+      inputExceed() {
+        // show exceed style if length of initial value greater then maxlength
+        return this.isWordLimitVisible &&
+          (this.textLength > this.upperLimit);
       }
     },
 
@@ -314,6 +347,13 @@
         this.$emit('clear');
         this.setCurrentValue('');
         this.focus();
+      },
+      getSuffixVisible() {
+        return this.$slots.suffix ||
+          this.suffixIcon ||
+          this.showClear ||
+          this.isWordLimitVisible ||
+          (this.validateState && this.needStatusIcon);
       },
       handleMouseenter(event) {
         const target = event.currentTarget.querySelector('input');

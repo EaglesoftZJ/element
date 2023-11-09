@@ -191,7 +191,8 @@
 
 :::demo
 ```html
-<el-input v-model="input" style="width: 300.3px;" placeholder="请输入内容" @change="test"></el-input>
+<el-input v-model="input" style="width: 300.3px;" placeholder="请输入内容" @change="test" show-word-limit
+  maxlength="100"></el-input>
 
 <script>
 export default {
@@ -309,6 +310,8 @@ export default {
   type="textarea"
   :rows="2"
   placeholder="请输入内容"
+  show-word-limit
+  maxlength="100"
   v-model="textarea">
 </el-input>
 
