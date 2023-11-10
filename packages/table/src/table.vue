@@ -692,7 +692,7 @@
         this.updateScrollY();
         this.layout.updateColumnsWidth();
         if (this.shouldUpdateHeight) {
-          this.layout.updateElsHeight();
+          this.$nextTick(() => this.layout.updateElsHeight());
         }
         if (this.fitHeight) {
           this.layout.setHeight(this.$refs.bodyWrapper ? this.$refs.bodyWrapper.clientHeight : 0);
