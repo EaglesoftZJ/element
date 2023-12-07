@@ -289,7 +289,7 @@ export default {
     },
     handleClose() {
       if (typeof this.beforeClose === "function") {
-        const componentInstance = this.$slots.default && this.$slots.default[0] && this.$slots.default[0].componentInstance;
+        const componentInstance = this.getInstance();
         this.beforeClose('', this, this.close, componentInstance);
       } else {
         this.hide();
