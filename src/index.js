@@ -77,6 +77,7 @@ import Divider from '../packages/divider/index.js';
 import Timeline from '../packages/timeline/index.js';
 import TimelineItem from '../packages/timeline-item/index.js';
 import EgDialog from '../packages/eg-dialog/index.js';
+import Popconfirm from '../packages/popconfirm/index.js';
 import locale from 'element-ui/src/locale';
 import CollapseTransition from 'element-ui/src/transitions/collapse-transition';
 
@@ -154,6 +155,7 @@ const components = [
   Timeline,
   TimelineItem,
   EgDialog,
+  Popconfirm,
   CollapseTransition
 ];
 
@@ -270,7 +272,8 @@ module.exports = {
   Divider,
   Timeline,
   TimelineItem,
-  EgDialog
+  EgDialog,
+  Popconfirm
 };
 
 module.exports.default = module.exports;

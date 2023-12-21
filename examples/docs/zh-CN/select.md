@@ -95,7 +95,7 @@
         value2: '',
         value3: '',
         value4: '',
-        value5: [],
+        value5: ['选项1', '选项2', '选项3'],
         value6: '',
         value7: '',
         value8: '',
@@ -323,7 +323,7 @@
 :::demo 为`el-select`设置`multiple`属性即可启用多选，此时`v-model`的值为当前选中值所组成的数组。默认情况下选中值会以 Tag 的形式展现，你也可以设置`collapse-tags`属性将它们合并为一段文字。
 ```html
 <template>
-  <el-select v-model="value5" multiple placeholder="请选择">
+  <el-select v-model="value5" multiple placeholder="请选择" :multiple-limit="2">
     <el-option
       v-for="item in options"
       :key="item.value"
