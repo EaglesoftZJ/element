@@ -6,7 +6,7 @@
       @after-leave="handleAfterLeave">
       <div
         class="el-popover el-popper"
-        :class="[popperClass, content && 'el-popover--plain']"
+        :class="[popperClass, customPopperClass, content && 'el-popover--plain']"
         ref="popper"
         v-show="!disabled && showPopper"
         :style="{ width: width + 'px' }"
