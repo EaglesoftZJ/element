@@ -4,6 +4,7 @@ import merge from 'element-ui/src/utils/merge';
 import { orderBy, getColumnById, getRowIdentity } from './util';
 
 const sortData = (data, states) => {
+  
   const sortingColumn = states.sortingColumn;
   if (!sortingColumn || typeof sortingColumn.sortable === 'string') {
     return data;
@@ -182,7 +183,7 @@ TableStore.prototype.mutations = {
     });
 
     states.filteredData = data;
-    states.data = sortData((data || []), states);
+    if (!this.table.disableDefaultSort) states.data = sortData((data || []), states);
 
     this.updateCurrentRow();
 
@@ -222,9 +223,7 @@ TableStore.prototype.mutations = {
   },
 
   changeSortCondition(states, options) {
-    if (!this.table.disableDefaultSort) {
-      states.data = sortData((states.filteredData || states._data || []), states);
-    }
+    if (!this.table.disableDefaultSort) states.data = sortData((states.filteredData || states._data || []), states);
     if (!options || !options.silent) {
       this.table.$emit('sort-change', {
         column: this.states.sortingColumn,
@@ -264,7 +263,7 @@ TableStore.prototype.mutations = {
     });
 
     states.filteredData = data;
-    states.data = sortData(data, states);
+    if (!this.table.disableDefaultSort) states.data = sortData(data, states);
 
     if (!silent) {
       this.table.$emit('filter-change', filters);
