@@ -222,8 +222,9 @@ TableStore.prototype.mutations = {
   },
 
   changeSortCondition(states, options) {
-    states.data = sortData((states.filteredData || states._data || []), states);
-
+    if (!this.table.disableDefaultSort) {
+      states.data = sortData((states.filteredData || states._data || []), states);
+    }
     if (!options || !options.silent) {
       this.table.$emit('sort-change', {
         column: this.states.sortingColumn,

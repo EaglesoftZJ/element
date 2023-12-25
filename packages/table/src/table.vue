@@ -255,6 +255,11 @@
       tooltipPlacement: {
         type: String,
         default: 'top'
+      },
+      // 禁用默认排序处理，仅emit sort-change事件
+      disableDefaultSort: {
+        type: Boolean,
+        default: false
       }
       /* end */
     },
