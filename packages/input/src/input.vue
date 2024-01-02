@@ -55,14 +55,14 @@
         v-if="getSuffixVisible()"
         :style="suffixOffset">
         <span class="el-input__suffix-inner">
-          <template v-if="!showClear || !isWordLimitVisible">
+          <template>
             <slot name="suffix"></slot>
             <i class="el-input__icon"
               v-if="suffixIcon"
               :class="suffixIcon">
             </i>
           </template>
-          <i v-else
+          <i v-if="showClear"
             class="el-input__icon el-icon-circle-close el-input__clear"
             @click="clear"
           ></i>
