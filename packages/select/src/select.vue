@@ -41,7 +41,6 @@
           <span class="el-select__tags-text">{{ getSelectedLabel(item) }}</span>
         </el-tag>
       </transition-group>
-
       <input
         type="text"
         class="el-select__input"
@@ -69,7 +68,8 @@
     </div>
     <el-input
       ref="reference"
-      v-model="showSelectedLabel"
+      :value="showSelectedLabel"
+      @input="handleDxFilterInput"
       type="text"
       :placeholder="currentPlaceholder"
       :name="name"
@@ -122,7 +122,7 @@
           </el-option>
           <slot></slot>
         </el-scrollbar>
-        <template v-if="emptyText && (!allowCreate || loading || (allowCreate && options.length === 0 ))">
+        <template v-if="emptyText && (!allowCreate || loading || (allowCreate && options.length === 0 )) && (!dxShowInputNomatchTextCondition || query && !filteredOptionsCount)">
           <slot name="empty" v-if="$slots.empty"></slot>
           <p class="el-select-dropdown__empty" v-else>
             {{ emptyText }}
@@ -207,14 +207,24 @@
       commonShowInputNomatchTextCondition() {
         return this.isShowInputNomatchText && !this.remote && !this.allowCreate; // props标识&&非远程选项&&非创建条目选项
       },
+      // 单选判断条件——是否展示在输入框展示未匹配文案
+      dxShowInputNomatchTextCondition() {
+        return this.commonShowInputNomatchTextCondition && !this.multiple && this.value && this.selected && this.selected.noMatchOption; // 公共条件&&单选&&临时选项
+      },
       // 值未匹配选项情况下，输入框展示的未匹配文案
       currentInputNomatchText() {
         return this.inputNomatchText || this.$ELEMENT.selectInputNomatchText || this.t('el.select.noMatch');
       },
       // 单选input展示值
       showSelectedLabel() {
-        if (this.commonShowInputNomatchTextCondition && !this.multiple && this.value && this.selected.noMatchOption) { // 公共条件&&单选&&临时选项
-          return this.currentInputNomatchText;
+        // 存在selectedLabel即存在value，才有empty的输出
+        if (this.dxShowInputNomatchTextCondition) {
+          if (this.inputFocus) {
+            return '';
+          } else {
+            return this.currentInputNomatchText;
+          }
+          
         } else {
           return this.selectedLabel;
         }
@@ -333,7 +343,8 @@
         currentPlaceholder: '',
         menuVisibleOnFocus: false,
         isOnComposition: false,
-        isSilentBlur: false
+        isSilentBlur: false,
+        inputFocus: false
       };
     },
     watch: {
@@ -393,7 +404,7 @@
               } else {
                 this.selectedLabel = this.selected.currentLabel;
               }
-              if (this.filterable) this.query = this.selectedLabel;
+              if (this.filterable) this.query = this.showSelectedLabel;
             }
             if (this.filterable) {
               this.currentPlaceholder = this.cachedPlaceHolder;
@@ -402,7 +413,7 @@
         } else {
           this.broadcast('ElSelectDropdown', 'updatePopper');
           if (this.filterable) {
-            this.query = this.remote ? '' : this.selectedLabel;
+            this.query = this.remote ? '' : this.showSelectedLabel;
             this.handleQueryChange(this.query);
             if (this.multiple) {
               this.$refs.input.focus();
@@ -411,8 +422,8 @@
                 this.broadcast('ElOption', 'queryChange', '');
                 this.broadcast('ElOptionGroup', 'queryChange');
               }
-              if (this.selectedLabel) {
-                this.currentPlaceholder = this.selectedLabel;
+              if (this.showSelectedLabel) {
+                this.currentPlaceholder = this.showSelectedLabel;
                 this.selectedLabel = '';
               }
             }
@@ -546,7 +557,7 @@
           }
           this.selectedLabel = option.currentLabel;
           this.selected = option;
-          if (this.filterable) this.query = this.selectedLabel;
+          if (this.filterable) this.query = this.showSelectedLabel;
           return;
         }
         let result = [];
@@ -561,6 +572,7 @@
         });
       },
       handleFocus(event) {
+        this.inputFocus = true;
         if (!this.softFocus) {
           if (this.automaticDropdown || this.filterable) {
             this.visible = true;
@@ -585,6 +597,7 @@
             this.$emit('blur', event);
           }
         }, 50);
+        this.inputFocus = false;
         this.softFocus = false;
       },
       handleClearClick(event) {
@@ -805,6 +818,10 @@
         } else {
           return getValueByPath(item.value, this.valueKey);
         }
+      },
+      // 单选情况下，filterable输入的触发
+      handleDxFilterInput(val) {
+        this.selectedLabel = val;
       }
     },
     created() {

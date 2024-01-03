@@ -91,7 +91,7 @@
           value: 'Guangzhou',
           label: '广州'
         }],
-        value: [111],
+        value: '1111',
         value2: '',
         value3: '',
         value4: '',
@@ -143,7 +143,7 @@
 :::demo `v-model`的值为当前被选中的`el-option`的 value 属性值
 ```html
 <template>
-  <el-select v-model="value" multiple placeholder="请选择" is-show-input-nomatch-text>
+  <el-select v-model="value" placeholder="请选择" filterable clearable is-show-input-nomatch-text>
     <el-option
       v-for="item in options"
       :key="item.value"
