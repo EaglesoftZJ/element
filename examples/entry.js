@@ -24,7 +24,8 @@ import Eaglesoft from './assets/scripts/eaglesoft';
 
 
 Vue.use(Element, {
-  btnDirection: 'row-reverse'
+  btnDirection: 'row-reverse',
+  selectInputNomatchText: '无匹配项'
 });
 Vue.use(VueRouter);
 Vue.use(Eaglesoft);

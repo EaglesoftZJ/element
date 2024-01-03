@@ -17,7 +17,7 @@
           type="info"
           @close="deleteTag($event, selected[0])"
           disable-transitions>
-          <span class="el-select__tags-text">{{ selected[0].currentLabel }}</span>
+          <span class="el-select__tags-text">{{ getSelectedLabel(selected[0]) }}</span>
         </el-tag>
         <el-tag
           v-if="selected.length > 1"
@@ -38,7 +38,7 @@
           type="info"
           @close="deleteTag($event, item)"
           disable-transitions>
-          <span class="el-select__tags-text">{{ item.currentLabel }}</span>
+          <span class="el-select__tags-text">{{ getSelectedLabel(item) }}</span>
         </el-tag>
       </transition-group>
 
@@ -69,7 +69,7 @@
     </div>
     <el-input
       ref="reference"
-      v-model="selectedLabel"
+      v-model="showSelectedLabel"
       type="text"
       :placeholder="currentPlaceholder"
       :name="name"
@@ -203,6 +203,22 @@
         }
         return null;
       },
+      // 公共判断条件——是否展示在输入框展示未匹配文案
+      commonShowInputNomatchTextCondition() {
+        return this.isShowInputNomatchText && !this.remote && !this.allowCreate; // props标识&&非远程选项&&非创建条目选项
+      },
+      // 值未匹配选项情况下，输入框展示的未匹配文案
+      currentInputNomatchText() {
+        return this.inputNomatchText || this.$ELEMENT.selectInputNomatchText || this.t('el.select.noMatch');
+      },
+      // 单选input展示值
+      showSelectedLabel() {
+        if (this.commonShowInputNomatchTextCondition && !this.multiple && this.value && this.selected.noMatchOption) { // 公共条件&&单选&&临时选项
+          return this.currentInputNomatchText;
+        } else {
+          return this.selectedLabel;
+        }
+      },
       showNewOption() {
         let hasExistingOption = this.options.filter(option => !option.created)
           .some(option => option.currentLabel === this.query);
@@ -282,6 +298,16 @@
       popperAppendToBody: {
         type: Boolean,
         default: true
+      },
+      // 在选项未匹配时输入框是否展示未匹配文案(默认是展示value值)
+      isShowInputNomatchText: {
+        type: Boolean,
+        default: false
+      },
+      // isShowInputNomatchText时的文案
+      inputNomatchText: {
+        type: String,
+        default: ''
       }
     },
     data() {
@@ -494,12 +520,20 @@
           ? value : '';
         let newOption = {
           value: value,
-          currentLabel: label
+          currentLabel: label,
+          noMatchOption: true // 标识临时选项，当前选中值未匹配上现有options实例会生成该临时选项(情况一：选项被删除，情况二：远程和创建条目类型导致默认选项无)
         };
         if (this.multiple) {
           newOption.hitState = false;
         }
         return newOption;
+      },
+      // 多选情况下值未匹配项展示的label
+      getSelectedLabel(option) {
+        if (this.commonShowInputNomatchTextCondition && option.noMatchOption) { // 公共判断条件&&临时选项
+          return this.currentInputNomatchText;
+        }
+        return option.currentLabel;
       },
       setSelected() {
         if (!this.multiple) {

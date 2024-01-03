@@ -28,8 +28,8 @@
       };
     },
     methods: {
-      test() {
-        console.log('listen change');
+      test(val) {
+        console.log('listen input', val);
       },
       loadAll() {
         return [
@@ -711,6 +711,7 @@ export default {
   :fetch-suggestions="querySearchAsync"
   placeholder="请输入内容"
   @select="handleSelect"
+  @input="test"
 ></el-autocomplete>
 <script>
   export default {
