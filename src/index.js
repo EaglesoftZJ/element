@@ -172,7 +172,6 @@ const install = function(Vue, opts = {}) {
   const ELEMENT = {};
   ELEMENT.size = opts.size || '';
   ELEMENT.btnDirection = opts.btnDirection || ''; // 不能自定义的按钮排列方式 'row-reverse' 右边开始排列
-  ELEMENT.selectInputNomatchText = opts.selectInputNomatchText || ''; // 下拉框非异步选项模式下显示的未匹配文案
 
   Vue.prototype.$loading = Loading.service;
   Vue.prototype.$msgbox = MessageBox;
@@ -192,7 +191,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 module.exports = {
-  version: '2.5.12',
+  version: '2.5.14',
   locale: locale.use,
   i18n: locale.i18n,
   install,
