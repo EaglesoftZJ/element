@@ -910,7 +910,7 @@
         var translate   = isVertical ? 'translateY' : 'translateX';
         var altSide     = isVertical ? 'left' : 'top';
         var opSide      = isVertical ? 'bottom' : 'right';
-        var arrowSize   = getOuterSizes(arrow)[len];
+        var arrowSize   = getArrowSize(arrow)[len];
 
         //
         // extends keepTogether behavior making sure the popper and its reference have enough pixels in conjuction
@@ -968,6 +968,21 @@
         // reset element styles
         element.style.display = _display; element.style.visibility = _visibility;
         return result;
+    }
+
+    function getArrowSize(element) {
+      const xStyleName = ['width', 'paddingLeft', 'paddingRight', 'borderLeftWidth', 'borderRightWidth', 'marginLeft', 'marginRight'];
+      const yStyleName = ['height', 'paddingTop', 'paddingBottom', 'borderTopWidth', 'borderBottomWidth', 'marginTop', 'marginBottom'];
+      const computedStyle = getComputedStyle(element);
+      const result = {
+        width: 0,
+        height: 0
+      };
+      for (let i = 0; i < xStyleName.length; i++) {
+        result.width += parseFloat(computedStyle[xStyleName[i]]);
+        result.height += parseFloat(computedStyle[yStyleName[i]]);
+      }
+      return result;
     }
 
     /**

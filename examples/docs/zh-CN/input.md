@@ -4,7 +4,7 @@
       return {
         restaurants: [],
         input: 0,
-        input1: '123712937128731873891273891273981738912',
+        input1: '123712937128731873891273891273981738912123712937128731873891273891273981738912123712937128731873891273891273981738912',
         input2: '',
         input21: '',
         input22: '',
@@ -211,6 +211,11 @@ export default {
 
 :::demo 通过 `disabled` 属性指定是否禁用 input 组件
 ```html
+<el-input
+  placeholder="请输入内容"
+  v-model="input1"
+  :disabled="true">
+</el-input>
 <el-input
   placeholder="请输入内容"
   v-model="input1"
