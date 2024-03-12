@@ -59,6 +59,42 @@
             done();
           })
           .catch(_ => {});
+      },
+      handleOpenByApi() {
+        const h = this.$createElement;
+        const vnode = h('div', {style: 'height: 300px'}, [123]);
+        console.log('vnode', vnode);
+        let option = {
+        title: '批量办', // 批量办结
+        message: vnode, // 引入的组件节点,
+        type: "Default",
+        removeContent: true,
+        buttons: [
+          {
+            text: '确定', // 确定
+            type: "primary", // 类型
+            size: "normal", // 大小
+            icon: "", // 图标,
+            callback: (dlgBox, slot) => {
+              dlgBox.close();
+            }
+          },
+          {
+            text: '取消', // 取消
+            size: "normal", // 大小
+            icon: "", // 图标,
+            callback: (dlgBox, slot) => {
+              // 弹出窗实例和打开的组件实例
+              this.$message({
+                type: "info",
+                message: '已取消', // 已取消
+              });
+              dlgBox.close();
+            },
+          },
+        ],
+      };
+      this.$egdlg(option);
       }
     }
   };
@@ -97,6 +133,9 @@ Dialog 弹出一个对话框，适合需要定制性更大的场景。
 
 ```html
 <el-button type="text" @click="dialogVisible = true">点击打开 Dialog</el-button>
+<el-button type="text" @click="handleOpenByApi">点击 js方式打开Dialog</el-button>
+
+
 
 <el-dialog
   title="提示"
