@@ -1041,6 +1041,7 @@
      */
     function getStyleComputedProperty(element, property) {
         // NOTE: 1 DOM access here
+        if (!element.tagName) return ''; // 非标签直接返回
         var css = root.getComputedStyle(element, null);
         return css[property];
     }
@@ -1177,24 +1178,34 @@
      * @return {Object} client rect
      */
     function getBoundingClientRect(element) {
-        var rect = element.getBoundingClientRect();
-
-        // whether the IE version is lower than 11
-        var isIE = navigator.userAgent.indexOf("MSIE") != -1;
-
-        // fix ie document bounding top always 0 bug
-        var rectTop = isIE && element.tagName === 'HTML'
-            ? -element.scrollTop
-            : rect.top;
-
+      if (!element.tagName) {
         return {
-            left: rect.left,
-            top: rectTop,
-            right: rect.right,
-            bottom: rect.bottom,
-            width: rect.right - rect.left,
-            height: rect.bottom - rectTop
+          left: '',
+          top: '',
+          right: '',
+          bottom: '',
+          width: '',
+          height: ''
         };
+      }
+      var rect = element.getBoundingClientRect();
+
+      // whether the IE version is lower than 11
+      var isIE = navigator.userAgent.indexOf("MSIE") != -1;
+
+      // fix ie document bounding top always 0 bug
+      var rectTop = isIE && element.tagName === 'HTML'
+          ? -element.scrollTop
+          : rect.top;
+
+      return {
+          left: rect.left,
+          top: rectTop,
+          right: rect.right,
+          bottom: rect.bottom,
+          width: rect.right - rect.left,
+          height: rect.bottom - rectTop
+      };
     }
 
     /**

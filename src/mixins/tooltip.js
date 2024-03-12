@@ -16,6 +16,20 @@ export default {
     hideTooltip() {
       const tooltip = this.$refs.tooltip;
       if (tooltip) tooltip.hide(); // 内置的隐藏方法，为去抖延迟隐藏
+    },
+    addEvent() {
+      // 内容动态改变时，实时更新popper位置等信息状态(这里主要是arrow)
+      const tooltip = this.$refs.tooltip;
+      if (tooltip) {
+        tooltip.$watch('content', (val) => {
+          this.$nextTick(() => {
+            tooltip.popperJS && tooltip.updatePopper();
+          });
+        });
+      }
     }
+  },
+  mounted() {
+    this.addEvent();
   }
 }
