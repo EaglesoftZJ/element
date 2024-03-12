@@ -80,6 +80,7 @@ import EgDialog from '../packages/eg-dialog/index.js';
 import Popconfirm from '../packages/popconfirm/index.js';
 import locale from 'element-ui/src/locale';
 import CollapseTransition from 'element-ui/src/transitions/collapse-transition';
+import tooltipMixin from 'element-ui/src/mixins/tooltip';
 
 const components = [
   Pagination,
@@ -273,7 +274,8 @@ module.exports = {
   Timeline,
   TimelineItem,
   EgDialog,
-  Popconfirm
+  Popconfirm,
+  tooltipMixin
 };
 
 module.exports.default = module.exports;

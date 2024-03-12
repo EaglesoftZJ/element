@@ -8,6 +8,8 @@
       class="el-select__tags"
       v-if="multiple"
       ref="tags"
+      @mouseenter="handleTagsMouseenter"
+      @mouseleave="handleTagsMouseleave"
       :style="{ 'max-width': inputWidth - 32 + 'px', width: '100%' }">
       <span v-if="collapseTags && selected.length">
         <el-tag
@@ -130,6 +132,14 @@
         </template>
       </el-select-menu>
     </transition>
+    <el-tooltip
+      ref="tooltip"
+      popper-class="tooltip-use-in-form"
+      placement="top-start"
+      :disabled="tlpDisabled"
+      :content="tooltipValue"
+    >
+    </el-tooltip>
   </div>
 </template>
 
@@ -149,8 +159,9 @@
   import scrollIntoView from 'element-ui/src/utils/scroll-into-view';
   import { getValueByPath, valueEquals, isIE, isEdge } from 'element-ui/src/utils/util';
   import NavigationMixin from './navigation-mixin';
+  import tooltip from 'element-ui/src/mixins/tooltip';
   export default {
-    mixins: [Emitter, Locale, Focus('reference'), NavigationMixin],
+    mixins: [Emitter, Locale, Focus('reference'), NavigationMixin, tooltip],
     name: 'ElSelect',
     componentName: 'ElSelect',
     inject: {
@@ -167,6 +178,16 @@
       };
     },
     computed: {
+      tlpDisabled() {
+        return !(this.multiple && this.collapseTags && this.selected.length > 1);
+      },
+      tooltipValue() {
+        const result = this.multiple ? this.selected.reduce((accumulator, item) => {
+          accumulator += ',' + this.getSelectedLabel(item);
+          return accumulator;
+        }, '') : '';
+        return result.substr(1);
+      },
       _elFormItemSize() {
         return (this.elFormItem || {}).elFormItemSize;
       },
@@ -449,6 +470,12 @@
       }
     },
     methods: {
+      handleTagsMouseenter(event) {
+        this.showTooltip(event.currentTarget);
+      },
+      handleTagsMouseleave() {
+        this.hideTooltip();
+      },
       handleComposition(event) {
         const text = event.target.value;
         if (event.type === 'compositionend') {
