@@ -973,12 +973,12 @@
     function getArrowSize(element) {
       const xStyleName = ['width', 'paddingLeft', 'paddingRight', 'borderLeftWidth', 'borderRightWidth', 'marginLeft', 'marginRight'];
       const yStyleName = ['height', 'paddingTop', 'paddingBottom', 'borderTopWidth', 'borderBottomWidth', 'marginTop', 'marginBottom'];
-      const computedStyle = getComputedStyle(element);
+      const computedStyle = root.getComputedStyle(element);
       const result = {
         width: 0,
         height: 0
       };
-      for (let i = 0; i < xStyleName.length; i++) {
+      for (var i = 0; i < xStyleName.length; i++) {
         result.width += parseFloat(computedStyle[xStyleName[i]]);
         result.height += parseFloat(computedStyle[yStyleName[i]]);
       }
