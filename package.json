@@ -1,6 +1,6 @@
 {
   "name": "eg-element-ui",
-  "version": "2.5.14",
+  "version": "2.5.15-beta1",
   "description": "A Component Library for Vue.js.",
   "main": "lib/element-ui.common.js",
   "files": [
@@ -28,7 +28,8 @@
     "pub": "npm run bootstrap && sh build/git-release.sh && sh build/release.sh && node build/bin/gen-indices.js && sh build/deploy-faas.sh",
     "pub:all": "npm run dist:all && lerna publish --skip-git && git commit -am 'publish independent packages' && git push eleme dev",
     "test": "npm run lint && npm run build:theme && cross-env CI_ENV=/dev/ karma start test/unit/karma.conf.js --single-run",
-    "test:watch": "npm run build:theme && karma start test/unit/karma.conf.js"
+    "test:watch": "npm run build:theme && karma start test/unit/karma.conf.js",
+    "build": "cooking build -c build/cooking.conf.js,build/cooking.common.js,build/cooking.component.js -p"
   },
   "faas": {
     "domain": "element",
