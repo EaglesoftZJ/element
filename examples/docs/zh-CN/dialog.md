@@ -38,7 +38,26 @@
           resource: '',
           desc: ''
         },
-        formLabelWidth: '80px'
+        formLabelWidth: '80px',
+        options: [{
+          value: '选项1',
+          label: '黄金糕'
+        }, {
+          value: '选项2',
+          label: '双皮奶'
+        }, {
+          value: '选项3',
+          label: '蚵仔煎'
+        }, {
+          value: '选项4',
+          label: '龙须面'
+        }, {
+          value: '选项5',
+          label: '北京烤鸭'
+        }],
+        options1: [],
+        value5: ['选项1', '选项2', '选项3', '选项4', '选项5'],
+        value6: []
       };
     },
     watch: {
@@ -132,7 +151,7 @@ Dialog 弹出一个对话框，适合需要定制性更大的场景。
 :::demo 需要设置`visible`属性，它接收`Boolean`，当为`true`时显示 Dialog。Dialog 分为两个部分：`body`和`footer`，`footer`需要具名为`footer`的`slot`。`title`属性用于定义标题，它是可选的，默认值为空。最后，本例还展示了`before-close`的用法。
 
 ```html
-<el-button type="text" @click="dialogVisible = true">点击打开 Dialog</el-button>
+<el-button type="text" @click="dialogVisible = true;value6 = value5">点击打开 Dialog</el-button>
 <el-button type="text" @click="handleOpenByApi">点击 js方式打开Dialog</el-button>
 
 
@@ -140,9 +159,18 @@ Dialog 弹出一个对话框，适合需要定制性更大的场景。
 <el-dialog
   title="提示"
   :visible.sync="dialogVisible"
+  @close="value6 = []"
   width="30%"
   :before-close="handleClose">
   <span>这是一段信息</span>
+  <el-select v-model="value6" multiple placeholder="请选择">
+    <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+  </el-select>
   <span slot="footer" class="dialog-footer">
     <el-button @click="dialogVisible = false">取 消</el-button>
     <el-button type="primary" @click="dialogVisible = false">确 定</el-button>

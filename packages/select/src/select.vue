@@ -365,7 +365,8 @@
         menuVisibleOnFocus: false,
         isOnComposition: false,
         isSilentBlur: false,
-        inputFocus: false
+        inputFocus: false,
+        resetInputHeightTimeout: null
       };
     },
     watch: {
@@ -670,18 +671,21 @@
         this.$nextTick(() => {
           if (!this.$refs.reference) return;
           let inputChildNodes = this.$refs.reference.$el.childNodes;
-          let input = [].filter.call(inputChildNodes, item => item.tagName === 'INPUT')[0];
-          const tags = this.$refs.tags;
-          const sizeInMap = this.initialInputHeight || 40;
-          input.style.height = this.selected.length === 0
-            ? sizeInMap + 'px'
-            : Math.max(
-              tags ? (tags.clientHeight + (tags.clientHeight > sizeInMap ? 6 : 0)) : 0,
-              sizeInMap
-            ) + 'px';
-          if (this.visible && this.emptyText !== false) {
-            this.broadcast('ElSelectDropdown', 'updatePopper');
-          }
+          clearTimeout(this.resetInputHeightTimeout);
+          this.resetInputHeightTimeout = setTimeout(() => {
+              let input = [].filter.call(inputChildNodes, item => item.tagName === 'INPUT')[0];
+              const tags = this.$refs.tags;
+              const sizeInMap = this.initialInputHeight || 40;
+              input.style.height = this.selected.length === 0
+                ? sizeInMap + 'px'
+                : Math.max(
+                  tags ? (tags.clientHeight + (tags.clientHeight > sizeInMap ? 6 : 0)) : 0,
+                  sizeInMap
+                ) + 'px';
+              if (this.visible && this.emptyText !== false) {
+                this.broadcast('ElSelectDropdown', 'updatePopper');
+              }
+          }, 50);
         });
       },
       resetHoverIndex() {
