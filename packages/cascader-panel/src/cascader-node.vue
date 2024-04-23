@@ -119,13 +119,13 @@
       },
 
       renderCheckbox(h) {
-        const { node, config, isDisabled } = this;
+        const { node, config, isDisabled, isLeaf } = this;
         const events = {
           on: { change: this.handleMultiCheckChange },
           nativeOn: {}
         };
 
-        if (config.checkStrictly) { // when every node is selectable, click event should not trigger expand event.
+        if (config.checkStrictly || isLeaf) { // when every node is selectable, click event should not trigger expand event.
           events.nativeOn.click = stopPropagation;
         }
 
