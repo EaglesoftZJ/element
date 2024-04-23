@@ -316,7 +316,8 @@ export default {
       if (!isEqual(val, value) || isUndefined(value)) {
         this.computePresentContent();
         // hide dropdown when single mode
-        if (!multiple && !checkStrictly && dropDownVisible) {
+        // !multiple && !checkStrictly && dropDownVisible
+        if (!multiple && dropDownVisible) {
           this.toggleDropDownVisible(false);
         }
 

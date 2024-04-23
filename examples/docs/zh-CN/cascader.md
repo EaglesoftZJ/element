@@ -1,7 +1,26 @@
 <script>
   export default {
     data() {
+      let id = 0;
       return {
+        props2: {
+          checkStrictly: true,
+          multiple: false,
+          lazy: true,
+          lazyLoad (node, resolve) {
+            const { level } = node;
+            setTimeout(() => {
+              const nodes = Array.from({ length: level + 1 })
+                .map(item => ({
+                  value: ++id,
+                  label: `选项${id}`,
+                  leaf: level >= 2
+                }));
+              // 通过调用resolve将子节点数据返回，通知组件数据加载完成
+              resolve(nodes);
+            }, 1000);
+          }
+        },
         visible: false,
         options2: [{
           label: '江苏',
@@ -1570,9 +1589,7 @@
 :::demo 本例的选项数据源在初始化时不包含城市数据。利用`active-item-change`事件，可以在用户点击某个省份时拉取该省份下的城市数据。此外，本例还展示了`props`属性的用法。
 ```html
 <el-cascader
-  :options="options2"
-  @active-item-change="handleItemChange"
-  :props="props"
+  :props="props2"
 ></el-cascader>
 
 <script>

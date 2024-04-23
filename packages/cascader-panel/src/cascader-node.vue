@@ -217,8 +217,15 @@
           this.$emit('expand', e);
         };
       }
-      if (isLeaf && !isDisabled && !checkStrictly && !multiple) {
-        events.on.click = this.handleCheckChange;
+      // isLeaf && !isDisabled && !checkStrictly && !multiple
+      if (isLeaf && !isDisabled) {
+        if (multiple) {
+          events.on.click = () => {
+            this.handleMultiCheckChange(!this.isChecked);
+          };
+        } else {
+          events.on.click = this.handleCheckChange;
+        }
       }
 
       return (
