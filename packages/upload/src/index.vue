@@ -1,9 +1,11 @@
 <script>
 import UploadList from './upload-list';
+import uploadListDragger from './upload-list-dragger.vue';
 import Upload from './upload';
 import IframeUpload from './iframe-upload';
 import ElProgress from 'element-ui/packages/progress';
 import Migrating from 'element-ui/src/mixins/migrating';
+
 
 function noop() {}
 
@@ -15,6 +17,7 @@ export default {
   components: {
     ElProgress,
     UploadList,
+    uploadListDragger,
     Upload,
     IframeUpload
   },
@@ -49,6 +52,7 @@ export default {
       default: 'file'
     },
     drag: Boolean,
+    dragInTextList: Boolean, // showFileList && listType === 'text' && dragInTextList 则拖拽交互在el-upload-list--text上执行
     dragger: Boolean,
     withCredentials: Boolean,
     showFileList: {
@@ -300,16 +304,40 @@ export default {
 
   render(h) {
     let uploadList;
-
+    let listDraggable = false;
+    const trigger = this.$slots.trigger || this.$slots.default;
     if (this.showFileList) {
-      uploadList = (
+      listDraggable = this.listType === 'text' && this.dragInTextList;
+      const options = {
+        attrs: {
+          listType: this.listType,
+          files: this.uploadFiles,
+          handlePreview: this.onPreview,
+          props: this.calProps
+        },
+        props: {
+          disabled: this.uploadDisabled,
+        },
+        on: {
+          remove: this.handleRemove
+        },
+        scopedSlots: {
+          btn: (props) => {
+            return this.$scopedSlots.btn && this.$scopedSlots.btn(props);
+          },
+          default() {
+            return trigger;
+          }
+        }
+      }
+      uploadList = listDraggable ? (
+        <uploadListDragger
+         { ...options }
+        >
+        </uploadListDragger>
+      ): (
         <UploadList
-          disabled={this.uploadDisabled}
-          listType={this.listType}
-          files={this.uploadFiles}
-          on-remove={this.handleRemove}
-          handlePreview={this.onPreview}
-          props={ this.calProps }
+         { ...options }
         >
           {props => {
             return this.$scopedSlots.btn && this.$scopedSlots.btn(props);
@@ -350,17 +378,19 @@ export default {
       ref: 'upload-inner'
     };
 
-    const trigger = this.$slots.trigger || this.$slots.default;
+
     const uploadComponent =
       typeof FormData !== 'undefined' || this.$isServer ? (
-        <upload {...uploadData}>{trigger}</upload>
+        <upload {...uploadData}>{listDraggable ? '' : trigger}</upload>
       ) : (
-        <iframeUpload {...uploadData}>{trigger}</iframeUpload>
+        <iframeUpload {...uploadData}>{listDraggable ? '' : trigger}</iframeUpload>
       );
+      
+    
 
     return (
       <div>
-        {this.listType === 'picture-card' ? uploadList : ''}
+        {this.listType === 'picture-card' || listDraggable ? uploadList : ''}
         {this.$slots.trigger
           ? [uploadComponent, this.$slots.default]
           : uploadComponent}

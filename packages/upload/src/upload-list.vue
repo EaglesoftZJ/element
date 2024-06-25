@@ -16,7 +16,7 @@
       @keydown.delete="!disabled && $emit('remove', file)"
       @focus="focusing = true"
       @blur="focusing = false"
-      @click="focusing = false"
+      @click.stop="focusing = false"
     >
       <el-tooltip v-if="index === 0" popper-class="tooltip-use-in-form" placement="top-start" :content="tooltipContent" ref="tooltip"></el-tooltip>
       <img

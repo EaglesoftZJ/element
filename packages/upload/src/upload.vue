@@ -28,6 +28,7 @@ export default {
     onError: Function,
     beforeUpload: Function,
     drag: Boolean,
+    dragInTextList: Boolean, // showFileList && listType === 'text' && dragInTextList 则拖拽交互在el-upload-list--text上执行
     onPreview: {
       type: Function,
       default: function() {}

@@ -600,3 +600,26 @@
     z-index: 1;
   }
 }
+@include b(upload-dragger__list) {
+  display: flex;
+  flex-direction: column;
+  min-height: 180px;
+  min-width: 360px;
+  max-width: 100%;
+  height: auto;
+  width: auto;
+  padding: 0px 5px;
+  box-sizing: border-box;
+  .el-upload-list {
+    flex: 1;
+    text-align: left;
+  }
+  .el-icon-upload {
+    display: inline;
+    padding-right: 5px;
+    font-size: 16px;
+  }
+  .el-upload__text {
+    display: inline;
+  }
+}
