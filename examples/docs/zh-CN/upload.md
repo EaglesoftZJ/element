@@ -352,8 +352,10 @@
 :::demo
 ```html
 <el-upload
+  disabled
   class="upload-demo"
   drag-in-text-list
+  :file-list="fileList3"
   action="https://jsonplaceholder.typicode.com/posts/"
   multiple>
   <i class="el-icon-upload"></i>

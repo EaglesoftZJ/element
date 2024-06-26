@@ -601,7 +601,7 @@
   }
 }
 @include b(upload-dragger__list) {
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
   min-height: 180px;
   min-width: 360px;
@@ -621,5 +621,11 @@
   }
   .el-upload__text {
     display: inline;
+  }
+  @include when('disabled') {
+    border: none;
+    height: auto;
+    min-height: initial;
+    cursor: not-allowed;
   }
 }

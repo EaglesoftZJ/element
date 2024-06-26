@@ -387,15 +387,15 @@ export default {
       );
       
     
-
+    const showInTop = this.listType === 'picture-card' || listDraggable;
     return (
       <div>
-        {this.listType === 'picture-card' || listDraggable ? uploadList : ''}
+        {showInTop ? uploadList : ''}
         {this.$slots.trigger
           ? [uploadComponent, this.$slots.default]
           : uploadComponent}
         {this.$slots.tip}
-        {this.listType !== 'picture-card' ? uploadList : ''}
+        {!showInTop ? uploadList : ''}
       </div>
     );
   }
