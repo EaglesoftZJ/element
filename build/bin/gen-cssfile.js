@@ -38,6 +38,7 @@ themes.forEach((theme) => {
   });
   // 添加自定义样式文件
   indexContent += '@import "./custom.scss";\n';
+  indexContent += '@import "./public.scss";\n';
   console.log('indexContent121212121212212', indexContent);
   fs.writeFileSync(path.resolve(basepath, theme, 'src', isSCSS ? 'index.scss' : 'index.css'), indexContent);
 });
