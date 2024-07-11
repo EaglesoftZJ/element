@@ -329,6 +329,11 @@ export default {
             return trigger;
           }
         }
+      };
+      if (listDraggable) {
+        options.scopedSlots.tip = () => {
+          return this.$slots.tip;
+        };
       }
       uploadList = listDraggable ? (
         <uploadListDragger
@@ -394,7 +399,7 @@ export default {
         {this.$slots.trigger
           ? [uploadComponent, this.$slots.default]
           : uploadComponent}
-        {this.$slots.tip}
+        {!listDraggable && this.$slots.tip}
         {!showInTop ? uploadList : ''}
       </div>
     );

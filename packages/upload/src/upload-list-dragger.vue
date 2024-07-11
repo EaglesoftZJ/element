@@ -1,5 +1,5 @@
 <template>
-  <UploadDragger class="el-upload-dragger__list" :class="{'is-disabled': disabled }" :disabled="disabled" @file="uploadFiles" @click.native="handleUploadClick">
+  <UploadDragger class="el-upload-dragger__list" :class="{'is-disabled': disabled, 'has-tip': hasTip }" :disabled="disabled" @file="uploadFiles" @click.native="handleUploadClick">
     <uploadList :disabled="disabled" v-bind="$attrs" v-on="$listeners">
       <template slot-scope="{ file }">
         <slot name="btn" :file="file"></slot>
@@ -9,6 +9,9 @@
       <slot></slot>
       <!-- <i class="el-icon-upload"></i>
       <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div> -->
+    </div>
+    <div class="el-upload-dragger__list_tip" v-if="hasTip">
+      <slot name="tip"></slot>
     </div>
   </UploadDragger>
 </template>
@@ -30,6 +33,9 @@
       }
     },
     computed: {
+      hasTip() {
+        return this.$scopedSlots.tip();
+      }
     },
     methods: {
       uploadFiles() {

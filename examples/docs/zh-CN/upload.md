@@ -352,7 +352,6 @@
 :::demo
 ```html
 <el-upload
-  disabled
   class="upload-demo"
   drag-in-text-list
   :file-list="fileList3"

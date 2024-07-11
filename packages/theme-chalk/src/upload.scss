@@ -601,13 +601,15 @@
   }
 }
 @include b(upload-dragger__list) {
+  position: relative;
   display: inline-flex;
   flex-direction: column;
   min-height: 180px;
   min-width: 360px;
   max-width: 100%;
-  height: auto;
-  width: auto;
+  // height: auto;
+  // width: auto;
+  overflow: visible;
   padding: 0px 5px;
   box-sizing: border-box;
   .el-upload-list {
@@ -627,5 +629,21 @@
     height: auto;
     min-height: initial;
     cursor: not-allowed;
+  }
+  &.has-tip {
+    margin-bottom: 32px;
+  }
+  .el-upload-dragger__list_tip {
+    position: absolute;
+    width: 100%;
+    line-height: 32px;
+    bottom: -32px;
+    left: 0px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .el-upload-dragger__list_tip > * {
+    display: inline;
   }
 }
