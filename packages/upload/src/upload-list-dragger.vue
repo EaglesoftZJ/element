@@ -10,7 +10,7 @@
       <!-- <i class="el-icon-upload"></i>
       <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div> -->
     </div>
-    <div class="el-upload-dragger__list_tip" v-if="hasTip">
+    <div class="el-upload-dragger__list_tip" @click.stop v-if="hasTip">
       <slot name="tip"></slot>
     </div>
   </UploadDragger>

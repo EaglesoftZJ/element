@@ -642,6 +642,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    cursor: auto;
+    text-align: left;
   }
   .el-upload-dragger__list_tip > * {
     display: inline;
