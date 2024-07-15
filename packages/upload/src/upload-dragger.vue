@@ -51,7 +51,7 @@
             .map(type => type.trim())
             .filter(type => type)
             .some(acceptedType => {
-              if (/\..+$/.test(acceptedType)) {
+              if (/^\..+$/.test(acceptedType)) {
                 return extension === acceptedType;
               }
               if (/\/\*$/.test(acceptedType)) {
