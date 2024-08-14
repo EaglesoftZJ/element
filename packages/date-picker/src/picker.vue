@@ -551,7 +551,7 @@
       // 在input的change事件触发会调用此方法时，值必然是改变的所以emitChange传参为true
       handleChange(emitChange) {
         if (this.userInput) {
-          const value = this.parseString(this.displayValue); // 将string转化成date
+          let value = this.parseString(this.displayValue); // 将string转化成date
           if (value) {
             if (!this.picker) {
               this.mountPicker();
