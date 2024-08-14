@@ -1,7 +1,7 @@
 <template>
   <!-- @focus="handleFocus" -->
   <el-input class="el-date-editor" :class="'el-date-editor--' + type" :readonly="!editable || readonly" :disabled="pickerDisabled" :size="pickerSize" :name="name" v-bind="firstInputId" v-if="!ranged" v-clickoutside="handleClose" :placeholder="placeholder"
-    @focus="handleFocusBefore" @keydown.native="handleKeydown" :value="displayValue" @input="value => userInput = value" @change="handleChange" @mouseenter.native="handleMouseEnter" @mouseleave.native="showClose = false" :validateEvent="false" ref="reference">
+    @focus="handleFocusBefore" @keydown.native="handleKeydown" :value="displayValue" @input="value => userInput = value" @change="handleChange(true)" @mouseenter.native="handleMouseEnter" @mouseleave.native="showClose = false" :validateEvent="false" ref="reference">
     <i slot="suffix" @click="handleClickIcon" :class="[showClose ? '' + clearIcon : '']" v-if="haveTrigger">
       </i>
     <i slot="suffix" class="el-input__icon" style="cursor: pointer;" :class="triggerClass" @click="handleFocus">
@@ -548,7 +548,8 @@
           this.showClose = true;
         }
       },
-      handleChange() {
+      // 在input的change事件触发会调用此方法时，值必然是改变的所以emitChange传参为true
+      handleChange(emitChange) {
         if (this.userInput) {
           const value = this.parseString(this.displayValue); // 将string转化成date
           if (value) {
@@ -557,16 +558,17 @@
             }
             this.picker.value = value;
             if (this.isValidValue(value)) {
-              this.emitInput(value);
               this.userInput = null;
             } else {
-              this.emitInput(null);
+              value = null;
               this.userInput = null;
             }
           } else {
-            this.emitInput(null);
+            value = null;
             this.userInput = null;
           }
+          this.emitInput(value);
+          emitChange && this.emitChange(value)
         }
         if (this.userInput === '') {
           this.emitInput(null);
