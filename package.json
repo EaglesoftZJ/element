@@ -1,6 +1,6 @@
 {
   "name": "eg-element-ui",
-  "version": "2.5.22-beta1",
+  "version": "2.5.23-beta1",
   "description": "A Component Library for Vue.js.",
   "main": "lib/element-ui.common.js",
   "files": [
@@ -63,9 +63,6 @@
     "normalize-wheel": "1.0.1",
     "throttle-debounce": "1.0.1",
     "vuedraggable": "2.24.3"
-  },
-  "peerDependencies": {
-    "vue": "2.5.2"
   },
   "devDependencies": {
     "algoliasearch": "3.24.5",
