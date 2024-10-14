@@ -1,6 +1,6 @@
 {
   "name": "eg-element-ui",
-  "version": "2.5.23-beta1",
+  "version": "2.5.24-beta1",
   "description": "A Component Library for Vue.js.",
   "main": "lib/element-ui.common.js",
   "files": [
@@ -145,5 +145,8 @@
     "webpack": "3.7.1",
     "webpack-dev-server": "2.9.1",
     "webpack-node-externals": "1.6.0"
+  },
+  "volta": {
+    "node": "10.9.0"
   }
 }

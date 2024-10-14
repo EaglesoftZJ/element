@@ -18,6 +18,7 @@
       @blur="focusing = false"
       @click.stop="focusing = false"
     >
+    <slot name="file" :file="file">  
       <el-tooltip v-if="index === 0" popper-class="tooltip-use-in-form" placement="top-start" :content="tooltipContent" ref="tooltip"></el-tooltip>
       <img
         class="el-upload-list__item-thumbnail"
@@ -25,9 +26,9 @@
         :src="file[props['url']] || file.url" alt=""
       >
       <a class="el-upload-list__item-name" @mouseenter="handleNameMouseEnter" @mouseleave="handleNameMouseLeave" @click="handleClick(file)">
-        <i class="el-icon-document" v-if="!$scopedSlots.default"></i>
+        <i class="el-icon-document" v-if="!$scopedSlots.btn"></i>
         <template v-else>
-          <slot :file="file"></slot>
+          <slot name="btn" :file="file"></slot>
         </template>
         {{ file[props['name']] || file.name }}
       </a>
@@ -63,6 +64,7 @@
           <i class="el-icon-trash-o"></i>
         </span>
       </span>
+    </slot>
     </li>
   </transition-group>
 </template>
@@ -98,6 +100,9 @@
       props: {}
     },
     created() {
+      if (this.$parent.$attrs.aaa === 111) {
+        debugger;
+      }
       this.activateTooltip = debounce(50, tooltip => tooltip.handleShowPopper());
     },
     methods: {

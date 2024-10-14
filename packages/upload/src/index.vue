@@ -325,6 +325,9 @@ export default {
           btn: (props) => {
             return this.$scopedSlots.btn && this.$scopedSlots.btn(props);
           },
+          file: (props) => {
+            return this.$scopedSlots.file && this.$scopedSlots.file(props);
+          },
           default() {
             return trigger;
           }
@@ -344,9 +347,6 @@ export default {
         <UploadList
          { ...options }
         >
-          {props => {
-            return this.$scopedSlots.btn && this.$scopedSlots.btn(props);
-          }}
         </UploadList>
       );
     }

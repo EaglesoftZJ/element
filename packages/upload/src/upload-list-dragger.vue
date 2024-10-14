@@ -1,7 +1,7 @@
 <template>
   <UploadDragger class="el-upload-dragger__list" :class="{'is-disabled': disabled, 'has-tip': hasTip }" :disabled="disabled" @file="uploadFiles" @click.native="handleUploadClick">
     <uploadList :disabled="disabled" v-bind="$attrs" v-on="$listeners">
-      <template slot-scope="{ file }">
+      <template slot="btn" slot-scope="{ file }">
         <slot name="btn" :file="file"></slot>
       </template>
     </uploadList>
