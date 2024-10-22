@@ -49,7 +49,7 @@
               </span>
       <span v-if="exportAction !== ''" class="EgGridView_BottomInfo_excel" title="导出excel。如果数据多，可能需要一段时间，请耐心等待！" @click="exportExcel"></span>
     </div>
-    <div v-else-if="showSummary" v-show="data && data.length > 0" v-mousewheel="handleHeaderFooterMousewheel" class="el-table__footer-wrapper" ref="footerWrapper">
+    <div v-else-if="showSummary" v-show="data && data.length > 0" v-mousewheel="handleHeaderFooterMousewheel" class="el-table__footer-wrapper" :style="fitHeight ? fitHeightFooterStyle  : 'width:100%;box-sizing:border-box;'" ref="footerWrapper">
       <table-footer :store="store" :border="border" :sum-text="sumText || t('el.table.sumText')" :summary-method="summaryMethod" :default-sort="defaultSort" :style="{
                   width: layout.bodyWidth ? layout.bodyWidth + 'px' : ''
                 }">
@@ -795,16 +795,31 @@
       /* start */
       fitHeightStyle() {
         // console.log('footerHeight', this.layout.footerHeight);
-        return 'width:100%;height:100%;box-sizing:border-box;padding:' + (this.layout.headerHeight ? this.layout.headerHeight : 0) + 'px 0px ' + (this.layout.footerHeight && this.isShowTotal ? this.layout.footerHeight : 0) + 'px';
+        return {
+          width: '100%',
+          height: '100%',
+          'box-sizing': 'border-box',
+          'padding-top': this.layout.headerHeight ? (this.layout.headerHeight + 'px') : 0,
+          'padding-bottom': this.layout.footerHeight ? (this.layout.footerHeight + 'px') : 0
+        };
       },
       fitHeightHeaderStyle() {
         return 'position:relative;top:-' + (this.layout.headerHeight ? this.layout.headerHeight : 0) + 'px';
       },
       fitHeightBodyStyle() {
-        return 'position:relative;height:100%;top:-' + (this.layout.headerHeight ? this.layout.headerHeight : 0) + 'px';
+        return {
+          position: 'relative',
+          height: '100%',
+          top: -(this.layout.headerHeight || 0) + 'px'
+        }
       },
       fitHeightFooterStyle() {
-        return 'width:100%;box-sizing:border-box;position:relative;top:-' + (this.layout.headerHeight ? this.layout.headerHeight : 0) + 'px';
+         return {
+          width: '100%',
+          'box-sizing': 'border-box',
+          position: 'relative',
+          top: -(this.layout.headerHeight || 0) + 'px'
+        };
       },
       fixedHeightFitHeight() {
         let style = {};
