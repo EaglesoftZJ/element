@@ -325,7 +325,7 @@ export default {
     },
     updateMaxHeight() {
       var winHeight = document.body.clientHeight;
-      this.storeDialogMaxHeight = this.dialogMaxHeight = winHeight - 40;
+      this.storeDialogMaxHeight = this.dialogMaxHeight = winHeight - 20;
       this.contentMaxHeight =
         this.dialogMaxHeight -
         (this.$refs["header"] ? this.$refs["header"].offsetHeight : 0) -
