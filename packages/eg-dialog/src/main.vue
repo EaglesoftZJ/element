@@ -13,9 +13,9 @@
     <div
       class="el-eg-dialog__wrapper el-dialog__wrapper"
       :class="wrapperClass"
-      v-show="calVisible"
       @click.self="handleWrapperClick"
       :style="style"
+      v-show="calVisible"
     >
       <div
         class="el-eg-dialog el-dialog"
