@@ -10,21 +10,21 @@ var transitionList = fs.readdirSync(path.resolve(__dirname, '../src/transitions'
 var externals = {};
 
 Object.keys(Components).forEach(function(key) {
-  externals[`element-ui/packages/${key}`] = `element-ui/lib/${key}`;
+  externals[`eg-element-ui-desk/packages/${key}`] = `eg-element-ui-desk/lib/${key}`;
 });
 
-externals['element-ui/src/locale'] = 'element-ui/lib/locale';
+externals['eg-element-ui-desk/src/locale'] = 'eg-element-ui-desk/lib/locale';
 utilsList.forEach(function(file) {
   file = path.basename(file, '.js');
-  externals[`element-ui/src/utils/${file}`] = `element-ui/lib/utils/${file}`;
+  externals[`eg-element-ui-desk/src/utils/${file}`] = `eg-element-ui-desk/lib/utils/${file}`;
 });
 mixinsList.forEach(function(file) {
   file = path.basename(file, '.js');
-  externals[`element-ui/src/mixins/${file}`] = `element-ui/lib/mixins/${file}`;
+  externals[`eg-element-ui-desk/src/mixins/${file}`] = `eg-element-ui-desk/lib/mixins/${file}`;
 });
 transitionList.forEach(function(file) {
   file = path.basename(file, '.js');
-  externals[`element-ui/src/transitions/${file}`] = `element-ui/lib/transitions/${file}`;
+  externals[`eg-element-ui-desk/src/transitions/${file}`] = `eg-element-ui-desk/lib/transitions/${file}`;
 });
 
 externals = [Object.assign({
@@ -37,7 +37,7 @@ exports.alias = {
   main: path.resolve(__dirname, '../src'),
   packages: path.resolve(__dirname, '../packages'),
   examples: path.resolve(__dirname, '../examples'),
-  'element-ui': path.resolve(__dirname, '../')
+  'eg-element-ui-desk': path.resolve(__dirname, '../')
 };
 
 exports.vue = {

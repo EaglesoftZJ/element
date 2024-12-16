@@ -1,8 +1,7 @@
-import { hasClass, addClass, removeClass } from 'element-ui/src/utils/dom';
-import ElCheckbox from 'element-ui/packages/checkbox';
-import ElTag from 'element-ui/packages/tag';
-import Emitter from 'element-ui/src/mixins/emitter';
-import Vue from 'vue';
+import { hasClass, addClass, removeClass } from 'eg-element-ui-desk/src/utils/dom';
+import ElCheckbox from 'eg-element-ui-desk/packages/checkbox';
+import ElTag from 'eg-element-ui-desk/packages/tag';
+import Emitter from 'eg-element-ui-desk/src/mixins/emitter';
 import FilterPanel from './filter-panel.vue';
 import LayoutObserver from './layout-observer';
 
@@ -391,7 +390,7 @@ export default {
       }
 
       if (!filterPanel) {
-        filterPanel = new Vue(FilterPanel);
+        filterPanel = new window.Vue(FilterPanel);
         this.filterPanels[column.id] = filterPanel;
         if (column.filterPlacement) {
           filterPanel.placement = column.filterPlacement;

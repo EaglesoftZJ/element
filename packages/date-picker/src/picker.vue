@@ -25,18 +25,17 @@
 </template>
 
 <script>
-  import Vue from 'vue';
-  import Clickoutside from 'element-ui/src/utils/clickoutside';
+  import Clickoutside from 'eg-element-ui-desk/src/utils/clickoutside';
   import {
     formatDate,
     parseDate,
     isDateObject,
     getWeekNumber
   } from './util';
-  import Popper from 'element-ui/src/utils/vue-popper';
-  import Emitter from 'element-ui/src/mixins/emitter';
-  import ElInput from 'element-ui/packages/input';
-  import merge from 'element-ui/src/utils/merge';
+  import Popper from 'eg-element-ui-desk/src/utils/vue-popper';
+  import Emitter from 'eg-element-ui-desk/src/mixins/emitter';
+  import ElInput from 'eg-element-ui-desk/packages/input';
+  import merge from 'eg-element-ui-desk/src/utils/merge';
   const NewPopper = {
     props: {
       appendToBody: Popper.props.appendToBody,
@@ -728,7 +727,7 @@
         });
       },
       mountPicker() {
-        this.picker = new Vue(this.panel).$mount();
+        this.picker = new window.Vue(this.panel).$mount();
         this.picker.defaultValue = this.defaultValue;
         this.picker.defaultTime = this.defaultTime;
         this.picker.popperClass = this.popperClass;

@@ -114,11 +114,11 @@
 </template>
 <script>
   import debounce from 'throttle-debounce/debounce';
-  import emitter from 'element-ui/src/mixins/emitter';
-  import Migrating from 'element-ui/src/mixins/migrating';
-  import tooltip from 'element-ui/src/mixins/tooltip';
+  import emitter from 'eg-element-ui-desk/src/mixins/emitter';
+  import Migrating from 'eg-element-ui-desk/src/mixins/migrating';
+  import tooltip from 'eg-element-ui-desk/src/mixins/tooltip';
   import calcTextareaHeight from './calcTextareaHeight';
-  import merge from 'element-ui/src/utils/merge';
+  import merge from 'eg-element-ui-desk/src/utils/merge';
 
   export default {
     name: 'ElInput',

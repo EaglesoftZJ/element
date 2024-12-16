@@ -127,7 +127,7 @@
 ```
 :::
 <script>
-  import { addClass } from 'element-ui/src/utils/dom';
+  import { addClass } from 'eg-element-ui-desk/src/utils/dom';
   export default {
     methods: {
       handleSizeChange(val) {

@@ -32,12 +32,9 @@ const defaults = {
   distinguishCancelAndClose: false
 };
 
-import Vue from 'vue';
 import msgboxVue from './main.vue';
-import merge from 'element-ui/src/utils/merge';
-import { isVNode } from 'element-ui/src/utils/vdom';
-
-const MessageBoxConstructor = Vue.extend(msgboxVue);
+import merge from 'eg-element-ui-desk/src/utils/merge';
+import { isVNode } from 'eg-element-ui-desk/src/utils/vdom';
 
 let currentMsg, instance;
 let msgQueue = [];
@@ -67,6 +64,7 @@ const defaultCallback = action => {
 };
 
 const initInstance = () => {
+  const MessageBoxConstructor = window.Vue.extend(msgboxVue);
   instance = new MessageBoxConstructor({
     el: document.createElement('div')
   });

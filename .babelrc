@@ -5,9 +5,9 @@
     "utils": {
       "plugins": [
         ["module-resolver", {
-          "root": ["element-ui"],
+          "root": ["eg-element-ui-desk"],
           "alias": {
-            "element-ui/src": "element-ui/lib"
+            "eg-element-ui-desk/src": "eg-element-ui-desk/lib"
           }
         }]
       ]

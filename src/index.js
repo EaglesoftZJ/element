@@ -78,8 +78,8 @@ import Timeline from '../packages/timeline/index.js';
 import TimelineItem from '../packages/timeline-item/index.js';
 import EgDialog from '../packages/eg-dialog/index.js';
 import Popconfirm from '../packages/popconfirm/index.js';
-import locale from 'element-ui/src/locale';
-import CollapseTransition from 'element-ui/src/transitions/collapse-transition';
+import locale from 'eg-element-ui-desk/src/locale';
+import CollapseTransition from 'eg-element-ui-desk/src/transitions/collapse-transition';
 
 const components = [
   Pagination,
@@ -172,7 +172,6 @@ const install = function(Vue, opts = {}) {
   const ELEMENT = {};
   ELEMENT.size = opts.size || '';
   ELEMENT.btnDirection = opts.btnDirection || ''; // 不能自定义的按钮排列方式 'row-reverse' 右边开始排列
-
   Vue.prototype.$loading = Loading.service;
   Vue.prototype.$msgbox = MessageBox;
   Vue.prototype.$alert = MessageBox.alert;
@@ -183,6 +182,7 @@ const install = function(Vue, opts = {}) {
   Vue.prototype.$egdlg = EgDialog;
 
   Vue.prototype.$ELEMENT = ELEMENT;
+  window.Vue = Vue;
 };
 
 /* istanbul ignore if */
@@ -191,7 +191,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 module.exports = {
-  version: '2.5.27-beta1',
+  version: '2.5.27-beta3',
   locale: locale.use,
   i18n: locale.i18n,
   install,

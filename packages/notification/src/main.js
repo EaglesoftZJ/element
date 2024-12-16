@@ -1,15 +1,14 @@
-import Vue from 'vue';
 import Main from './main.vue';
-import { PopupManager } from 'element-ui/src/utils/popup';
-import { isVNode } from 'element-ui/src/utils/vdom';
-const NotificationConstructor = Vue.extend(Main);
+import { PopupManager } from 'eg-element-ui-desk/src/utils/popup';
+import { isVNode } from 'eg-element-ui-desk/src/utils/vdom';
 
 let instance;
 let instances = [];
 let seed = 1;
 
 const Notification = function(options) {
-  if (Vue.prototype.$isServer) return;
+  const NotificationConstructor = window.Vue.extend(Main);
+  if (window.Vue.prototype.$isServer) return;
   options = options || {};
   const userOnClose = options.onClose;
   const id = 'notification_' + seed++;

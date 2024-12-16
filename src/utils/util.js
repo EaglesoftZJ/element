@@ -1,6 +1,6 @@
 import Vue from 'vue';
 const hasOwnProperty = Object.prototype.hasOwnProperty;
-import { isString, isObject } from 'element-ui/src/utils/types';
+import { isString, isObject } from 'eg-element-ui-desk/src/utils/types';
 
 export function noop() {};
 

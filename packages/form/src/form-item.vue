@@ -30,12 +30,12 @@
 
 <script>
   import AsyncValidator from 'async-validator';
-  import emitter from 'element-ui/src/mixins/emitter';
-  import objectAssign from 'element-ui/src/utils/merge';
+  import emitter from 'eg-element-ui-desk/src/mixins/emitter';
+  import objectAssign from 'eg-element-ui-desk/src/utils/merge';
   import {
     noop,
     getPropByPath
-  } from 'element-ui/src/utils/util';
+  } from 'eg-element-ui-desk/src/utils/util';
   export default {
     name: 'ElFormItem',
     componentName: 'ElFormItem',

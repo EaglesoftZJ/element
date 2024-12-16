@@ -18,8 +18,8 @@
 
 ```javascript
 import Vue from 'vue';
-import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
+import ElementUI from 'eg-element-ui-desk';
+import 'eg-element-ui-desk/lib/theme-chalk/index.css';
 import App from './App.vue';
 
 Vue.use(ElementUI);
@@ -51,7 +51,7 @@ npm install babel-plugin-component -D
     [
       "component",
       {
-        "libraryName": "element-ui",
+        "libraryName": "eg-element-ui-desk",
         "styleLibraryName": "theme-chalk"
       }
     ]
@@ -63,7 +63,7 @@ npm install babel-plugin-component -D
 
 ```javascript
 import Vue from 'vue';
-import { Button, Select } from 'element-ui';
+import { Button, Select } from 'eg-element-ui-desk';
 import App from './App.vue';
 
 Vue.component(Button.name, Button);
@@ -151,7 +151,7 @@ import {
   MessageBox,
   Message,
   Notification
-} from 'element-ui';
+} from 'eg-element-ui-desk';
 
 Vue.use(Pagination);
 Vue.use(Dialog);
@@ -235,7 +235,7 @@ Vue.prototype.$message = Message;
 
 ```js
 import Vue from 'vue';
-import Element from 'element-ui';
+import Element from 'eg-element-ui-desk';
 Vue.use(Element, { size: 'small' });
 ```
 
@@ -243,7 +243,7 @@ Vue.use(Element, { size: 'small' });
 
 ```js
 import Vue from 'vue';
-import { Button } from 'element-ui';
+import { Button } from 'eg-element-ui-desk';
 
 Vue.prototype.$ELEMENT = { size: 'small' };
 Vue.use(Button);
@@ -260,6 +260,6 @@ Vue.use(Button);
 我们还可以使用 [Nuxt.js](https://nuxtjs.org)：
 
 <div class="glitch-embed-wrap" style="height: 420px; width: 100%;">
-  <iframe src="https://glitch.com/embed/#!/embed/nuxt-with-element-ui?path=nuxt.config.js&previewSize=0&attributionHidden=true" alt="nuxt-with-element-ui on glitch" style="height: 100%; width: 100%; border: 0;"></iframe>
+  <iframe src="https://glitch.com/embed/#!/embed/nuxt-with-eg-element-ui-desk?path=nuxt.config.js&previewSize=0&attributionHidden=true" alt="nuxt-with-eg-element-ui-desk on glitch" style="height: 100%; width: 100%; border: 0;"></iframe>
 </div>
 

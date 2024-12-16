@@ -1,15 +1,14 @@
-import Vue from 'vue';
 import Main from './main.vue';
-import { PopupManager } from 'element-ui/src/utils/popup';
-import { isVNode } from 'element-ui/src/utils/vdom';
-let MessageConstructor = Vue.extend(Main);
+import { PopupManager } from 'eg-element-ui-desk/src/utils/popup';
+import { isVNode } from 'eg-element-ui-desk/src/utils/vdom';
 
 let instance;
 let instances = [];
 let seed = 1;
 
 const Message = function(options) {
-  if (Vue.prototype.$isServer) return;
+  let MessageConstructor = window.Vue.extend(Main);
+  if (window.Vue.prototype.$isServer) return;
   options = options || {};
   if (typeof options === 'string') {
     options = {

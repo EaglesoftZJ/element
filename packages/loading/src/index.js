@@ -1,11 +1,11 @@
-import Vue from 'vue';
 import loadingVue from './loading.vue';
-import { addClass, removeClass, getStyle } from 'element-ui/src/utils/dom';
-import { PopupManager } from 'element-ui/src/utils/popup';
-import afterLeave from 'element-ui/src/utils/after-leave';
-import merge from 'element-ui/src/utils/merge';
+import { addClass, removeClass, getStyle } from 'eg-element-ui-desk/src/utils/dom';
+import { PopupManager } from 'eg-element-ui-desk/src/utils/popup';
+import afterLeave from 'eg-element-ui-desk/src/utils/after-leave';
+import merge from 'eg-element-ui-desk/src/utils/merge';
 
-const LoadingConstructor = Vue.extend(loadingVue);
+let LoadingConstructor = null;
+
 
 const defaults = {
   text: null,
@@ -17,26 +17,32 @@ const defaults = {
 
 let fullscreenLoading;
 
-LoadingConstructor.prototype.originalPosition = '';
-LoadingConstructor.prototype.originalOverflow = '';
+function initLoadingConstructor() {
+  if (LoadingConstructor) return;
+  LoadingConstructor = window.Vue.extend(loadingVue);
 
-LoadingConstructor.prototype.close = function() {
-  if (this.fullscreen) {
-    fullscreenLoading = undefined;
-  }
-  afterLeave(this, _ => {
-    const target = this.fullscreen || this.body
-      ? document.body
-      : this.target;
-    removeClass(target, 'el-loading-parent--relative');
-    removeClass(target, 'el-loading-parent--hidden');
-    if (this.$el && this.$el.parentNode) {
-      this.$el.parentNode.removeChild(this.$el);
+  LoadingConstructor.prototype.originalPosition = '';
+  LoadingConstructor.prototype.originalOverflow = '';
+
+  LoadingConstructor.prototype.close = function() {
+    if (this.fullscreen) {
+      fullscreenLoading = undefined;
     }
-    this.$destroy();
-  }, 300);
-  this.visible = false;
-};
+    afterLeave(this, _ => {
+      const target = this.fullscreen || this.body
+        ? document.body
+        : this.target;
+      removeClass(target, 'el-loading-parent--relative');
+      removeClass(target, 'el-loading-parent--hidden');
+      if (this.$el && this.$el.parentNode) {
+        this.$el.parentNode.removeChild(this.$el);
+      }
+      this.$destroy();
+    }, 300);
+    this.visible = false;
+  };
+}
+
 
 const addStyle = (options, parent, instance) => {
   let maskStyle = {};
@@ -65,6 +71,7 @@ const addStyle = (options, parent, instance) => {
 };
 
 const Loading = (options = {}) => {
+  initLoadingConstructor();
   if (Vue.prototype.$isServer) return;
   options = merge({}, defaults, options);
   if (typeof options.target === 'string') {

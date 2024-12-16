@@ -3,8 +3,8 @@ import UploadList from './upload-list';
 import uploadListDragger from './upload-list-dragger.vue';
 import Upload from './upload';
 import IframeUpload from './iframe-upload';
-import ElProgress from 'element-ui/packages/progress';
-import Migrating from 'element-ui/src/mixins/migrating';
+import ElProgress from 'eg-element-ui-desk/packages/progress';
+import Migrating from 'eg-element-ui-desk/src/mixins/migrating';
 
 
 function noop() {}

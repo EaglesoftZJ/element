@@ -16,8 +16,8 @@
 </template>
 
 <script type="text/babel">
-  import Emitter from 'element-ui/src/mixins/emitter';
-  import { getValueByPath, escapeRegexpString } from 'element-ui/src/utils/util';
+  import Emitter from 'eg-element-ui-desk/src/mixins/emitter';
+  import { getValueByPath, escapeRegexpString } from 'eg-element-ui-desk/src/utils/util';
   export default {
     mixins: [Emitter],
     name: 'ElOption',

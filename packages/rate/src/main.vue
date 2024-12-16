@@ -32,8 +32,8 @@
 </template>
 
 <script>
-  import { hasClass } from 'element-ui/src/utils/dom';
-  import Migrating from 'element-ui/src/mixins/migrating';
+  import { hasClass } from 'eg-element-ui-desk/src/utils/dom';
+  import Migrating from 'eg-element-ui-desk/src/mixins/migrating';
 
   export default {
     name: 'ElRate',

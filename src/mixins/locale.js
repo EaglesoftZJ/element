@@ -1,4 +1,4 @@
-import { t } from 'element-ui/src/locale';
+import { t } from 'eg-element-ui-desk/src/locale';
 
 export default {
   methods: {

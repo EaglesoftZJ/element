@@ -144,22 +144,22 @@
 </template>
 
 <script type="text/babel">
-  import Emitter from 'element-ui/src/mixins/emitter';
-  import Focus from 'element-ui/src/mixins/focus';
-  import Locale from 'element-ui/src/mixins/locale';
-  import ElInput from 'element-ui/packages/input';
+  import Emitter from 'eg-element-ui-desk/src/mixins/emitter';
+  import Focus from 'eg-element-ui-desk/src/mixins/focus';
+  import Locale from 'eg-element-ui-desk/src/mixins/locale';
+  import ElInput from 'eg-element-ui-desk/packages/input';
   import ElSelectMenu from './select-dropdown.vue';
   import ElOption from './option.vue';
-  import ElTag from 'element-ui/packages/tag';
-  import ElScrollbar from 'element-ui/packages/scrollbar';
+  import ElTag from 'eg-element-ui-desk/packages/tag';
+  import ElScrollbar from 'eg-element-ui-desk/packages/scrollbar';
   import debounce from 'throttle-debounce/debounce';
-  import Clickoutside from 'element-ui/src/utils/clickoutside';
-  import { addResizeListener, removeResizeListener } from 'element-ui/src/utils/resize-event';
-  import { t } from 'element-ui/src/locale';
-  import scrollIntoView from 'element-ui/src/utils/scroll-into-view';
-  import { getValueByPath, valueEquals, isIE, isEdge } from 'element-ui/src/utils/util';
+  import Clickoutside from 'eg-element-ui-desk/src/utils/clickoutside';
+  import { addResizeListener, removeResizeListener } from 'eg-element-ui-desk/src/utils/resize-event';
+  import { t } from 'eg-element-ui-desk/src/locale';
+  import scrollIntoView from 'eg-element-ui-desk/src/utils/scroll-into-view';
+  import { getValueByPath, valueEquals, isIE, isEdge } from 'eg-element-ui-desk/src/utils/util';
   import NavigationMixin from './navigation-mixin';
-  import tooltip from 'element-ui/src/mixins/tooltip';
+  import tooltip from 'eg-element-ui-desk/src/mixins/tooltip';
   export default {
     mixins: [Emitter, Locale, Focus('reference'), NavigationMixin, tooltip],
     name: 'ElSelect',

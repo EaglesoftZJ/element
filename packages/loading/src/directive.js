@@ -1,16 +1,14 @@
-import Vue from 'vue';
 import Loading from './loading.vue';
-import { addClass, removeClass, getStyle } from 'element-ui/src/utils/dom';
-import { PopupManager } from 'element-ui/src/utils/popup';
-import afterLeave from 'element-ui/src/utils/after-leave';
-const Mask = Vue.extend(Loading);
+import { addClass, removeClass, getStyle } from 'eg-element-ui-desk/src/utils/dom';
+import { PopupManager } from 'eg-element-ui-desk/src/utils/popup';
+import afterLeave from 'eg-element-ui-desk/src/utils/after-leave';
 
 const loadingDirective = {};
 loadingDirective.install = Vue => {
   if (Vue.prototype.$isServer) return;
   const toggleLoading = (el, binding) => {
     if (binding.value) {
-      Vue.nextTick(() => {
+      window.Vue.nextTick(() => {
         if (binding.modifiers.fullscreen) {
           el.originalPosition = getStyle(document.body, 'position');
           el.originalOverflow = getStyle(document.body, 'overflow');
@@ -72,7 +70,7 @@ loadingDirective.install = Vue => {
       el.domVisible = true;
 
       parent.appendChild(el.mask);
-      Vue.nextTick(() => {
+      window.Vue.nextTick(() => {
         if (el.instance.hiding) {
           el.instance.$emit('after-leave');
         } else {
@@ -85,6 +83,7 @@ loadingDirective.install = Vue => {
 
   Vue.directive('loading', {
     bind: function(el, binding, vnode) {
+      const Mask = Vue.extend(Loading);
       const textExr = el.getAttribute('element-loading-text');
       const spinnerExr = el.getAttribute('element-loading-spinner');
       const backgroundExr = el.getAttribute('element-loading-background');

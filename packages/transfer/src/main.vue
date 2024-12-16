@@ -22,11 +22,11 @@
 </template>
 
 <script>
-  import ElButton from 'element-ui/packages/button';
-  import Emitter from 'element-ui/src/mixins/emitter';
-  import Locale from 'element-ui/src/mixins/locale';
+  import ElButton from 'eg-element-ui-desk/packages/button';
+  import Emitter from 'eg-element-ui-desk/src/mixins/emitter';
+  import Locale from 'eg-element-ui-desk/src/mixins/locale';
   import TransferPanel from './transfer-panel.vue';
-  import Migrating from 'element-ui/src/mixins/migrating';
+  import Migrating from 'eg-element-ui-desk/src/mixins/migrating';
   export default {
     name: 'ElTransfer',
     componentName: 'ElTransfer',

@@ -98,8 +98,8 @@
 
 <script type="text/babel">
   import { getRangeHours, modifyTime } from '../util';
-  import ElScrollbar from 'element-ui/packages/scrollbar';
-  import RepeatClick from 'element-ui/src/directives/repeat-click';
+  import ElScrollbar from 'eg-element-ui-desk/packages/scrollbar';
+  import RepeatClick from 'eg-element-ui-desk/src/directives/repeat-click';
 
   export default {
     components: { ElScrollbar },

@@ -74,10 +74,10 @@
 </template>
 
 <script>
-  import ElCheckboxGroup from 'element-ui/packages/checkbox-group';
-  import ElCheckbox from 'element-ui/packages/checkbox';
-  import ElInput from 'element-ui/packages/input';
-  import Locale from 'element-ui/src/mixins/locale';
+  import ElCheckboxGroup from 'eg-element-ui-desk/packages/checkbox-group';
+  import ElCheckbox from 'eg-element-ui-desk/packages/checkbox';
+  import ElInput from 'eg-element-ui-desk/packages/input';
+  import Locale from 'eg-element-ui-desk/src/mixins/locale';
   import draggable from 'vuedraggable';
 
   export default {

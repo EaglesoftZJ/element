@@ -112,21 +112,21 @@
 </template>
 
 <script>
-import Popper from 'element-ui/src/utils/vue-popper';
-import Clickoutside from 'element-ui/src/utils/clickoutside';
-import Emitter from 'element-ui/src/mixins/emitter';
-import Locale from 'element-ui/src/mixins/locale';
-import Migrating from 'element-ui/src/mixins/migrating';
-import ElInput from 'element-ui/packages/input';
-import ElTag from 'element-ui/packages/tag';
-import ElScrollbar from 'element-ui/packages/scrollbar';
-import ElCascaderPanel from 'element-ui/packages/cascader-panel';
-import AriaUtils from 'element-ui/src/utils/aria-utils';
-import { t } from 'element-ui/src/locale';
-import { isEqual, isEmpty, kebabCase } from 'element-ui/src/utils/util';
-import { isUndefined, isFunction } from 'element-ui/src/utils/types';
-import { isDef } from 'element-ui/src/utils/shared';
-import { addResizeListener, removeResizeListener } from 'element-ui/src/utils/resize-event';
+import Popper from 'eg-element-ui-desk/src/utils/vue-popper';
+import Clickoutside from 'eg-element-ui-desk/src/utils/clickoutside';
+import Emitter from 'eg-element-ui-desk/src/mixins/emitter';
+import Locale from 'eg-element-ui-desk/src/mixins/locale';
+import Migrating from 'eg-element-ui-desk/src/mixins/migrating';
+import ElInput from 'eg-element-ui-desk/packages/input';
+import ElTag from 'eg-element-ui-desk/packages/tag';
+import ElScrollbar from 'eg-element-ui-desk/packages/scrollbar';
+import ElCascaderPanel from 'eg-element-ui-desk/packages/cascader-panel';
+import AriaUtils from 'eg-element-ui-desk/src/utils/aria-utils';
+import { t } from 'eg-element-ui-desk/src/locale';
+import { isEqual, isEmpty, kebabCase } from 'eg-element-ui-desk/src/utils/util';
+import { isUndefined, isFunction } from 'eg-element-ui-desk/src/utils/types';
+import { isDef } from 'eg-element-ui-desk/src/utils/shared';
+import { addResizeListener, removeResizeListener } from 'eg-element-ui-desk/src/utils/resize-event';
 import debounce from 'throttle-debounce/debounce';
 
 const { keys: KeyCode } = AriaUtils;

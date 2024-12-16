@@ -7,7 +7,7 @@
   </form>
 </template>
 <script>
-  import objectAssign from 'element-ui/src/utils/merge';
+  import objectAssign from 'eg-element-ui-desk/src/utils/merge';
 
   export default {
     name: 'ElForm',

@@ -1,8 +1,8 @@
 <script>
-  import ElCollapseTransition from 'element-ui/src/transitions/collapse-transition';
+  import ElCollapseTransition from 'eg-element-ui-desk/src/transitions/collapse-transition';
   import menuMixin from './menu-mixin';
-  import Emitter from 'element-ui/src/mixins/emitter';
-  import Popper from 'element-ui/src/utils/vue-popper';
+  import Emitter from 'eg-element-ui-desk/src/mixins/emitter';
+  import Popper from 'eg-element-ui-desk/src/utils/vue-popper';
 
   const poperMixins = {
     props: {
