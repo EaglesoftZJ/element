@@ -172,6 +172,7 @@ const install = function(Vue, opts = {}) {
   const ELEMENT = {};
   ELEMENT.size = opts.size || '';
   ELEMENT.btnDirection = opts.btnDirection || ''; // 不能自定义的按钮排列方式 'row-reverse' 右边开始排列
+
   Vue.prototype.$loading = Loading.service;
   Vue.prototype.$msgbox = MessageBox;
   Vue.prototype.$alert = MessageBox.alert;
@@ -191,7 +192,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 module.exports = {
-  version: '2.5.27-beta3',
+  version: '2.5.27-beta4',
   locale: locale.use,
   i18n: locale.i18n,
   install,

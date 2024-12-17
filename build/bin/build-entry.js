@@ -41,9 +41,9 @@ const install = function(Vue, opts = {}) {
   Vue.prototype.$notify = Notification;
   Vue.prototype.$message = Message;
   Vue.prototype.$egdlg = EgDialog;
-  Vue.prototype.$ELEMEN1 = EgDialog;
 
   Vue.prototype.$ELEMENT = ELEMENT;
+  window.Vue = Vue;
 };
 
 /* istanbul ignore if */
