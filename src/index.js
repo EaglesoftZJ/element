@@ -180,7 +180,7 @@ const install = function(Vue, opts = {}) {
   Vue.prototype.$prompt = MessageBox.prompt;
   Vue.prototype.$notify = Notification;
   Vue.prototype.$message = Message;
-  Vue.prototype.$egdlg = EgDialog;
+  Vue.prototype.$egdlg = EgDialog(Vue);
 
   Vue.prototype.$ELEMENT = ELEMENT;
   window.Vue = Vue;
@@ -192,7 +192,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 module.exports = {
-  version: '2.5.27-beta4',
+  version: '2.5.27-beta5',
   locale: locale.use,
   i18n: locale.i18n,
   install,
