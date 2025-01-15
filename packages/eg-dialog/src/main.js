@@ -258,6 +258,7 @@ function getDiloag(Vue) {
     msgQueue = [];
     currentMsg = null;
   };
+  return EgDialog;
 }
 
 export default getDiloag;

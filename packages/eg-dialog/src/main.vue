@@ -14,7 +14,7 @@
       class="el-eg-dialog__wrapper el-dialog__wrapper"
       :class="wrapperClass"
       @click.self="handleWrapperClick"
-      :style="style"
+      :style="calStyle"
       v-show="calVisible"
     >
       <div
@@ -165,7 +165,8 @@ export default {
       wrapperClass: '',
       dialogStyle: '',
       contentStyle: '',
-      style: ''
+      style: '',
+      type: '' // 弹窗类型
     };
   },
 
@@ -217,7 +218,22 @@ export default {
     }
   },
 
+  
   computed: {
+    // 二次处理wrapper style
+    calStyle() {
+      const types = ['Default', 'WindowSize', 'fitHeight'];
+      if (types.includes(this.type)) {
+        if (this.calVisible) {
+          return this.style + ';display: flex;';
+        } else {
+          return this.style + ';display: none;';
+        }
+      } else {
+        return this.style;
+      }
+     
+    },
     dialogStyle_1() {
       let style = {};
       if (this.width) {
