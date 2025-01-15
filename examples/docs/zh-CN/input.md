@@ -191,8 +191,12 @@
 
 :::demo
 ```html
+<el-form disabled>
+<el-form-item>
 <el-input clearable aaa="aaa111" v-model="input" style="width: 300.3px;" placeholder="请输入内容" suffix-icon="el-icon-success" @change="test" show-word-limit
   maxlength="100"></el-input>
+  </el-form-item>
+  </el-form>
 
 <script>
 export default {

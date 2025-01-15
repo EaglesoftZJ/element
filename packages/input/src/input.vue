@@ -218,7 +218,7 @@
         return this.$slots.prepend || this.$slots.append;
       },
       showClear() {
-        return this.clearable && !this.disabled && this.currentValue !== '' && (this.focused || this.hovering);
+        return this.clearable && !this.inputDisabled && this.currentValue !== '' && (this.focused || this.hovering);
       },
       isWordLimitVisible() {
         return this.showWordLimit &&
