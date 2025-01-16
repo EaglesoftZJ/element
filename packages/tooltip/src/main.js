@@ -77,9 +77,8 @@ export default {
   },
 
   render(h) {
-    if (this.popperVM) {
-      this.popperVM.node = (
-        <transition
+    const tooltipNode = 
+      (<transition
           name={ this.transition }
           onAfterLeave={ this.doDestroy }>
           <div
@@ -96,18 +95,26 @@ export default {
             { this.$slots.content || this.content }
           </div>
         </transition>);
-    }
+    let referenceNode = null;
 
-    if (!this.$slots.default || !this.$slots.default.length) return this.$slots.default;
+    if (!this.$slots.default || !this.$slots.default.length) {
+      referenceNode = this.$slots.default;
+    }
 
     const vnode = getFirstComponentChild(this.$slots.default);
 
-    if (!vnode) return vnode;
+    if (!vnode) {
+      referenceNode = vnode;
+    }
+    if (vnode && !referenceNode) {
+      const data = vnode.data = vnode.data || {};
+      data.staticClass = this.concatClass(data.staticClass, 'el-tooltip');
+      referenceNode = vnode;
+    }
 
-    const data = vnode.data = vnode.data || {};
-    data.staticClass = this.concatClass(data.staticClass, 'el-tooltip');
+    const allNode = <span>{[tooltipNode, referenceNode]}</span>
 
-    return vnode;
+    return allNode;
   },
 
   mounted() {
