@@ -1,6 +1,6 @@
 {
   "name": "eg-element-ui-desk",
-  "version": "2.5.27-beta11",
+  "version": "2.5.27-beta12",
   "description": "A Component Library for Vue.js.",
   "main": "lib/eg-element-ui-desk.common.js",
   "files": [

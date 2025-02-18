@@ -4,6 +4,9 @@
       <template slot="btn" slot-scope="{ file }">
         <slot name="btn" :file="file"></slot>
       </template>
+      <template slot="suffixName" slot-scope="{ file }">
+        <slot name="suffixName" :file="file"></slot>
+      </template>
     </uploadList>
     <div v-if="!disabled">
       <slot></slot>

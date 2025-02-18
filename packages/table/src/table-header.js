@@ -176,7 +176,7 @@ export default {
                   </div>
                 </th>
               ))}
-              {this.hasGutter ? <th class="gutter" style={{'width': this.tableLayout.scrollY ? this.tableLayout.gutterWidth + 'px' : 0, display: this.tableLayout.scrollY ? 'block' : 'none'}} /> : ''}
+              {this.hasGutter ? <th class="gutter" style={{'width': this.tableLayout.scrollY ? this.tableLayout.gutterWidth + 'px' : 0 }} /> : ''}
             </tr>
           ))}
         </thead>

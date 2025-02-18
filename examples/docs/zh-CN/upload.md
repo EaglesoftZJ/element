@@ -140,10 +140,14 @@
   :aaa="111"
   :file-list="fileList">
   <el-button size="small" type="primary">点击上传</el-button>
-  <div slot="btn" slot-scope="props" class="el-upload__tip">
+  <div slot="btn" slot-scope="props">
     <i>123123123</i>
   </div>
+  <div slot="suffixName" slot-scope="props">
+    2022-11-11
+  </div>
   <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+  <!-- <div slot="file" slot-scope="{file}">{{ file.name }}11111</div>   -->
 </el-upload>
 <script>
   export default {
