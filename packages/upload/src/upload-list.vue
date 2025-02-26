@@ -32,6 +32,9 @@
         </template>
         {{ file[props['name']] || file.name }}
       </a>
+      <span class="suffix-name">
+        <slot name="suffixName" :file="file"></slot>
+      </span>
       <label class="el-upload-list__item-status-label">
         <i :class="{
           'el-icon-upload-success': true,

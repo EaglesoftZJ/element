@@ -140,8 +140,11 @@
   :aaa="111"
   :file-list="fileList">
   <el-button size="small" type="primary">点击上传</el-button>
-  <div slot="btn" slot-scope="props" class="el-upload__tip">
+  <!-- <div slot="btn" slot-scope="props" class="el-upload__tip">
     <i>123123123</i>
+  </div> -->
+  <div slot="suffixName" slot-scope="props">
+    <i>{{ props.file.status }}</i>
   </div>
   <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
 </el-upload>

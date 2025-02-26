@@ -469,6 +469,20 @@
       top: -7px;
     }
   }
+  @include m(text) {
+    .el-upload-list__item {
+      display: flex;
+      justify-content: space-between;
+    }
+    .el-upload-list__item-name {
+      margin-right: 5px;
+      flex: 1;
+      width: 0px;
+    }
+    .suffix-name {
+      margin-right: 40px;
+    }
+  }
 }
 
 @include b(upload-cover) {

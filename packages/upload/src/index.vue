@@ -328,6 +328,9 @@ export default {
           file: (props) => {
             return this.$scopedSlots.file && this.$scopedSlots.file(props);
           },
+          suffixName: (props) => {
+            return this.$scopedSlots.suffixName && this.$scopedSlots.suffixName(props);
+          },
           default() {
             return trigger;
           }
