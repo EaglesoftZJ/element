@@ -12,6 +12,18 @@ export const getCell = function(event) {
 
   return null;
 };
+export const getButton = function(event) {
+  let cell = event.target;
+
+  while (cell && cell.tagName.toUpperCase() !== 'HTML') {
+    if (cell.tagName.toUpperCase() === 'BUTTON') {
+      return cell;
+    }
+    cell = cell.parentNode;
+  }
+
+  return null;
+};
 
 const isObject = function(obj) {
   return obj !== null && typeof obj === 'object';

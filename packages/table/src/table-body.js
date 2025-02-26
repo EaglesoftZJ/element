@@ -1,4 +1,4 @@
-import { getCell, getColumnByCell, getRowIdentity } from './util';
+import { getButton, getCell,  getColumnByCell, getRowIdentity } from './util';
 import { hasClass, addClass, removeClass } from 'element-ui/src/utils/dom';
 import ElCheckbox from 'element-ui/packages/checkbox';
 import ElTooltip from 'element-ui/packages/tooltip';
@@ -119,6 +119,7 @@ export default {
                         <td
                           style={ this.getCellStyle($index, cellIndex, row, column) }
                           class={ this.getCellClass($index, cellIndex, row, column) }
+                          on-click={ ($event) => this.handleCellClick($event, column) }
                           rowspan={ rowspan }
                           colspan={ colspan }
                           on-mouseenter={ ($event) => this.handleCellMouseEnter($event, row, column) }
@@ -448,6 +449,23 @@ export default {
 
     handleDoubleClick(event, row) {
       this.handleEvent(event, row, 'dblclick');
+    },
+    handleCellClick(event, column) {
+      if (
+        column.label &&
+        this.$ELEMENT.optimizeTableColBtn &&
+        ( 
+          this.$ELEMENT.optimizeTableColLabelCN.includes(column.label) ||
+          this.$ELEMENT.optimizeTableColLabelUS.includes(column.label.toLocaleLowerCase())
+        )
+      ) { // 操作列下的按钮需要优化，不执行默认操作了
+        event.stopPropagation();
+        const cell = getCell(event);
+        const button = getButton(event);
+        if (!button && cell.querySelectorAll('.el-button').length === 1) { // 只有一个按钮，点击操作列cell(非按钮)，触发这个按钮的点击事件
+          cell.querySelectorAll('.el-button')[0].click();
+        }
+      }
     },
 
     handleClick(event, row) {

@@ -32,6 +32,11 @@ const install = function(Vue, opts = {}) {
   const ELEMENT = {};
   ELEMENT.size = opts.size || '';
   ELEMENT.btnDirection = opts.btnDirection || ''; // 不能自定义的按钮排列方式 'row-reverse' 右边开始排列
+  ELEMENT.optimizeTableColBtn = opts.optimizeTableColBtn || false; // 优化列表控件操作列的按钮
+  ELEMENT.optimizeTableColLabelCN = opts.optimizeTableColLabelCN || ['操作']; // 优化列表控件操作列中文名称
+  ELEMENT.optimizeTableColLabelUS = opts.optimizeTableColLabelUS || ['operation']; // 优化列表控件操作列英文名称
+
+
 
   Vue.prototype.$loading = Loading.service;
   Vue.prototype.$msgbox = MessageBox;

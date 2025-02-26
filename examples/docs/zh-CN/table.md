@@ -339,7 +339,12 @@
 
     methods: {
       test111() {
-        this.tableData5 = JSON.parse(JSON.stringify(this.tableData5));
+        
+        console.log('click111')
+      },
+      test222() {
+        
+        console.log('click222')
       },
       load(tree, treeNode, resolve) {
         resolve([
@@ -561,12 +566,16 @@
 ```html
   <template>
      <div style="height: 300px;">
-       <el-table primary-key="id" fit-height highlight-current-row ref="aaa" :data="tableData" style="width: 100%" tooltip-placement="top-start">
+       <el-table @row-click="test111" primary-key="id" fit-height highlight-current-row ref="aaa" :data="tableData" style="width: 100%" tooltip-placement="top-start">
       <el-table-column prop="date" label="日期" width="180">
       </el-table-column>
       <el-table-column prop="name" label="姓名" width="180">
       </el-table-column>
-      <el-table-column prop="address" label="地址" show-overflow-tooltip>
+      <el-table-column prop="address" label="Operation" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <el-button @click="test222">test</el-button>
+        </template>
+        
       </el-table-column>
     </el-table>
     <el-button @click="handleClick1">click</el-button>
