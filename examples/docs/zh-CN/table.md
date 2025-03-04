@@ -346,6 +346,10 @@
         
         console.log('click222')
       },
+      test333() {
+        
+        console.log('click333')
+      },
       load(tree, treeNode, resolve) {
         resolve([
           {
@@ -574,6 +578,7 @@
       <el-table-column prop="address" label="Operation" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button @click="test222">test</el-button>
+          <el-button @click="test333">test1</el-button>
         </template>
         
       </el-table-column>

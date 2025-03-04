@@ -464,10 +464,33 @@ export default {
         const button = getButton(event);
         if (!button && cell.querySelectorAll('.el-button').length === 1) { // 只有一个按钮，点击操作列cell(非按钮)，触发这个按钮的点击事件
           cell.querySelectorAll('.el-button')[0].click();
+        } else if (!button) { // 存在多个按钮，触发距离近的按钮click事件
+          let closestButton = this.getClosestDistanceButton(event, cell);
+          closestButton.click();
         }
       }
     },
-
+    getClosestDistanceButton(event, cell) {
+      var mouseX = event.clientX;
+      var mouseY = event.clientY;
+      
+      var closestButton = null;
+      var closestDistance = Infinity;
+    
+      cell.querySelectorAll('.el-button').forEach(function(button) {
+        var buttonRect = button.getBoundingClientRect();
+        var buttonX = buttonRect.left + buttonRect.width / 2;
+        var buttonY = buttonRect.top + buttonRect.height / 2;
+        
+        var distance = Math.sqrt(Math.pow((mouseX - buttonX), 2) + Math.pow((mouseY - buttonY), 2));
+        
+        if (distance < closestDistance) {
+          closestButton = button;
+          closestDistance = distance;
+        }
+      });
+      return closestButton;
+    },
     handleClick(event, row) {
       this.store.commit('setCurrentRow', row);
       this.handleEvent(event, row, 'click');

@@ -172,9 +172,9 @@ const install = function(Vue, opts = {}) {
   const ELEMENT = {};
   ELEMENT.size = opts.size || '';
   ELEMENT.btnDirection = opts.btnDirection || ''; // 不能自定义的按钮排列方式 'row-reverse' 右边开始排列
-  ELEMENT.optimizeTableColBtn = opts.optimizeTableColBtn || true; // 优化列表控件操作列的按钮
+  ELEMENT.optimizeTableColBtn = opts.optimizeTableColBtn || false; // 优化列表控件操作列的按钮
   ELEMENT.optimizeTableColLabelCN = opts.optimizeTableColLabelCN || ['操作']; // 优化列表控件操作列中文名称
-  ELEMENT.optimizeTableColLabelUS = opts.optimizeTableColLabelUS || ['operation', 'operate']; // 优化列表控件操作列英文名称
+  ELEMENT.optimizeTableColLabelUS = opts.optimizeTableColLabelUS || ['operation']; // 优化列表控件操作列英文名称
 
 
 
@@ -196,7 +196,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 module.exports = {
-  version: '2.5.29-beta2',
+  version: '2.5.31-beta1',
   locale: locale.use,
   i18n: locale.i18n,
   install,
