@@ -17,6 +17,9 @@ export default {
       type: String,
       default: 'file'
     },
+    saveFileNameFn: { // 上传的文件名自定义函数
+      type: Function
+    },
     data: Object,
     headers: Object,
     withCredentials: Boolean,
@@ -145,6 +148,7 @@ export default {
         compressPic: this.compressPic,
         limitPicMB: this.limitPicMB,
         quality: this.quality,
+        saveFileNameFn: this.saveFileNameFn,
         onProgress: e => {
           this.onProgress(e, rawFile);
         },

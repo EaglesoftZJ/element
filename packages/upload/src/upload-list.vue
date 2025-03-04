@@ -103,9 +103,9 @@
       props: {}
     },
     created() {
-      if (this.$parent.$attrs.aaa === 111) {
-        debugger;
-      }
+      // if (this.$parent.$attrs.aaa === 111) {
+      //   debugger;
+      // }
       this.activateTooltip = debounce(50, tooltip => tooltip.handleShowPopper());
     },
     methods: {

@@ -71,6 +71,9 @@
       };
     },
     methods: {
+      saveFileNameFn(options) {
+        return '111.doc';
+      },
       handleRemove(file, fileList) {
         console.log(file, fileList);
       },
@@ -130,6 +133,7 @@
 <el-upload
   class="upload-demo"
   action="https://jsonplaceholder.typicode.com/posts/"
+  :save-file-name-fn="saveFileNameFn"
   :on-preview="handlePreview"
   :on-remove="handleRemove"
   :before-remove="beforeRemove"

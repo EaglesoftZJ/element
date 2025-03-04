@@ -47,9 +47,12 @@ export default {
     },
     data: Object,
     multiple: Boolean,
-    name: {
+    name: { // file的key
       type: String,
       default: 'file'
+    },
+    saveFileNameFn: { // 上传的文件名自定义函数
+      type: Function
     },
     drag: Boolean,
     dragInTextList: Boolean, // showFileList && listType === 'text' && dragInTextList 则拖拽交互在el-upload-list--text上执行
@@ -381,7 +384,8 @@ export default {
         'on-error': this.handleError,
         'on-preview': this.onPreview,
         'on-remove': this.handleRemove,
-        'http-request': this.httpRequest
+        'http-request': this.httpRequest,
+        saveFileNameFn: this.saveFileNameFn
       },
       ref: 'upload-inner'
     };

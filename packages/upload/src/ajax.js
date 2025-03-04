@@ -144,8 +144,13 @@ export default function upload(option) {
           formData.append(key, option.data[key]);
         });
       }
+      
+      let saveFileName;
+      if (option.saveFileNameFn) {
+        saveFileName = option.saveFileNameFn(option)
+      }
 
-      formData.append(option.filename, option.file);
+      formData.append(option.filename, option.file, saveFileName);
 
       xhr.onerror = function error(e) {
         option.onError(e);
