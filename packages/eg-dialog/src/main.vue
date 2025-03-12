@@ -53,20 +53,20 @@
         </div>
         <div class="el-dialog__footer" ref="footer">
           <el-button
-            v-for="(item, index) in buttons"
+            v-for="(item, index) in myButtons"
             :disabled="
-              buttons[buttons.length - 1 - index].disabled !== undefined &&
-              buttons[buttons.length - 1 - index].disabled === true
+              myButtons[myButtons.length - 1 - index].disabled !== undefined &&
+              myButtons[myButtons.length - 1 - index].disabled === true
             "
-            :key="buttons[buttons.length - 1 - index].text"
-            :size="buttons[buttons.length - 1 - index].size"
-            :icon="buttons[buttons.length - 1 - index].icon"
-            :type="buttons[buttons.length - 1 - index].type"
-            :loading="buttons[buttons.length - 1 - index].loadings"
-            :class="buttons[buttons.length - 1 - index].class"
+            :key="myButtons[myButtons.length - 1 - index].text"
+            :size="myButtons[myButtons.length - 1 - index].size"
+            :icon="myButtons[myButtons.length - 1 - index].icon"
+            :type="myButtons[myButtons.length - 1 - index].type"
+            :loading="myButtons[myButtons.length - 1 - index].loadings"
+            :class="myButtons[myButtons.length - 1 - index].class"
             @click="doFunctions($event, index)"
           >
-            {{ buttons[buttons.length - 1 - index].text }}
+            {{ myButtons[myButtons.length - 1 - index].text }}
           </el-button>
         </div>
       </div>
@@ -145,7 +145,8 @@ export default {
     fitHeight: Boolean,
     drag: Boolean,
     closeReset: Boolean,
-    removeContent: Boolean // 弹窗关闭后是否移除内容dom
+    removeContent: Boolean, // 弹窗关闭后是否移除内容dom
+    buttonReverse: Boolean // 按钮顺序反向
   },
 
   data() {
@@ -162,6 +163,7 @@ export default {
       bodyShow: false,
       calVisible: false,
       buttons: null,
+      buttonsFn: null,
       wrapperClass: '',
       dialogStyle: '',
       contentStyle: '',
@@ -218,6 +220,16 @@ export default {
   },
 
   computed: {
+    myButtons() {
+      let buttons = this.buttons || [];
+      if (this.buttonsFn) {
+        buttons = this.buttonsFn();
+      }
+      if (this.buttonReverse) {
+        buttons = buttons.reverse();
+      }
+      return buttons;
+    },
     dialogStyle_1() {
       let style = {};
       if (this.width) {
@@ -429,8 +441,8 @@ export default {
     },
     doFunctions(evt, index) {
       const componentInstance = this.getInstance();
-      if (this.buttons[index].callback) {
-        this.buttons[this.buttons.length - 1 - index].callback(
+      if (this.myButtons[index].callback) {
+        this.myButtons[this.myButtons.length - 1 - index].callback(
           this,
           componentInstance,
           evt
