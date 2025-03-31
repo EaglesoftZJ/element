@@ -3,11 +3,12 @@
     <div class="el-dialog__wrapper" v-show="calVisible" @click.self="handleWrapperClick">
       <div
         class="el-dialog"
-        :class="[{ 'is-fullscreen': fullscreen, 'el-dialog--center': center }, customClass]"
+        :class="[{ 'is-fullscreen': myFullscreen, 'el-dialog--center': center }, customClass]"
         ref="dialog"
         :style="style">
         <div class="el-dialog__header" ref="header" :style="headerStyle">
           <slot name="title">
+            <i v-if="mySwitchFullscreen" class="fullscreen-icon" :class="fullscreenIcon" @click="switchToFullscreen = !switchToFullscreen"></i>
             <span class="el-dialog__title">{{ title }}</span>
           </slot>
           <button
@@ -104,7 +105,8 @@
       fitHeight: Boolean,
       drag: Boolean,
       dragDefaultPosition: Object, // 拖拽默认位置
-      closeReset: Boolean
+      closeReset: Boolean,
+      switchFullscreen: Boolean // 可以切换全屏状态
     },
 
     data() {
@@ -119,7 +121,8 @@
         openAfterAnimate: false,
         closeAfterAnimate: false,
         bodyShow: false,
-        calVisible: false
+        calVisible: false,
+        switchToFullscreen: false // 配合switchFullscreen
       };
     },
 
@@ -161,12 +164,21 @@
     },
 
     computed: {
+      mySwitchFullscreen() {
+        return this.$ELEMENT.switchFullscreen || this.switchFullscreen;
+      },
+      myFullscreen() {
+        return this.switchToFullscreen || this.fullscreen;
+      },
+      fullscreenIcon() {
+        return this.switchToFullscreen ? 'el-icon-quxiaoquanping' : 'el-icon-quanping';
+      },
       style() {
         let style = {};
         if (this.width) {
           style.width = this.width;
         }
-        if (!this.fullscreen && this.top) {
+        if (!this.myFullscreen && this.top) {
           style.marginTop = this.top;
         }
         if (this.dialogMaxHeight) {

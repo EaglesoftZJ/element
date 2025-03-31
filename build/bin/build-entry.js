@@ -35,6 +35,7 @@ const install = function(Vue, opts = {}) {
   ELEMENT.optimizeTableColBtn = opts.optimizeTableColBtn || false; // 优化列表控件操作列的按钮
   ELEMENT.optimizeTableColLabelCN = opts.optimizeTableColLabelCN || ['操作']; // 优化列表控件操作列中文名称
   ELEMENT.optimizeTableColLabelUS = opts.optimizeTableColLabelUS || ['operation']; // 优化列表控件操作列英文名称
+  ELEMENT.switchFullscreen = opts.switchFullscreen || false; // 原生弹窗支持全屏切换
 
 
 

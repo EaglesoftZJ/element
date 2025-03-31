@@ -11,15 +11,25 @@
   border-radius: $--border-radius-small;
   box-shadow: $--dialog-box-shadow;
   box-sizing: border-box;
-  max-width: calc(100% - 20px);
+  max-width: calc(100% - 40px);
   overflow: hidden;
   // width: 50%;
   text-align: left;
   vertical-align: middle;
   transition: max-height 0.3s ease;
 
+  .fullscreen-icon {
+    cursor: pointer;
+    color: #8a8989;
+    font-size: 18px;
+  }
+  .fullscreen-icon:hover {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+
   @include when(fullscreen) {
-    width: 100%;
+    width: 100%!important;
     margin-top: 0;
     margin-bottom: 0;
     height: 100%;

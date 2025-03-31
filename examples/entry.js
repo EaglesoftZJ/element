@@ -26,6 +26,7 @@ import Eaglesoft from './assets/scripts/eaglesoft';
 Vue.use(Element, {
   btnDirection: 'row-reverse',
   selectInputNomatchText: '无匹配项'
+  // switchFullscreen: true
 });
 Vue.use(VueRouter);
 Vue.use(Eaglesoft);

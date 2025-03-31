@@ -24,6 +24,13 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.el-icon-quxiaoquanping:before {
+  content: "\eb10";
+}
+
+.el-icon-quanping:before {
+  content: "\eb11";
+}
 
 .el-icon-delete:before { content: "\e8ba"; }
 .el-icon-error:before { content: "\e6a2"; }
