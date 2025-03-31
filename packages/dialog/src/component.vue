@@ -8,7 +8,7 @@
         :style="style">
         <div class="el-dialog__header" ref="header" :style="headerStyle">
           <slot name="title">
-            <i v-if="mySwitchFullscreen" class="fullscreen-icon" :class="fullscreenIcon" @click="switchToFullscreen = !switchToFullscreen"></i>
+            <i v-if="mySwitchFullscreen" class="fullscreen-icon" :class="fullscreenIcon" @click.stop="handleFullScreenIconClick"></i>
             <span class="el-dialog__title">{{ title }}</span>
           </slot>
           <button
@@ -220,6 +220,10 @@
       test() {
         // this.dialogMaxHeight = this.storeDialogMaxHeight;
       },
+      handleFullScreenIconClick(event) {
+        event.stopPropagation();
+        this.switchToFullscreen = !this.switchToFullscreen;
+      },
       getMigratingConfig() {
         return {
           props: {
@@ -279,13 +283,13 @@
         }
       },
       initDrag() {
-        if (this.myFullscreen) return;
         // 设置拖拽
         this.dialogLeft = this.$refs['dialog'].offsetLeft;
         this.dialogTop = this.$refs['dialog'].offsetTop;
         this.isDraged = true;
       },
       handleMouseDown(event) {
+        if (event.target.className.includes('fullscreen-icon')) return;
         this.initDrag();
         var self = this;
         var left = self.dialogLeft;
