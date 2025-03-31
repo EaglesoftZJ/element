@@ -161,6 +161,7 @@ Dialog 弹出一个对话框，适合需要定制性更大的场景。
   :visible.sync="dialogVisible"
   @close="value6 = []"
   width="30%"
+  drag
   switch-fullscreen
   :before-close="handleClose">
   <span>这是一段信息</span>

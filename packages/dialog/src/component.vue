@@ -164,6 +164,9 @@
     },
 
     computed: {
+      currentDrag() {
+        return !this.myFullscreen && this.drag;
+      },
       mySwitchFullscreen() {
         return this.$ELEMENT.switchFullscreen || this.switchFullscreen;
       },
@@ -184,14 +187,14 @@
         if (this.dialogMaxHeight) {
           style[this.fitHeight ? 'height' : 'maxHeight'] = this.dialogMaxHeight + 'px';
         }
-        if (this.drag && (this.openAfterAnimate && this.isDraged || this.closeAfterAnimate && !this.closeReset)) {
+        if (this.currentDrag && (this.openAfterAnimate && this.isDraged || this.closeAfterAnimate && !this.closeReset)) {
           style.position = 'absolute';
           style.left = this.dialogLeft + 'px';
           style.top = this.dialogTop + 'px';
         }
-        if (this.drag && this.dragDefaultPosition && !this.openAfterAnimate) {
+        if (this.currentDrag && this.dragDefaultPosition && !this.openAfterAnimate) {
           style.opacity = 0;
-        } else if (this.drag && this.dragDefaultPosition && this.openAfterAnimate) {
+        } else if (this.currentDrag && this.dragDefaultPosition && this.openAfterAnimate) {
           style.opacity = 1;
         }
         return style;
@@ -205,7 +208,7 @@
       },
       headerStyle() {
         var style = {};
-        if (this.drag) {
+        if (this.currentDrag) {
           style.cursor = 'move';
           style['user-select'] = 'none';
         }
@@ -269,13 +272,14 @@
           (this.$refs['footer'] ? this.$refs['footer'].offsetHeight : 0);
       },
       enterDrag() {
-        if (this.drag && this.dragDefaultPosition) {
+        if (this.currentDrag && this.dragDefaultPosition) {
           this.dialogLeft = this.dragDefaultPosition.left;
           this.dialogTop = this.dragDefaultPosition.top;
           this.isDraged = true;
         }
       },
       initDrag() {
+        if (this.myFullscreen) return;
         // 设置拖拽
         this.dialogLeft = this.$refs['dialog'].offsetLeft;
         this.dialogTop = this.$refs['dialog'].offsetTop;
