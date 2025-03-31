@@ -1,5 +1,6 @@
 import navConfig from './nav.config.json';
 import langs from './i18n/route.json';
+import type from 'async-validator/lib/validator/type';
 
 const LOAD_MAP = {
   'zh-CN': name => {
@@ -20,7 +21,9 @@ const LOAD_MAP = {
 };
 
 const load = function(lang, path) {
-  return LOAD_MAP[lang](path);
+  if (typeof LOAD_MAP[lang] === 'function') {
+    return LOAD_MAP[lang](path);
+  }
 };
 
 const LOAD_DOCS_MAP = {
