@@ -215,6 +215,8 @@ export default {
     rendered(val) {
       if (val) {
         this.$emit('rendered');
+      } else {
+        this.$emit('removeRendered'); // 移除渲染事件
       }
     }
   },

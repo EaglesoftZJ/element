@@ -87,6 +87,11 @@ const initInstance = () => {
       } 
     })
   });
+  // 移除渲染
+  currentInstance.$on('removeRendered', (val) => {
+    document.body.removeChild(currentInstance.$el);
+    currentInstance.$destroy();
+  });
   // console.log('instance', instance);
   instanceManager[instance._uid] = instance;
   instance.callback = defaultCallback;
