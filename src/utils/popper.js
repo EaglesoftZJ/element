@@ -1,3 +1,5 @@
+import Vue from 'vue';
+const vm = new Vue();
 /**
  * @fileOverview Kickass library to create and place poppers near their reference elements.
  * @version {{version}}
@@ -414,7 +416,14 @@
 
         //
         // Compute offsets of popper
+        
         //
+
+
+        if (vm.$ELEMENT.zoom) {
+          popperRect.height =  Math.round(popperRect.height * vm.$ELEMENT.zoom);
+          popperRect.width = Math.round(popperRect.width * vm.$ELEMENT.zoom);
+        }
 
         // depending by the popper placement we have to compute its offsets slightly differently
         if (['right', 'left'].indexOf(placement) !== -1) {
@@ -639,9 +648,23 @@
         // in this way we can make the 3rd party modifiers add custom styles to it
         // Be aware, modifiers could override the properties defined in the previous
         // lines of this modifier!
+        const arrowStyle = {};
         Object.assign(styles, data.styles);
+        Object.assign(arrowStyle, data.offsets.arrow);
+        
+        console.log('styles', styles, data.offsets.arrow);
+
+        
+
+        if (vm.$ELEMENT.zoom) {
+          styles.top =  Math.round(styles.top / vm.$ELEMENT.zoom);
+          styles.left = Math.round(styles.left / vm.$ELEMENT.zoom);
+          arrowStyle.top =  arrowStyle.top ? Math.round(arrowStyle.top / vm.$ELEMENT.zoom) : arrowStyle.top;
+          arrowStyle.left = arrowStyle.left ? Math.round(arrowStyle.left / vm.$ELEMENT.zoom) : arrowStyle.left;
+        }
 
         setStyle(this._popper, styles);
+        
 
         // set an attribute which will be useful to style the tooltip (use it to properly position its arrow)
         // NOTE: 1 DOM access here
@@ -649,7 +672,8 @@
 
         // if the arrow modifier is required and the arrow style has been computed, apply the arrow style
         if (this.isModifierRequired(this.modifiers.applyStyle, this.modifiers.arrow) && data.offsets.arrow) {
-            setStyle(data.arrowElement, data.offsets.arrow);
+
+            setStyle(data.arrowElement, arrowStyle);
         }
 
         return data;

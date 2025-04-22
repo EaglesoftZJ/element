@@ -176,6 +176,7 @@ const install = function(Vue, opts = {}) {
   ELEMENT.optimizeTableColLabelCN = opts.optimizeTableColLabelCN || ['操作']; // 优化列表控件操作列中文名称
   ELEMENT.optimizeTableColLabelUS = opts.optimizeTableColLabelUS || ['operation']; // 优化列表控件操作列英文名称
   ELEMENT.switchFullscreen = opts.switchFullscreen || false; // 原生弹窗支持全屏切换
+  ELEMENT.zoom = opts.zoom; // 页面缩放比例
 
 
 
@@ -197,7 +198,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 module.exports = {
-  version: '2.5.34-beta3',
+  version: '2.5.36-beta1',
   locale: locale.use,
   i18n: locale.i18n,
   install,
