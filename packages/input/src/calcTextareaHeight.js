@@ -26,7 +26,9 @@ const CONTEXT_STYLE = [
   'padding-right',
   'border-width',
   'box-sizing',
-  'font-variant-numeric'
+  'font-variant-numeric',
+  'word-break',
+  'white-space'
 ];
 
 function calculateNodeStyling(targetElement) {
