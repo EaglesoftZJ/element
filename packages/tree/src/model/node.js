@@ -169,6 +169,10 @@ export default class Node {
     return getPropertyFromData(this, 'disabled');
   }
 
+  get class() {
+    return ('' + getPropertyFromData(this, 'class')) || '';
+  }
+
   get nextSibling() {
     const parent = this.parent;
     if (parent) {

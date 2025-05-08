@@ -5,14 +5,14 @@
     @dblclick.stop.prevent="handleDblClick"
     @contextmenu="($event) => this.handleContextMenu($event)"
     v-show="node.visible"
-    :class="{
+    :class="[{
       'is-expanded': expanded,
       'is-current': isCurrent(),
       'is-hidden': !node.visible,
       'is-focusable': !node.disabled,
       'is-checked': !node.disabled && node.checked,
       'isClickWaiting': isClickWaiting
-    }"
+    }, node.class]"
     role="treeitem"
     tabindex="-1"
     :aria-expanded="expanded"

@@ -220,7 +220,10 @@
 
   const defaultProps = {
     children: 'children',
-    label: 'label'
+    label: 'label',
+      class(data) {
+          return data.label === '一级 11231231123' ? '111' : '';
+      }
   };
 
   export default {
@@ -642,7 +645,10 @@
         }],
         defaultProps: {
           children: 'children',
-          label: 'label'
+          label: 'label',
+          class(data) {
+            return data.label;
+          }
         }
       };
     }
