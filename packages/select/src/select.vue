@@ -109,6 +109,11 @@
       <el-select-menu
         ref="popper"
         :append-to-body="popperAppendToBody"
+        :placement="popperOptions.placement"
+        :boundariesPadding="popperOptions.boundariesPadding"
+        :arrowOffset="popperOptions.arrowOffset"
+        :offset="popperOptions.offset"
+        :popperOptions="popperOptions"
         v-show="visible && emptyText !== false">
         <el-scrollbar
           tag="ul"
@@ -344,6 +349,14 @@
       css: {
         type: Boolean,
         default: true
+      },
+      popperOptions: {
+        type: Object,
+        default() {
+          return {
+            gpuAcceleration: false
+          };
+        }
       }
     },
     data() {
