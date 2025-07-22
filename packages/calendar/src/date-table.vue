@@ -25,6 +25,25 @@ export default {
       WEEK_DAYS: getI18nSettings().dayNames
     };
   },
+  watch: {
+    rows() {
+      let currentSize = 0;
+      let allSize = 0;
+      this.rows.forEach(row => {
+        row.forEach(item => {
+          allSize++;
+          if (item.type ==='current') currentSize++;
+        });
+      });
+      if (currentSize === allSize) return; // 全部都是current的数据，数据不太对，不做处理
+      const start = this.rows[0][0];
+      const end = this.rows.slice(-1)[0].slice(-1)[0];
+      this.$emit('range-change', {
+        startDate: new Date(this.getFormateDate(start.text, start.type)),
+        endDate: new Date(this.getFormateDate(end.text, end.type))
+      });
+    }
+  },
 
   methods: {
     toNestedArr(days) {

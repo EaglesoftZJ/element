@@ -34,6 +34,7 @@
       v-if="validatedRange.length === 0"
       key="no-range">
       <date-table
+        @range-change="handleRangeChange"
         :date="date"
         :selected-day="realSelectedDay"
         :first-day-of-week="realFirstDayOfWeek"
@@ -45,6 +46,7 @@
       key="has-range">
       <date-table
         v-for="(range, index) in validatedRange"
+        @range-change="handleRangeChange"
         :key="index"
         :date="range[0]"
         :selected-day="realSelectedDay"
@@ -107,6 +109,9 @@ export default {
   },
 
   methods: {
+    handleRangeChange(data) {
+      this.$emit('range-change', data);
+    },
     pickDay(day) {
       this.realSelectedDay = day;
       this.$emit('pick', day);
