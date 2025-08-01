@@ -69,6 +69,11 @@
         value13: [],
         value_range: []
       };
+    },
+    methods: {
+      customDisplayValueFn() {
+        return '(UTC+8)123123131313131231231313123123123';
+      }
     }
   };
 </script>
@@ -111,6 +116,8 @@
   <div class="block">
     <span class="demonstration">默认</span>
     <el-date-picker
+      :custom-display-value-fn="customDisplayValueFn"
+      :disable-over-flow-tooltip="true"
       v-model="value1"
       type="date"
       placeholder="选择日期">
@@ -120,6 +127,7 @@
     <span class="demonstration">带快捷选项</span>
     <el-date-picker
       v-model="value2"
+      :custom-display-value-fn="customDisplayValueFn"
       align="right"
       type="date"
       placeholder="选择日期"

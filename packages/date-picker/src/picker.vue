@@ -1,6 +1,6 @@
 <template>
   <!-- @focus="handleFocus" -->
-  <el-input class="el-date-editor" :class="'el-date-editor--' + type" :readonly="!editable || readonly" :disabled="pickerDisabled" :size="pickerSize" :name="name" v-bind="firstInputId" v-if="!ranged" v-clickoutside="handleClose" :placeholder="placeholder"
+  <el-input :disableOverFlowTooltip="disableOverFlowTooltip" class="el-date-editor" :class="'el-date-editor--' + type" :readonly="!editable || readonly" :disabled="pickerDisabled" :size="pickerSize" :name="name" v-bind="firstInputId" v-if="!ranged" v-clickoutside="handleClose" :placeholder="placeholder"
     @focus="handleFocusBefore" @keydown.native="handleKeydown" :value="displayValue" @input="value => userInput = value" @change="handleChange(true)" @mouseenter.native="handleMouseEnter" @mouseleave.native="showClose = false" :validateEvent="false" ref="reference">
     <i slot="suffix" @click="handleClickIcon" :class="[showClose ? '' + clearIcon : '']" v-if="haveTrigger">
       </i>
@@ -42,7 +42,8 @@
       appendToBody: Popper.props.appendToBody,
       offset: Popper.props.offset,
       boundariesPadding: Popper.props.boundariesPadding,
-      arrowOffset: Popper.props.arrowOffset
+      arrowOffset: Popper.props.arrowOffset,
+      disableOverFlowTooltip: Boolean // 禁用文本移除展示tooltip的功能
     },
     methods: Popper.methods,
     data() {
@@ -308,7 +309,8 @@
       },
       pickerOptions: {},
       unlinkPanels: Boolean,
-      getAllInput: Boolean
+      getAllInput: Boolean,
+      customDisplayValueFn: Function
     },
     components: {
       ElInput
@@ -413,6 +415,9 @@
       },
       displayValue() {
         // console.log('displayValue', this.userInput, this.parsedValue);
+        if (this.customDisplayValueFn) {
+          return this.customDisplayValueFn();
+        }
         const formattedValue = formatAsFormatAndType(
           this.parsedValue,
           this.format,

@@ -186,6 +186,7 @@
         default: false
       },
       tabindex: String,
+      disableOverFlowTooltip: Boolean // 禁用文本移除展示tooltip的功能
     },
 
     computed: {
@@ -357,6 +358,7 @@
           (this.validateState && this.needStatusIcon);
       },
       handleMouseenter(event) {
+        if (this.disableOverFlowTooltip) return;
         const target = event.currentTarget.querySelector('input');
         if (!target) return;
         //  && !this.focused
@@ -374,6 +376,7 @@
         }
       },
       handleMouseleave() {
+        if (this.disableOverFlowTooltip) return;
         this.tlpShow = false;
         this.hideTooltip();
       }
