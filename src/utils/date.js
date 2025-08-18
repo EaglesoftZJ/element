@@ -33,7 +33,7 @@
    * @class fecha
    */
   var fecha = {};
-  var token = /d{1,4}|M{1,4}|yy(?:yy)?|S{1,3}|Do|ZZ|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
+  var token = /d{1,4}|M{1,4}|yy(?:yy)?|S{1,3}|Do|ZZ|UTC|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
   var twoDigits = /\d\d?/;
   var threeDigits = /\d{3}/;
   var fourDigits = /\d{4}/;
@@ -164,6 +164,12 @@
     ZZ: function(dateObj) {
       var o = dateObj.getTimezoneOffset();
       return (o > 0 ? '-' : '+') + pad(Math.floor(Math.abs(o) / 60) * 100 + Math.abs(o) % 60, 4);
+    },
+    UTC: function(dateObj) {
+      var o = dateObj.getTimezoneOffset();
+      var H = Math.floor(Math.abs(o) / 60); // 时区小时部分
+      var m = Math.abs(o) % 60; // 时区分钟部分
+      return 'UTC' + (o > 0 ? '-' : '+') + H + (m ? ':' + m : '');
     }
   };
 

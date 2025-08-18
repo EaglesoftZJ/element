@@ -48,6 +48,7 @@ const install = function(Vue, opts = {}) {
   Vue.prototype.$notify = Notification;
   Vue.prototype.$message = Message;
   Vue.prototype.$egdlg = EgDialog;
+  Vue.prototype.$ElDateUtils = dateUtils;
 
   Vue.prototype.$ELEMENT = ELEMENT;
 };

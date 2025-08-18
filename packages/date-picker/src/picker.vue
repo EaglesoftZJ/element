@@ -310,7 +310,12 @@
       pickerOptions: {},
       unlinkPanels: Boolean,
       getAllInput: Boolean,
-      customDisplayValueFn: Function
+      customDisplayValueFn: Function,
+      displayUTCFn: Function,
+      panelTimeFormat: { // 控制datetime下panel的timeFormat
+        type: String,
+        // default: 'HH:mm:ss'
+      }
     },
     components: {
       ElInput
@@ -748,6 +753,7 @@
         this.$watch('format', format => {
           this.picker.format = format;
         });
+        this.picker.panelTimeFormat = this.panelTimeFormat;
         const updateOptions = () => {
           const options = this.pickerOptions;
           if (options && options.selectableRange) {

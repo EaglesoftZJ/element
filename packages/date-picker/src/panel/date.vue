@@ -497,7 +497,8 @@
         format: '',
         arrowControl: false,
         userInputDate: null,
-        userInputTime: null
+        userInputTime: null,
+        panelTimeFormat: ''
       };
     },
 
@@ -552,7 +553,7 @@
 
       timeFormat() {
         if (this.format) {
-          return extractTimeFormat(this.format);
+          return extractTimeFormat(this.panelTimeFormat || this.format);
         } else {
           return 'HH:mm:ss';
         }

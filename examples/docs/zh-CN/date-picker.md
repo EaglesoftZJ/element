@@ -54,7 +54,7 @@
             }
           }]
         },
-        value1: '',
+        value1: new Date(),
         value2: '',
         value3: '',
         value4: '',
@@ -70,9 +70,17 @@
         value_range: []
       };
     },
+    created() {
+      console.log('$ElDateUtils', this.$ElDateUtils);
+    },
     methods: {
       customDisplayValueFn() {
-        return '(UTC+8)123123131313131231231313123123123';
+        if (this.value1) {
+          const date = new Date(this.value1);
+          return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+        } else {
+          return '';
+        }
       }
     }
   };
@@ -115,11 +123,13 @@
 <template>
   <div class="block">
     <span class="demonstration">默认</span>
+    {{value1}}
     <el-date-picker
-      :custom-display-value-fn="customDisplayValueFn"
       :disable-over-flow-tooltip="true"
       v-model="value1"
-      type="date"
+      format="(UTC) yyyy-MM-dd"
+      panel-time-format="(UTC) HH:mm:ss"
+      type="datetime"
       placeholder="选择日期">
     </el-date-picker>
   </div>
@@ -165,7 +175,7 @@
             }
           }]
         },
-        value1: '',
+        value1: new Date(),
         value2: '',
       };
     }

@@ -80,6 +80,7 @@ import EgDialog from '../packages/eg-dialog/index.js';
 import Popconfirm from '../packages/popconfirm/index.js';
 import locale from 'element-ui/src/locale';
 import CollapseTransition from 'element-ui/src/transitions/collapse-transition';
+import dateUtils from 'element-ui/src/utils/date';
 
 const components = [
   Pagination,
@@ -188,6 +189,7 @@ const install = function(Vue, opts = {}) {
   Vue.prototype.$notify = Notification;
   Vue.prototype.$message = Message;
   Vue.prototype.$egdlg = EgDialog;
+  Vue.prototype.$ElDateUtils = dateUtils;
 
   Vue.prototype.$ELEMENT = ELEMENT;
 };
@@ -198,7 +200,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 module.exports = {
-  version: '2.5.40-beta2',
+  version: '2.5.41-beta1',
   locale: locale.use,
   i18n: locale.i18n,
   install,

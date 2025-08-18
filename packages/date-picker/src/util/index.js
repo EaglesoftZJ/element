@@ -228,6 +228,7 @@ export const extractDateFormat = function(format) {
   return format
     .replace(/\W?m{1,2}\W?|\W?ZZ\W?/g, '')
     .replace(/\W?h{1,2}\W?|\W?s{1,3}\W?|\W?a\W?/gi, '')
+    .replace(/\(?UTC\)?/gi, '')
     .trim();
 };
 
