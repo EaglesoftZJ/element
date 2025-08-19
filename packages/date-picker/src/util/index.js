@@ -228,12 +228,13 @@ export const extractDateFormat = function(format) {
   return format
     .replace(/\W?m{1,2}\W?|\W?ZZ\W?/g, '')
     .replace(/\W?h{1,2}\W?|\W?s{1,3}\W?|\W?a\W?/gi, '')
-    .replace(/\(?UTC\)?/gi, '')
+    .replace(/\W?UTC\W?/gi, '')
     .trim();
 };
 
 export const extractTimeFormat = function(format) {
   return format
     .replace(/\W?D{1,2}\W?|\W?Do\W?|\W?d{1,4}\W?|\W?M{1,4}\W?|\W?y{2,4}\W?/g, '')
+    .replace(/\W?UTC\W?/gi, '')
     .trim();
 };
