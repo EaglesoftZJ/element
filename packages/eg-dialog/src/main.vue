@@ -14,7 +14,7 @@
       class="el-eg-dialog__wrapper el-dialog__wrapper"
       :class="wrapperClass"
       @click.self="handleWrapperClick"
-      :style="style"
+      :style="wrapperStyle"
       v-show="calVisible"
     >
       <div
@@ -167,7 +167,8 @@ export default {
       wrapperClass: '',
       dialogStyle: '',
       contentStyle: '',
-      style: ''
+      style: '',
+      openCenterrAnimate: false // 打开动画执行到中间时间
     };
   },
 
@@ -198,6 +199,9 @@ export default {
             //   this.updateMaxHeight();
             // });
           }, 10);
+          setTimeout(() => {
+            this.openCenterrAnimate = true;
+          }, 100);
           // this.$nextTick(() => {
           //   setTimeout(() => {
           //     this.bodyShow = true;
@@ -222,6 +226,13 @@ export default {
   },
 
   computed: {
+    wrapperStyle() {
+      let style = this.style;
+      if (this.openCenterrAnimate) {
+        style += ';opacity:1';
+      }
+      return style;
+    },
     myButtons() {
       let buttons = this.buttons || [];
       if (this.buttonsFn) {
