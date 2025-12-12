@@ -462,9 +462,10 @@ export default {
         event.stopPropagation();
         const cell = getCell(event);
         const button = getButton(event);
+        // !button表示点击的不是button
         if (!button && cell.querySelectorAll('.el-button').length === 1) { // 只有一个按钮，点击操作列cell(非按钮)，触发这个按钮的点击事件
           cell.querySelectorAll('.el-button')[0].click();
-        } else if (!button) { // 存在多个按钮，触发距离近的按钮click事件
+        } else if (!button && cell.querySelectorAll('.el-button').length > 1) { // 存在多个按钮，触发距离近的按钮click事件
           let closestButton = this.getClosestDistanceButton(event, cell);
           closestButton.click();
         }
