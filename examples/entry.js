@@ -21,6 +21,7 @@ import FooterNav from './components/footer-nav';
 import title from './i18n/title.json';
 import emitter from './assets/scripts/emitter';
 import Eaglesoft from './assets/scripts/eaglesoft';
+import egdialog from '../packages/eg-dialog/src/egDialog';
 
 
 Vue.use(Element, {
@@ -30,6 +31,7 @@ Vue.use(Element, {
 });
 Vue.use(VueRouter);
 Vue.use(Eaglesoft);
+Vue.use(egdialog);
 Vue.component('demo-block', demoBlock);
 Vue.component('main-footer', MainFooter);
 Vue.component('main-header', MainHeader);

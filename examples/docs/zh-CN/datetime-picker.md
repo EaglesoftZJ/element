@@ -100,6 +100,7 @@ DateTimePicker 由 DatePicker 和 TimePicker 派生，`Picker Options` 或者其
 :::demo 通过设置`type`属性为`datetime`，即可在同一个选择器里同时进行日期和时间的选择。快捷选项的使用方法与 Date Picker 相同。
 ```html
 <template>
+  111
   {{ value1 }}
   <div class="block">
     <span class="demonstration">默认</span>

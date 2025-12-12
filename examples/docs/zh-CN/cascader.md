@@ -1652,7 +1652,7 @@
     :options="options"
     filterable
     change-on-select
-    :props="{ multiple: true, checkStrictly: false }"
+    :props="{ multiple: true, checkStrictly: true }"
   ></el-cascader>
 </div>
 

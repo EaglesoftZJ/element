@@ -12,7 +12,7 @@
   >
     <div
       class="el-eg-dialog__wrapper el-dialog__wrapper"
-      :class="wrapperClass"
+      :class="myWrapperClass"
       @click.self="handleWrapperClick"
       :style="style"
       v-show="calVisible"
@@ -159,6 +159,7 @@ export default {
       dialogLeft: 0,
       dialogTop: 0,
       openAfterAnimate: false,
+      openCenterAnimate: false,
       closeAfterAnimate: false,
       bodyShow: false,
       calVisible: false,
@@ -198,6 +199,9 @@ export default {
             //   this.updateMaxHeight();
             // });
           }, 10);
+          setTimeout(() => {
+            this.openCenterAnimate = true;
+          }, 100);
           // this.$nextTick(() => {
           //   setTimeout(() => {
           //     this.bodyShow = true;
@@ -222,6 +226,15 @@ export default {
   },
 
   computed: {
+    myWrapperClass() {
+      let str = this.wrapperClass;
+      if (this.openCenterAnimate) {
+        str += ' eg-dialog-opacity-1';
+      } else {
+        str += ' eg-dialog-opacity-0';
+      }
+      return str;
+    },
     myButtons() {
       let buttons = this.buttons || [];
       if (this.buttonsFn) {

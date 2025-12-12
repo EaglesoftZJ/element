@@ -78,9 +78,9 @@ import Timeline from '../packages/timeline/index.js';
 import TimelineItem from '../packages/timeline-item/index.js';
 import EgDialog from '../packages/eg-dialog/index.js';
 import Popconfirm from '../packages/popconfirm/index.js';
+import dateUtils from 'element-ui/src/utils/date';
 import locale from 'element-ui/src/locale';
 import CollapseTransition from 'element-ui/src/transitions/collapse-transition';
-import dateUtils from 'element-ui/src/utils/date';
 
 const components = [
   Pagination,
@@ -200,7 +200,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 module.exports = {
-  version: '2.5.41-beta1',
+  version: '2.5.43-beta1',
   locale: locale.use,
   i18n: locale.i18n,
   install,

@@ -224,7 +224,11 @@
         minutes = +(parts[1] * 60) + parseInt(parts[2], 10);
         d.timezoneOffset = parts[0] === '+' ? minutes : -minutes;
       }
-    }]
+    }],
+    UTC: [
+      /utc(\-|\+)\d{1,2}(\:\d{1,2})?/i,
+      noop
+    ]
   };
   parseFlags.DD = parseFlags.D;
   parseFlags.dddd = parseFlags.ddd;
