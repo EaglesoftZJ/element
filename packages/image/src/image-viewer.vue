@@ -1,6 +1,6 @@
 <template>
-  <transition name="viewer-fade">
-    <div tabindex="-1" ref="el-image-viewer__wrapper" class="el-image-viewer__wrapper" :style="{ 'z-index': zIndex }">
+  <transition name="viewer-fade" @before-enter="handleBeforeEnter">
+    <div tabindex="-1" ref="el-image-viewer__wrapper" class="el-image-viewer__wrapper" :style="{ 'z-index': myZIndex }">
       <div class="el-image-viewer__mask"></div>
       <!-- CLOSE -->
       <span class="el-image-viewer__btn el-image-viewer__close" @click="hide">
@@ -54,6 +54,7 @@
 <script>
 import { on, off } from 'element-ui/src/utils/dom';
 import { rafThrottle, isFirefox } from 'element-ui/src/utils/util';
+import { PopupManager } from "element-ui/src/utils/popup";
 
 const Mode = {
   CONTAIN: {
@@ -91,7 +92,8 @@ export default {
     initialIndex: {
       type: Number,
       default: 0
-    }
+    },
+    appendToBody: Boolean
   },
 
   data() {
@@ -107,10 +109,14 @@ export default {
         offsetX: 0,
         offsetY: 0,
         enableTransition: false
-      }
+      },
+      nextZIndex: this.zIndex
     };
   },
   computed: {
+    myZIndex() {
+      return this.appendToBody ? this.nextZIndex : this.zIndex;
+    },
     isSingle() {
       return this.urlList.length <= 1;
     },
@@ -154,6 +160,9 @@ export default {
     }
   },
   methods: {
+    handleBeforeEnter() {
+      this.appendToBody && (this.nextZIndex = PopupManager.nextZIndex());
+    },
     hide() {
       this.deviceSupportUninstall();
       this.onClose();
@@ -292,6 +301,9 @@ export default {
     }
   },
   mounted() {
+    if (this.appendToBody) {
+      document.body.appendChild(this.$el);
+    }
     this.deviceSupportInstall();
     // add tabindex then wrapper can be focusable via Javascript
     // focus wrapper so arrow key can't cause inner scroll behavior underneath

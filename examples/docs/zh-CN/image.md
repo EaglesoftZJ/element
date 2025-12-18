@@ -215,6 +215,7 @@
   <el-image 
     style="width: 100px; height: 100px"
     :src="url1" 
+    append-to-body
     :preview-src-list="srcList1">
   </el-image>
 </div>
