@@ -308,6 +308,11 @@ export default {
     // add tabindex then wrapper can be focusable via Javascript
     // focus wrapper so arrow key can't cause inner scroll behavior underneath
     this.$refs['el-image-viewer__wrapper'].focus();
+  },
+  beforeDestroy() {
+    if (this.appendToBody && document.body.contains(this.$el)) {
+      document.body.removeChild(this.$el);
+    }
   }
 };
 </script>
