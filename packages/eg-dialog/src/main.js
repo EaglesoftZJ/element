@@ -72,7 +72,8 @@ const defaultCallback = action => {
 
 const initInstance = () => {
   instance = new MessageBoxConstructor({
-    el: document.createElement('div')
+    el: document.createElement('div'),
+    parent: window.$nuxt || undefined
   });
   const currentInstance = instance; // 每次打开弹窗instance都会变，所以用一个currentInstance存储当前的实例
   currentInstance.$on('update:visible', (val) => {
