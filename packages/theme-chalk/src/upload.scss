@@ -483,6 +483,47 @@
       margin-right: 40px;
     }
   }
+
+  // 拖拽手柄图标
+  @include e(item-drag) {
+    margin-right: 6px;
+    color: $--color-text-placeholder;
+    cursor: move;
+    font-size: 14px;
+    line-height: inherit;
+    transition: color .2s;
+
+    &:hover {
+      color: $--color-primary;
+    }
+  }
+
+  // 可拖拽排序状态
+  &.is-draggable .el-upload-list__item {
+    transition: all .3s cubic-bezier(.23, 1, .32, 1);
+  }
+
+  // 拖拽幽灵元素样式（占位）
+  .el-upload-list__item--ghost {
+    opacity: 0.4;
+    background: #ecf5ff;
+    border: 1px dashed $--color-primary;
+    border-radius: 4px;
+  }
+
+  // 选中元素样式
+  .el-upload-list__item--chosen {
+    background: #f0f9ff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  // 拖拽中元素样式
+  .el-upload-list__item--drag {
+    opacity: 0.9;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: rotate(1deg);
+  }
 }
 
 @include b(upload-cover) {

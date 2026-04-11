@@ -71,6 +71,9 @@
       };
     },
     methods: {
+      handleSortChange({ files }) {
+        console.log(files);
+      },
       saveFileNameFn(options) {
         return '111.doc';
       },
@@ -142,6 +145,8 @@
   :on-exceed="handleExceed"
   :props="{name: 'mc', url: 'lj'}"
   :aaa="111"
+  draggable
+  @sort-change="handleSortChange"
   :file-list="fileList">
   <el-button size="small" type="primary">点击上传</el-button>
   <!-- <div slot="btn" slot-scope="props" class="el-upload__tip">

@@ -4,14 +4,16 @@
     :class="[
       'el-upload-list',
       'el-upload-list--' + listType,
-      { 'is-disabled': disabled }
+      { 'is-disabled': disabled },
+      { 'is-draggable': draggable }
     ]"
-    name="el-list"
+    :name="draggable ? '' : 'el-list'"
+    :css="!draggable"
   >
     <li
       v-for="(file, index) in files"
       :class="['el-upload-list__item', 'is-' + file.status, focusing ? 'focusing' : '']"
-      :key="index"
+      :key="file.uid"
       tabindex="0"
       @keydown.delete="!disabled && $emit('remove', file)"
       @focus="focusing = true"
@@ -19,6 +21,7 @@
       @click.stop="focusing = false"
     >
     <slot name="file" :file="file">  
+      <i v-if="draggable" class="el-icon-rank el-upload-list__item-drag"></i>
       <el-tooltip v-if="index === 0" popper-class="tooltip-use-in-form" placement="top-start" :content="tooltipContent" ref="tooltip"></el-tooltip>
       <img
         class="el-upload-list__item-thumbnail"
@@ -75,6 +78,7 @@
   import debounce from 'throttle-debounce/debounce';
   import Locale from 'element-ui/src/mixins/locale';
   import ElProgress from 'element-ui/packages/progress';
+  import Sortable from 'sortablejs';
 
   export default {
     mixins: [Locale],
@@ -82,7 +86,8 @@
     data() {
       return {
         focusing: false,
-        tooltipContent: ''
+        tooltipContent: '',
+        sortableInstance: null
       };
     },
     components: { ElProgress },
@@ -100,7 +105,11 @@
       },
       handlePreview: Function,
       listType: String,
-      props: {}
+      props: {},
+      draggable: {
+        type: Boolean,
+        default: false
+      }
     },
     created() {
       // if (this.$parent.$attrs.aaa === 111) {
@@ -108,7 +117,58 @@
       // }
       this.activateTooltip = debounce(50, tooltip => tooltip.handleShowPopper());
     },
+    mounted() {
+      if (this.draggable) {
+        this.initSortable();
+      }
+    },
+    watch: {
+      draggable(val) {
+        if (val) {
+          this.initSortable();
+        } else {
+          this.destroySortable();
+        }
+      },
+      disabled(val) {
+        if (this.sortableInstance) {
+          this.sortableInstance.option('disabled', val);
+        }
+      }
+    },
+    beforeDestroy() {
+      this.destroySortable();
+    },
     methods: {
+      initSortable() {
+        this.$nextTick(() => {
+          const el = this.$el;
+          if (!el) return;
+          this.sortableInstance = Sortable.create(el, {
+            animation: 300,
+            easing: 'cubic-bezier(0.23, 1, 0.32, 1)',
+            disabled: this.disabled,
+            handle: '.el-upload-list__item-drag',
+            ghostClass: 'el-upload-list__item--ghost',
+            chosenClass: 'el-upload-list__item--chosen',
+            dragClass: 'el-upload-list__item--drag',
+            onEnd: (evt) => {
+              const { oldIndex, newIndex } = evt;
+              if (oldIndex === newIndex) return;
+              const files = [...this.files];
+              const moved = files.splice(oldIndex, 1)[0];
+              files.splice(newIndex, 0, moved);
+              this.$emit('sort-change', { oldIndex, newIndex, file: moved, files });
+            }
+          });
+        });
+      },
+      destroySortable() {
+        if (this.sortableInstance) {
+          this.sortableInstance.destroy();
+          this.sortableInstance = null;
+        }
+      },
       parsePercentage(val) {
         return parseInt(val, 10);
       },
@@ -146,3 +206,40 @@
     }
   };
 </script>
+<style>
+  /* 拖拽手柄图标 */
+  .el-upload-list__item-drag {
+    margin-right: 6px;
+    color: #c0c4cc;
+    cursor: move;
+    font-size: 14px;
+    line-height: inherit;
+    transition: color .2s;
+  }
+  .el-upload-list__item-drag:hover {
+    color: #409eff;
+  }
+  /* 关键：覆盖 .el-upload-list__item 上的 transition: all .5s
+     该 transition 会拦截 Sortable.js 设置的 transform，导致动画失效 */
+  .el-upload-list.is-draggable .el-upload-list__item {
+    transition: none;
+  }
+  /* 拖拽幽灵元素（占位提示） */
+  .el-upload-list__item--ghost {
+    opacity: 0.4;
+    background: #ecf5ff !important;
+    border: 1px dashed #409eff;
+    border-radius: 4px;
+  }
+  /* 选中态 */
+  .el-upload-list__item--chosen {
+    background: #f0f9ff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  /* 拖拽中 */
+  .el-upload-list__item--drag {
+    opacity: 0.9;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+</style>

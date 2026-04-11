@@ -6,7 +6,6 @@ import IframeUpload from './iframe-upload';
 import ElProgress from 'element-ui/packages/progress';
 import Migrating from 'element-ui/src/mixins/migrating';
 
-
 function noop() {}
 
 export default {
@@ -131,6 +130,10 @@ export default {
       default() {
         return {};
       }
+    },
+    draggable: { // 文件列表是否可拖动排序
+      type: Boolean,
+      default: false
     }
   },
 
@@ -150,7 +153,7 @@ export default {
     calProps() {
       const props = {
         name: 'name',
-        url: 'url',
+        url: 'url'
       };
       for (const key in props) {
         if (this.props[key]) {
@@ -302,6 +305,13 @@ export default {
             'thumbnail-mode has been deprecated, you can implement the same effect according to this case: http://element.eleme.io/#/zh-CN/component/upload#yong-hu-tou-xiang-shang-chuan'
         }
       };
+    },
+    handleSortChange({ oldIndex, newIndex, file, files }) {
+      // 同步内部 uploadFiles 数组顺序
+      const moved = this.uploadFiles.splice(oldIndex, 1)[0];
+      this.uploadFiles.splice(newIndex, 0, moved);
+      // 向外 emit
+      this.$emit('sort-change', { oldIndex, newIndex, file, files: this.uploadFiles });
     }
   },
 
@@ -316,13 +326,15 @@ export default {
           listType: this.listType,
           files: this.uploadFiles,
           handlePreview: this.onPreview,
-          props: this.calProps
+          props: this.calProps,
+          draggable: this.draggable
         },
         props: {
-          disabled: this.uploadDisabled,
+          disabled: this.uploadDisabled
         },
         on: {
-          remove: this.handleRemove
+          remove: this.handleRemove,
+          'sort-change': this.handleSortChange
         },
         scopedSlots: {
           btn: (props) => {
@@ -346,12 +358,12 @@ export default {
       }
       uploadList = listDraggable ? (
         <uploadListDragger
-         { ...options }
+          { ...options }
         >
         </uploadListDragger>
-      ): (
+      ) : (
         <UploadList
-         { ...options }
+          { ...options }
         >
         </UploadList>
       );
@@ -390,15 +402,13 @@ export default {
       ref: 'upload-inner'
     };
 
-
     const uploadComponent =
       typeof FormData !== 'undefined' || this.$isServer ? (
         <upload {...uploadData}>{listDraggable ? '' : trigger}</upload>
       ) : (
         <iframeUpload {...uploadData}>{listDraggable ? '' : trigger}</iframeUpload>
       );
-      
-    
+
     const showInTop = this.listType === 'picture-card' || listDraggable;
     return (
       <div>
