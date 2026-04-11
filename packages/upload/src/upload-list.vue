@@ -5,10 +5,10 @@
       'el-upload-list',
       'el-upload-list--' + listType,
       { 'is-disabled': disabled },
-      { 'is-draggable': draggable }
+      { 'is-draggable': draggable && !disabled }
     ]"
-    :name="draggable ? '' : 'el-list'"
-    :css="!draggable"
+    :name="draggable && !disabled ? '' : 'el-list'"
+    :css="!(draggable && !disabled)"
   >
     <li
       v-for="(file, index) in files"
@@ -21,7 +21,7 @@
       @click.stop="focusing = false"
     >
     <slot name="file" :file="file">  
-      <i v-if="draggable" class="el-icon-rank el-upload-list__item-drag"></i>
+      <i v-if="draggable && !disabled" class="el-icon-rank el-upload-list__item-drag"></i>
       <el-tooltip v-if="index === 0" popper-class="tooltip-use-in-form" placement="top-start" :content="tooltipContent" ref="tooltip"></el-tooltip>
       <img
         class="el-upload-list__item-thumbnail"
@@ -112,9 +112,6 @@
       }
     },
     created() {
-      // if (this.$parent.$attrs.aaa === 111) {
-      //   debugger;
-      // }
       this.activateTooltip = debounce(50, tooltip => tooltip.handleShowPopper());
     },
     mounted() {

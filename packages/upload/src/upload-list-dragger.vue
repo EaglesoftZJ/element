@@ -23,6 +23,7 @@
   import uploadList from './upload-list.vue';
 
   export default {
+    inheritAttrs: false,
     data() {
       return {
       };
