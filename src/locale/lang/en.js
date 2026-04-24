@@ -85,7 +85,9 @@ export default {
       deleteTip: 'press delete to remove',
       delete: 'Delete',
       preview: 'Preview',
-      continue: 'Continue'
+      continue: 'Continue',
+      pasteTip: 'You can paste screenshots or files to upload directly',
+      formatError: 'File format not supported'
     },
     table: {
       emptyText: 'No Data',

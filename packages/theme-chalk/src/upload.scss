@@ -704,3 +704,12 @@
     display: inline;
   }
 }
+
+// 粘贴上传 tooltip 专属样式（通过 popper-class 精确隔离）
+.el-upload-paste-tooltip.el-tooltip__popper {
+  font-size: 12px;
+  
+  .popper__arrow {
+    left: 20px !important;
+  }
+}

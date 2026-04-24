@@ -146,6 +146,7 @@
   :props="{name: 'mc', url: 'lj'}"
   :aaa="111"
   draggable
+  :pasteable="true"
   @sort-change="handleSortChange"
   :file-list="fileList">
   <el-button size="small" type="primary">点击上传</el-button>

@@ -4,17 +4,20 @@ import uploadListDragger from './upload-list-dragger.vue';
 import Upload from './upload';
 import IframeUpload from './iframe-upload';
 import ElProgress from 'element-ui/packages/progress';
+import ElTooltip from 'element-ui/packages/tooltip';
 import Migrating from 'element-ui/src/mixins/migrating';
+import Locale from 'element-ui/src/mixins/locale';
 
 function noop() {}
 
 export default {
   name: 'ElUpload',
 
-  mixins: [Migrating],
+  mixins: [Migrating, Locale],
 
   components: {
     ElProgress,
+    ElTooltip,
     UploadList,
     uploadListDragger,
     Upload,
@@ -134,6 +137,10 @@ export default {
     draggable: { // 文件列表是否可拖动排序
       type: Boolean,
       default: false
+    },
+    pasteable: { // 是否开启粘贴上传
+      type: Boolean,
+      default: false
     }
   },
 
@@ -142,7 +149,8 @@ export default {
       uploadFiles: [],
       dragOver: false,
       draging: false,
-      tempIndex: 1
+      tempIndex: 1,
+      pasteHover: false // 鼠标是否悬停在上传容器上
     };
   },
 
@@ -161,6 +169,14 @@ export default {
         }
       }
       return props;
+    },
+    pasteTipText() {
+      // 粘贴上传提示文案（多语言适配）
+      return this.t('el.upload.pasteTip');
+    },
+    formatErrorText() {
+      // 粘贴上传格式校验失败提示文案（多语言适配）
+      return this.t('el.upload.formatError');
     }
   },
 
@@ -312,7 +328,122 @@ export default {
       this.uploadFiles.splice(newIndex, 0, moved);
       // 向外 emit
       this.$emit('sort-change', { oldIndex, newIndex, file, files: this.uploadFiles });
+    },
+    // ---- 粘贴上传：mouseenter/leave 直接在根容器上管理 ----
+    _handlePasteMouseEnter() {
+      if (!this.pasteable || this.uploadDisabled) return;
+      this.pasteHover = true;
+      document.addEventListener('paste', this._onContainerPaste);
+    },
+    _handlePasteMouseLeave() {
+      if (!this.pasteable) return;
+      this.pasteHover = false;
+      document.removeEventListener('paste', this._onContainerPaste);
+    },
+    /**
+     * 校验文件是否符合当前组件设置的 accept 规则
+     * 忽略大小写，支持验证扩展名 (如 .png)、泛型 MIME 类型 (如 image/*) 以及具体 MIME 类型 (如 image/jpeg)
+     * @param {File} fileObj 待验证的 File 对象
+     * @returns {Boolean} 校验是否通过
+     */
+    _checkAccept(fileObj) {
+      if (!this.accept) return true;
+      const accepts = this.accept.split(',').map(a => a.trim().toLowerCase());
+      const fileType = (fileObj.type || '').toLowerCase();
+      const fileName = (fileObj.name || '').toLowerCase();
+
+      return accepts.some(type => {
+        if (type.startsWith('.')) return fileName.endsWith(type);
+        if (type.endsWith('/*')) return fileType.startsWith(type.replace('/*', '/'));
+        return fileType === type;
+      });
+    },
+    /**
+     * 推断截图文件应该使用的扩展名
+     * 规则：如果 accept 未配置、设置为 image/* 或明确包含 png，则首选 png；
+     * 否则，从 accept 允许的列表中回退寻找其他已知图片格式（如 jpg, gif, webp, bmp）；
+     * 如果都不匹配且 accept 明确限制了其他非图片格式，则返回 null。
+     * @returns {String|null} 对应的文件扩展名（如 'png', 'jpg'），不符合限制时返回 null
+     */
+    _getScreenshotExt() {
+      if (!this.accept) return 'png';
+      const accepts = this.accept.split(',').map(a => a.trim().toLowerCase());
+      if (accepts.some(a => a === 'image/png' || a === '.png' || a === 'image/*')) return 'png';
+
+      const fallback = accepts.find(a =>
+        a === 'image/jpeg' || a === '.jpg' || a === '.jpeg' ||
+        a === 'image/gif' || a === '.gif' ||
+        a === 'image/webp' || a === '.webp' ||
+        a === 'image/bmp' || a === '.bmp'
+      );
+      if (fallback) {
+        return fallback.replace('image/', '').replace('.', '');
+      }
+      return null; // 当前 accept 配置不允许任何已知图片格式
+    },
+    /**
+     * 预处理粘贴事件提取出的 File 对象
+     * 核心目的：识别系统截图操作并进行优化处理。
+     * 1. 截图判定：默认名称为 image.png/jpg 且最后修改时间在 1000ms 内。
+     * 2. 处理逻辑：将截图重命名为全局唯一的 GUID 以防止同名覆盖，并根据 accept 推断正确的扩展名及 MIME 类型。
+     * @param {File} file 剪贴板提取的原始 File 对象
+     * @returns {File|null} 若为非截图则直接返回原文件；若为截图则返回重命名/格式化后的新 File；若格式被 accept 拒绝则返回 null
+     */
+    _processScreenshotFile(file) {
+      // 截图通常被浏览器命名为 image.png / image.jpg 等
+      const isDefaultName = ['image.png', 'image.jpg', 'image.jpeg'].includes(file.name);
+      // 截图是在粘贴瞬间创建的，lastModified 会无限接近当前时间
+      const isJustCreated = Math.abs(Date.now() - file.lastModified) <= 1000;
+
+      if (!isDefaultName || !isJustCreated) return file; // 不是截图，直接返回原文件
+
+      const ext = this._getScreenshotExt();
+      if (!ext) return null; // 无法匹配到允许的图片后缀
+
+      const guid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+        const r = Math.random() * 16 | 0;
+        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+      });
+
+      const mimeTypeMap = { jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', webp: 'image/webp', bmp: 'image/bmp' };
+      const mimeType = mimeTypeMap[ext] || file.type;
+
+      return new File([file], `${guid}.${ext}`, { type: mimeType });
+    },
+    _onContainerPaste(e) {
+      if (this.uploadDisabled) return;
+      const fileItems = Array.from((e.clipboardData || {}).items || []).filter(item => item.kind === 'file');
+      if (!fileItems.length) return;
+
+      const files = [];
+      let hasError = false;
+
+      for (const item of fileItems) {
+        const file = item.getAsFile();
+        if (!file) continue;
+
+        const processedFile = this._processScreenshotFile(file);
+
+        if (!processedFile || !this._checkAccept(processedFile)) {
+          hasError = true;
+          break; // 只要有一个文件不符合规范就报错并终止
+        }
+        files.push(processedFile);
+      }
+
+      if (hasError) {
+        this.$message && this.$message.error(this.formatErrorText);
+        return;
+      }
+
+      if (files.length) {
+        e.preventDefault();
+        this.$refs['upload-inner'].uploadFiles(files);
+      }
     }
+  },
+  beforeDestroy() {
+    document.removeEventListener('paste', this._onContainerPaste);
   },
 
   render(h) {
@@ -321,17 +452,17 @@ export default {
     const trigger = this.$slots.trigger || this.$slots.default;
     if (this.showFileList) {
       listDraggable = this.listType === 'text' && this.dragInTextList;
+      const listProps = {
+        listType: this.listType,
+        files: this.uploadFiles,
+        handlePreview: this.onPreview,
+        props: this.calProps,
+        draggable: this.draggable,
+        disabled: this.uploadDisabled
+      };
       const options = {
-        attrs: {
-          listType: this.listType,
-          files: this.uploadFiles,
-          handlePreview: this.onPreview,
-          props: this.calProps,
-          draggable: this.draggable
-        },
-        props: {
-          disabled: this.uploadDisabled
-        },
+        props: listProps,
+        attrs: listProps,
         on: {
           remove: this.handleRemove,
           'sort-change': this.handleSortChange
@@ -410,8 +541,12 @@ export default {
       );
 
     const showInTop = this.listType === 'picture-card' || listDraggable;
-    return (
-      <div>
+    const pasteEvents = this.pasteable && !this.uploadDisabled ? {
+      mouseenter: this._handlePasteMouseEnter,
+      mouseleave: this._handlePasteMouseLeave
+    } : {};
+    const inner = (
+      <div {...{on: pasteEvents}}>
         {showInTop ? uploadList : ''}
         {this.$slots.trigger
           ? [uploadComponent, this.$slots.default]
@@ -420,6 +555,20 @@ export default {
         {!showInTop ? uploadList : ''}
       </div>
     );
+    if (this.pasteable && !this.uploadDisabled) {
+      return (
+        <el-tooltip
+          placement="bottom-start"
+          content={this.pasteTipText}
+          manual
+          value={this.pasteHover}
+          popper-class="el-upload-paste-tooltip"
+        >
+          {inner}
+        </el-tooltip>
+      );
+    }
+    return inner;
   }
 };
 </script>
