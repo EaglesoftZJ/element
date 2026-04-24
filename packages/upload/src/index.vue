@@ -177,6 +177,16 @@ export default {
     formatErrorText() {
       // 粘贴上传格式校验失败提示文案（多语言适配）
       return this.t('el.upload.formatError');
+    },
+    actualPasteable() {
+      const hasPasteableProp = this.$options.propsData && 'pasteable' in this.$options.propsData;
+      if (hasPasteableProp) {
+        return this.pasteable;
+      }
+      if (this.dragInTextList) {
+        return true;
+      }
+      return this.pasteable;
     }
   },
 
@@ -331,12 +341,12 @@ export default {
     },
     // ---- 粘贴上传：mouseenter/leave 直接在根容器上管理 ----
     _handlePasteMouseEnter() {
-      if (!this.pasteable || this.uploadDisabled) return;
+      if (!this.actualPasteable || this.uploadDisabled) return;
       this.pasteHover = true;
       document.addEventListener('paste', this._onContainerPaste);
     },
     _handlePasteMouseLeave() {
-      if (!this.pasteable) return;
+      if (!this.actualPasteable) return;
       this.pasteHover = false;
       document.removeEventListener('paste', this._onContainerPaste);
     },
@@ -541,7 +551,7 @@ export default {
       );
 
     const showInTop = this.listType === 'picture-card' || listDraggable;
-    const pasteEvents = this.pasteable && !this.uploadDisabled ? {
+    const pasteEvents = this.actualPasteable && !this.uploadDisabled ? {
       mouseenter: this._handlePasteMouseEnter,
       mouseleave: this._handlePasteMouseLeave
     } : {};
@@ -555,7 +565,7 @@ export default {
         {!showInTop ? uploadList : ''}
       </div>
     );
-    if (this.pasteable && !this.uploadDisabled) {
+    if (this.actualPasteable && !this.uploadDisabled) {
       return (
         <el-tooltip
           placement="bottom-start"
