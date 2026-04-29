@@ -4,9 +4,10 @@ import uploadListDragger from './upload-list-dragger.vue';
 import Upload from './upload';
 import IframeUpload from './iframe-upload';
 import ElProgress from 'element-ui/packages/progress';
-import ElTooltip from 'element-ui/packages/tooltip';
+import ElTooltipDef from 'element-ui/packages/tooltip';
 import Migrating from 'element-ui/src/mixins/migrating';
 import Locale from 'element-ui/src/mixins/locale';
+import Vue from 'vue';
 
 function noop() {}
 
@@ -17,7 +18,6 @@ export default {
 
   components: {
     ElProgress,
-    ElTooltip,
     UploadList,
     uploadListDragger,
     Upload,
@@ -187,6 +187,10 @@ export default {
         return true;
       }
       return this.pasteable;
+    },
+    // 当前是否允许粘贴交互：actualPasteable 控制功能开关，uploadDisabled 控制禁用状态
+    pasteActive() {
+      return this.actualPasteable && !this.uploadDisabled;
     }
   },
 
@@ -199,6 +203,30 @@ export default {
           item.status = item.status || 'success';
           return item;
         });
+      }
+    },
+    pasteHover(val) {
+      // 同步驱动命令式 Tooltip 实例的显隐
+      if (this._pasteTooltip) {
+        this._pasteTooltip.showPopper = val;
+      }
+    },
+    pasteTipText(val) {
+      // 多语言切换时同步更新 content
+      if (this._pasteTooltip) {
+        this._pasteTooltip.content = val;
+      }
+    },
+    pasteActive(val) {
+      if (val) {
+        // 粘贴交互变为可用：懒创建 tooltip 实例（已存则跳过）
+        if (!this._pasteTooltip) {
+          this._initPasteTooltip();
+        }
+      } else {
+        // 粘贴交互失效时（功能关闭或禁用）统一复位状态
+        this.pasteHover = false;
+        document.removeEventListener('paste', this._onContainerPaste);
       }
     }
   },
@@ -341,12 +369,12 @@ export default {
     },
     // ---- 粘贴上传：mouseenter/leave 直接在根容器上管理 ----
     _handlePasteMouseEnter() {
-      if (!this.actualPasteable || this.uploadDisabled) return;
+      if (!this.pasteActive) return;
       this.pasteHover = true;
       document.addEventListener('paste', this._onContainerPaste);
     },
     _handlePasteMouseLeave() {
-      if (!this.actualPasteable) return;
+      if (!this.pasteActive) return;
       this.pasteHover = false;
       document.removeEventListener('paste', this._onContainerPaste);
     },
@@ -450,10 +478,46 @@ export default {
         e.preventDefault();
         this.$refs['upload-inner'].uploadFiles(files);
       }
+    },
+    // ---- 粘贴 Tooltip 实例管理 ----
+    _initPasteTooltip() {
+      if (this.$isServer || !this.actualPasteable) return;
+      // 命令式创建 Tooltip 实例，避免作为根元素影响 $parent 关系
+      const TooltipCtor = Vue.extend(ElTooltipDef);
+      this._pasteTooltip = new TooltipCtor({
+        propsData: {
+          placement: 'bottom-start',
+          popperClass: 'el-upload-paste-tooltip',
+          manual: true
+        }
+      });
+      this._pasteTooltip.$mount();
+      // 将 popper 挂到 body，referenceElm 指向本组件根元素
+      document.body.appendChild(this._pasteTooltip.$el);
+      this._pasteTooltip.referenceElm = this.$el;
+      // 同步初始 content
+      this._pasteTooltip.content = this.pasteTipText;
+    },
+    _destroyPasteTooltip() {
+      if (!this._pasteTooltip) return;
+      this._pasteTooltip.showPopper = false;
+      Vue.nextTick(() => {
+        if (this._pasteTooltip) {
+          this._pasteTooltip.$destroy();
+          if (this._pasteTooltip.$el && this._pasteTooltip.$el.parentNode) {
+            this._pasteTooltip.$el.parentNode.removeChild(this._pasteTooltip.$el);
+          }
+          this._pasteTooltip = null;
+        }
+      });
     }
+  },
+  mounted() {
+    this._initPasteTooltip();
   },
   beforeDestroy() {
     document.removeEventListener('paste', this._onContainerPaste);
+    this._destroyPasteTooltip();
   },
 
   render(h) {
@@ -551,11 +615,11 @@ export default {
       );
 
     const showInTop = this.listType === 'picture-card' || listDraggable;
-    const pasteEvents = this.actualPasteable && !this.uploadDisabled ? {
+    const pasteEvents = this.pasteActive ? {
       mouseenter: this._handlePasteMouseEnter,
       mouseleave: this._handlePasteMouseLeave
     } : {};
-    const inner = (
+    return (
       <div {...{on: pasteEvents}}>
         {showInTop ? uploadList : ''}
         {this.$slots.trigger
@@ -565,20 +629,6 @@ export default {
         {!showInTop ? uploadList : ''}
       </div>
     );
-    if (this.actualPasteable && !this.uploadDisabled) {
-      return (
-        <el-tooltip
-          placement="bottom-start"
-          content={this.pasteTipText}
-          manual
-          value={this.pasteHover}
-          popper-class="el-upload-paste-tooltip"
-        >
-          {inner}
-        </el-tooltip>
-      );
-    }
-    return inner;
   }
 };
 </script>
