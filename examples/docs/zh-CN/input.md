@@ -478,6 +478,7 @@ export default {
       :fetch-suggestions="querySearch"
       placeholder="请输入内容"
       @select="handleSelect"
+      clearable
     ></el-autocomplete>
   </el-col>
   <el-col :span="12">
