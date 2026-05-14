@@ -117,7 +117,8 @@
       placement: {
         type: String,
         default: 'bottom-start'
-      }
+      },
+      clearable: Boolean
     },
     data() {
       return {
