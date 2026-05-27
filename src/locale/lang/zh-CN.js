@@ -87,7 +87,7 @@ export default {
       delete: '删除',
       preview: '查看图片',
       continue: '继续上传',
-      pasteTip: '可直接粘贴上传截图或文件',
+      pasteTip: '复制截图或文件后，Windows 按Ctrl+V、Mac 按Command+V可直接粘贴上传',
       formatError: '当前上传不支持该格式'
     },
     table: {

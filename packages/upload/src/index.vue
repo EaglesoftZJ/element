@@ -171,8 +171,8 @@ export default {
       return props;
     },
     pasteTipText() {
-      // 粘贴上传提示文案（多语言适配）
-      return this.t('el.upload.pasteTip');
+      // 粘贴上传提示文案（全局配置 > 多语言适配）
+      return this.$ELEMENT.uploadPasteTip || this.t('el.upload.pasteTip');
     },
     formatErrorText() {
       // 粘贴上传格式校验失败提示文案（多语言适配）

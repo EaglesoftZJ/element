@@ -86,7 +86,7 @@ export default {
       delete: 'Delete',
       preview: 'Preview',
       continue: 'Continue',
-      pasteTip: 'You can paste screenshots or files to upload directly',
+      pasteTip: 'After copying a screenshot or file, press Ctrl+V on Windows or Command+V on Mac to paste and upload directly',
       formatError: 'File format not supported'
     },
     table: {
