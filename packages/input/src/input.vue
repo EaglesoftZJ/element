@@ -248,6 +248,7 @@
     watch: {
       'value'(val, oldValue) {
         this.setCurrentValue(val);
+        if (!val) this.immediateHideTooltip();
       }
     },
 
@@ -299,6 +300,9 @@
         this.tlpShow = false;
         this.focused = true;
         this.$emit('focus', event);
+      },
+      // 立即隐藏提示框
+      immediateHideTooltip() {
         // 立即关闭tooltip，避免clear后tooltip因debounce延迟消失而产生闪烁
         // 直接操作DOM绕过transition动画(200ms)，实现立即隐藏
         const tooltip = this.$refs.tooltip;
