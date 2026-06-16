@@ -40,6 +40,7 @@ const install = function(Vue, opts = {}) {
   ELEMENT.zoom = opts.zoom; // 页面缩放比例
   ELEMENT.uploadPasteTip = opts.uploadPasteTip; // 粘贴上传提示文案
   ELEMENT.scrollToErrorOffset = opts.scrollToErrorOffset; // 表单校验后滚动到错误位置距离容器顶部的偏移值
+  ELEMENT.scrollToErrorField = opts.scrollToErrorField; // 表单校验后滚动到错误位置的自定义方法
 
 
 

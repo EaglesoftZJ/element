@@ -166,6 +166,14 @@
           const scrollNode = getScrollParent(this.$el);
           console.log('scrollNode', scrollNode);
           const $error = $(this.$el).find('.is-error');
+          const customScrollToErrorField = (this.$ELEMENT || {}).scrollToErrorField;
+          if (typeof customScrollToErrorField === 'function') {
+            customScrollToErrorField.call(this, this, {
+              scrollNode,
+              errorEl: $error.length ? $error.eq(0)[0] : null
+            });
+            return;
+          }
           if (scrollNode && $error.length) {
             const scrollBoxTop = $(scrollNode).offset().top; // 滚动容器距离浏览器的高度
             const errorTop = $error.eq(0).offset().top; // 距离浏览器顶部高度
