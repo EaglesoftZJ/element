@@ -150,30 +150,41 @@
         field.validate('', cb);
       },
       // 滚动到表单第一个错误位子
+      // scrollToErrorField() {
+      //   this.$nextTick(() => {
+      //     const scrollNode = getScrollParent(this.$el);
+      //     console.log('scrollNode', scrollNode);
+      //     const $error = $(this.$el).find('.is-error');
+      //     if (scrollNode && $error.length) {
+      //       const scrollBoxTop = $(scrollNode).offset().top; // 滚动容器距离浏览器的高度
+      //       const errorTop = $error.eq(0).offset().top; // 距离浏览器顶部高度
+      //       const errorShouldTop = scrollBoxTop + this.scrollToErrorOffset; // 错误信息应该展示在距滚动容器以下偏移值的位置
+      //       let scrollTop = $(scrollNode).scrollTop() + errorTop - errorShouldTop;
+      //       if (scrollTop < 0) scrollTop = 0;
+      //       if (scrollTop > scrollNode.scrollHeight - scrollNode.clientHeight) scrollTop = scrollNode.scrollHeight - scrollNode.clientHeight;
+      //       $(scrollNode).scrollTop(scrollTop);
+      //     }
+      //   });
+      //   function getScrollParent(node) { // 寻找父级滚动容器
+      //     if (!node || !node.tagName) return null;
+      //     const { overflowY } = window.getComputedStyle(node);
+      //     if (overflowY === 'auto' || overflowY === 'scroll') { // 滚动条容器
+      //       return node;
+      //     } else {
+      //       return getScrollParent(node.parentNode); // 判断父级
+      //     }
+      //   }
+      // },
       scrollToErrorField() {
         this.$nextTick(() => {
-          const scrollNode = getScrollParent(this.$el);
-          console.log('scrollNode', scrollNode);
           const $error = $(this.$el).find('.is-error');
-          if (scrollNode && $error.length) {
-            const scrollBoxTop = $(scrollNode).offset().top; // 滚动容器距离浏览器的高度
-            const errorTop = $error.eq(0).offset().top; // 距离浏览器顶部高度
-            const errorShouldTop = scrollBoxTop + this.scrollToErrorOffset; // 错误信息应该展示在距滚动容器以下偏移值的位置
-            let scrollTop = $(scrollNode).scrollTop() + errorTop - errorShouldTop;
-            if (scrollTop < 0) scrollTop = 0;
-            if (scrollTop > scrollNode.scrollHeight - scrollNode.clientHeight) scrollTop = scrollNode.scrollHeight - scrollNode.clientHeight;
-            $(scrollNode).scrollTop(scrollTop);
+          if ($error.length) {
+            $error[0].scrollIntoView({
+              block: 'center',
+              inline: 'nearest'
+            });
           }
         });
-        function getScrollParent(node) { // 寻找父级滚动容器
-          if (!node || !node.tagName) return null;
-          const { overflowY } = window.getComputedStyle(node);
-          if (overflowY === 'auto' || overflowY === 'scroll') { // 滚动条容器
-            return node;
-          } else {
-            return getScrollParent(node.parentNode); // 判断父级
-          }
-        }
       },
       /**
        * 第一个表单元素获取焦点
