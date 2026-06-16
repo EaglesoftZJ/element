@@ -110,8 +110,7 @@
         rightChecked: [],
         leftData: [],
         leftValue: [],
-        draggableName: '',
-        allQuery: 0
+        draggableName: ''
       };
     },
     computed: {

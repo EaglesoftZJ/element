@@ -166,7 +166,7 @@
 :::demo 通过`drag`属性设置
 ```html
 <template>
-  <el-transfer v-model="value_tz" :data="data_tz" sort drag></el-transfer>
+  <el-transfer :filterable="true" v-model="value_tz" :data="data_tz" sort drag></el-transfer>
 </template>
 
 <script>

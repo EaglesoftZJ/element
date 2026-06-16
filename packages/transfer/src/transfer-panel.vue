@@ -151,7 +151,6 @@
         x2: 0,
         y1: 0,
         y2: 0,
-        parent: null,
         dragOption: {
           group: {
             name: this.draggableName,
@@ -192,13 +191,6 @@
 
       checkableData() {
         this.updateAllChecked();
-      },
-      query(val) {
-        if (val && this.drag) {
-          this.parent.allQuery++;
-        } else {
-          this.parent.allQuery--;
-        }
       },
       defaultChecked: {
         immediate: true,
@@ -280,16 +272,6 @@
     },
 
     methods: {
-      getParent() {
-        let parent = this.$parent;
-        while (parent) {
-          if (parent.$options.componentName === 'ElTransfer') {
-            this.parent = parent;
-            break;
-          }
-          parent = parent.$parent;
-        }
-      },
       updateAllChecked() {
         const checkableDataKeys = this.checkableData.map(item => item[this.keyProp]);
         this.allChecked = checkableDataKeys.length > 0 &&
@@ -312,7 +294,7 @@
       },
       check: function(evt) {
         evt = evt || window.event;
-        if (this.parent.allQuery !== 0) {
+        if (this.query) {
           this.x1 = evt.clientX;
           this.y1 = evt.clientY;
           this.canDrag = false;
@@ -343,7 +325,6 @@
     },
     created() {
       if (this.drag) {
-        this.getParent();
         document.addEventListener('mouseup', this.handleUp);
         document.addEventListener('mousemove', this.handleMove);
       }
