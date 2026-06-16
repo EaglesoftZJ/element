@@ -47,8 +47,19 @@
         default: true
       },
       scrollToErrorOffset: { // 表单校验后滚动到错误位置距离容器顶部的偏移值
-        type: Number,
-        default: 50
+        type: Number
+      }
+    },
+    computed: {
+      formScrollToErrorOffset() {
+        if (this.scrollToErrorOffset != null) {
+          return this.scrollToErrorOffset;
+        }
+        const globalOffset = (this.$ELEMENT || {}).scrollToErrorOffset;
+        if (globalOffset != null) {
+          return globalOffset;
+        }
+        return 50;
       }
     },
     watch: {
@@ -158,7 +169,7 @@
           if (scrollNode && $error.length) {
             const scrollBoxTop = $(scrollNode).offset().top; // 滚动容器距离浏览器的高度
             const errorTop = $error.eq(0).offset().top; // 距离浏览器顶部高度
-            const errorShouldTop = scrollBoxTop + this.scrollToErrorOffset; // 错误信息应该展示在距滚动容器以下偏移值的位置
+            const errorShouldTop = scrollBoxTop + this.formScrollToErrorOffset; // 错误信息应该展示在距滚动容器以下偏移值的位置
             let scrollTop = $(scrollNode).scrollTop() + errorTop - errorShouldTop;
             if (scrollTop < 0) scrollTop = 0;
             if (scrollTop > scrollNode.scrollHeight - scrollNode.clientHeight) scrollTop = scrollNode.scrollHeight - scrollNode.clientHeight;
