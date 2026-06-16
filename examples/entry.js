@@ -27,6 +27,13 @@ import egdialog from '../packages/eg-dialog/src/egDialog';
 Vue.use(Element, {
   btnDirection: 'row-reverse',
   selectInputNomatchText: '无匹配项'
+  // scrollToErrorField(form, { scrollNode, errorEl }) {
+  //   errorEl.scrollIntoView({
+  //     behavior: 'smooth',
+  //     inline: 'nearest'
+  //   });
+  // },
+  // scrollToErrorOffset: 180
   // switchFullscreen: true
 });
 Vue.use(VueRouter);
