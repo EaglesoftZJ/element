@@ -1,6 +1,6 @@
 {
   "name": "eg-element-ui",
-  "version": "2.5.52-beta4",
+  "version": "2.5.53-beta1",
   "description": "A Component Library for Vue.js.",
   "main": "lib/element-ui.common.js",
   "files": [

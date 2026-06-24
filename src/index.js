@@ -203,7 +203,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 module.exports = {
-  version: '2.5.52-beta4',
+  version: '2.5.53-beta1',
   locale: locale.use,
   i18n: locale.i18n,
   install,
