@@ -141,6 +141,10 @@ export default {
     pasteable: { // 是否开启粘贴上传
       type: Boolean,
       default: false
+    },
+    uploadAnimation: { // 是否开启上传列表动画
+      type: Boolean,
+      default: true
     }
   },
 
@@ -532,7 +536,8 @@ export default {
         handlePreview: this.onPreview,
         props: this.calProps,
         draggable: this.draggable,
-        disabled: this.uploadDisabled
+        disabled: this.uploadDisabled,
+        uploadAnimation: this.uploadAnimation
       };
       const options = {
         props: listProps,

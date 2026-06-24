@@ -7,8 +7,8 @@
       { 'is-disabled': disabled },
       { 'is-draggable': draggable && !disabled }
     ]"
-    :name="draggable && !disabled ? '' : 'el-list'"
-    :css="!(draggable && !disabled)"
+    :name="listTransitionName"
+    :css="listTransitionEnabled"
   >
     <li
       v-for="(file, index) in files"
@@ -109,6 +109,18 @@
       draggable: {
         type: Boolean,
         default: false
+      },
+      uploadAnimation: {
+        type: Boolean,
+        default: true
+      }
+    },
+    computed: {
+      listTransitionEnabled() {
+        return this.uploadAnimation && !(this.draggable && !this.disabled);
+      },
+      listTransitionName() {
+        return this.listTransitionEnabled ? 'el-list' : '';
       }
     },
     created() {
