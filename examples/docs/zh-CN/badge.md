@@ -14,7 +14,7 @@
 :::demo 定义`value`属性，它接受`Number`或者`String`。
 
 ```html
-<el-badge :value="12" class="item">
+<el-badge :value="12" class="item" type="success">
   <el-button size="small">评论</el-button>
 </el-badge>
 <el-badge :value="3" class="item">
