@@ -130,7 +130,9 @@
       format="(UTC) yyyy-MM-dd"
       panel-time-format="(UTC) HH:mm:ss"
       type="datetime"
-      placeholder="选择日期">
+      placeholder="选择日期"
+      :editable="false"
+      >
     </el-date-picker>
   </div>
   <div class="block">
