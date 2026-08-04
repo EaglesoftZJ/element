@@ -646,7 +646,8 @@
         this.userInput = initialValue;
       },
       handleFocusBefore() {
-        if (this.focusAuto) {
+        // editable 为 false 时不可输入，点击整个 input 应弹出面板
+        if (this.focusAuto || !this.editable) {
           this.handleFocus();
         }
       },
