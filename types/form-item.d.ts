@@ -28,4 +28,7 @@ export declare class ElFormItem extends ElementUIComponent {
 
   /** Controls the size of components in this form */
   size: ElementUIComponentSize
+
+  /** Skip focusing the first input inside when validation fails (for container fields like list) */
+  noErrorFocus: boolean
 }

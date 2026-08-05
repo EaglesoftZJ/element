@@ -70,7 +70,9 @@
       },
       locateCenter: Boolean,
       hasLine: Boolean,
-      size: String
+      size: String,
+      // 校验失败时不自动 focus 内部第一个 input（如列表主字段内嵌子表单）
+      noErrorFocus: Boolean
     },
     watch: {
       error: {

@@ -130,20 +130,23 @@
         let invalidFields = {};
         this.fields.forEach(field => {
           let currentFieldValid = true; // 当前表单项的校验状态
-          field.validate('', (message, field, el) => {
+          field.validate('', (message, invalidFieldsArg, el) => {
             if (message) {
               valid = false;
               currentFieldValid = false;
             }
+            // noErrorFocus：列表等容器型字段校验失败时不应 focus 内部第一个 input
             if (!scrolled && !currentFieldValid && el && this.scrollToError) {
               scrolled = true;
-              el.focus();
+              if (!field.noErrorFocus) {
+                el.focus();
+              }
               this.scrollToErrorField();
             } else if (!scrolled && !currentFieldValid && !el && this.scrollToError) {
               scrolled = true;
               this.scrollToErrorField();
             }
-            invalidFields = objectAssign({}, invalidFields, field);
+            invalidFields = objectAssign({}, invalidFields, invalidFieldsArg);
             if (typeof callback === 'function' && ++count === this.fields.length) {
               callback(valid, invalidFields);
             }
